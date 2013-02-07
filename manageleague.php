@@ -104,7 +104,7 @@ function displayStandings()
 
 		$sheetname = $entry->title->text;
 		$link = $entry->getLink("http://schemas.google.com/spreadsheets/2006#worksheetsfeed")->href;
-		$currKey = split('/', $entry->id->text);
+		$currKey = explode('/', $entry->id->text);
 		$currKey = $currKey[5];
 		//#2BB0E8
 
@@ -145,7 +145,7 @@ function processWorksheetStandings($key,$handicap)
 
 	foreach($feed->entries as $entry) {
 		$worksheetname = $entry->title->text;
-		$currWkshtId = split('/', $entry->id->text);
+		$currWkshtId = explode('/', $entry->id->text);
 		$currWkshtId = $currWkshtId[8];
 		$color = (strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red";
 
@@ -331,7 +331,7 @@ function fixLinks()
 
 		$sheetname = $entry->title->text;
 		$link = $entry->getLink("http://schemas.google.com/spreadsheets/2006#worksheetsfeed")->href;
-		$currKey = split('/', $entry->id->text);
+		$currKey = explode('/', $entry->id->text);
 		$currKey = $currKey[5];
 		//#2BB0E8
 
@@ -355,7 +355,7 @@ function fixWorksheetLinks($key)
 
 	foreach($feed->entries as $entry) {
 		$worksheetname = $entry->title->text;
-		$currWkshtId = split('/', $entry->id->text);
+		$currWkshtId = explode('/', $entry->id->text);
 		$currWkshtId = $currWkshtId[8];
 
 
@@ -436,7 +436,7 @@ function displaySpreadsheets($type="normal")
 
 		$sheetname = $entry->title->text;
 		$link = $entry->getLink("http://schemas.google.com/spreadsheets/2006#worksheetsfeed")->href;
-		$currKey = split('/', $entry->id->text);
+		$currKey = explode('/', $entry->id->text);
 		$currKey = $currKey[5];
 		//#2BB0E8
 		
@@ -486,7 +486,7 @@ function displayWorksheets($key,$type)
 	//echo '<ul>';
 	foreach($feed->entries as $entry) {
 		$worksheetname = $entry->title->text;
-		$currWkshtId = split('/', $entry->id->text);
+		$currWkshtId = explode('/', $entry->id->text);
 		$currWkshtId = $currWkshtId[8];
 		//echo '<li><span id="wsname">'. $worksheetname . "</span>   <input type='text' autocomplete='off' class='txtname' name='name' /> <a id='submitlink' href='$key,$currWkshtId'>Submit Game</a><span id='loading' style='display:none'><img src='ajax-loader.gif' />Processing...</span></li>";
 
