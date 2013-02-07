@@ -1,0 +1,15 @@
+a:10:{s:7:"attribs";a:4:{s:5:"xmlns";s:36:"http://pear.php.net/dtd/rest.package";s:9:"xmlns:xsi";s:41:"http://www.w3.org/2001/XMLSchema-instance";s:11:"xmlns:xlink";s:28:"http://www.w3.org/1999/xlink";s:18:"xsi:schemaLocation";s:80:"http://pear.php.net/dtd/rest.package    http://pear.php.net/dtd/rest.package.xsd";}s:1:"n";s:6:"domxml";s:1:"c";s:12:"pecl.php.net";s:2:"ca";a:2:{s:7:"attribs";a:1:{s:10:"xlink:href";s:11:"/rest/c/XML";}s:8:"_content";s:3:"XML";}s:1:"l";s:3:"PHP";s:1:"s";s:17:"DOM XML Functions";s:1:"d";s:868:"This extension allows you to operate on an XML document with the DOM API.
+
+It has been superseded by the DOM extension that ships with PHP 5.
+
+Although it should be possible to use this old domxml extension with PHP 5, its use is highly discouraged, as there a very high potential for conflicts with the new dom extension.
+
+If you are migrating from PHP 4 to PHP 5, the recommended best-practice is to port your domxml code to the much better dom code.
+
+If you really must build domxml, you will need to obtain the sources from CVS and build them yourself.
+
+See http://www.php.net/manual/en/install.pecl.php for instructions.
+
+NOTE: if you're running PHP 4.x, the domxml is already part of the distribution.
+
+NOTE 2: The download link below "Download latest" is broken and doesn't lead to anything. Please read above carefully for how to get it, if you really need to.";s:1:"r";a:1:{s:7:"attribs";a:1:{s:10:"xlink:href";s:14:"/rest/r/domxml";}}s:2:"dc";s:22:"http://www.php.net/dom";s:2:"dp";s:7:"ext/dom";}

@@ -1,0 +1,16 @@
+a:14:{s:7:"attribs";a:4:{s:5:"xmlns";s:36:"http://pear.php.net/dtd/rest.release";s:9:"xmlns:xsi";s:41:"http://www.w3.org/2001/XMLSchema-instance";s:11:"xmlns:xlink";s:28:"http://www.w3.org/1999/xlink";s:18:"xsi:schemaLocation";s:81:"http://pear.php.net/dtd/rest.release     http://pear.php.net/dtd/rest.release.xsd";}s:1:"p";a:2:{s:7:"attribs";a:1:{s:10:"xlink:href";s:32:"/rest/p/spreadsheet_excel_writer";}s:8:"_content";s:24:"Spreadsheet_Excel_Writer";}s:1:"c";s:12:"pear.php.net";s:1:"v";s:5:"0.9.2";s:2:"st";s:4:"beta";s:1:"l";s:4:"LGPL";s:1:"m";s:8:"cschmitz";s:1:"s";s:41:"Package for generating Excel spreadsheets";s:1:"d";s:389:"Spreadsheet_Excel_Writer was born as a porting of the Spreadsheet::WriteExcel Perl module to PHP.
+  It allows writing of Excel spreadsheets without the need for COM objects.
+  It supports formulas, images (BMP) and all kinds of formatting for text and cells.
+  It currently supports the BIFF5 format (Excel 5.0), so functionality appeared in the latest Excel versions is not yet available.";s:2:"da";s:19:"2009-11-28 14:30:00";s:1:"n";s:1071:"+Added feature: setTmpDir property for people that have openbase_dir. (dufuz)
+-Fixed bug #14932: The name of the Workbook stream MUST be "Workbook", not "Book" (progi1984)
+-Fixed bug #10399: Fatal error when closing workbook with no worksheets. (cweiske)
+-Fixed bug #9511 Shared /tmp dir assumed (dufuz)
+-Fixed bug #8701: Problems with the method setTextRotation() (progi1984)
+-Fixed bug #6640: Illegal character for XML encoding of pear package (mj)
+-Fixed bug #2405: Text concat operator and truncate formula (progi1984)
+-Fixed bug #2261: Excel 2002 crashes when use write() with @ as first value of the text in behalf of progi1984 (cweiske)
+-Fixed bug #1572 & #2942 - Problems with files with over 200 row / or 30kb of filesize - patch originally by michal dot fapso at goldenboat dot net - tested and reviewed (alan_k)
+-Fixed bug #1730 Wrong operand class used for A1:A2 (tuupola)
+-Fixed bug #608 Column guts always hidden, i.e. always displayed with zero height (dufuz)
+-Fixed bug: Proper codepage for BIFF8 (arnaud)
+-Fixed deprecated eregi function calls (cschmitz)";s:1:"f";s:5:"57629";s:1:"g";s:54:"http://pear.php.net/get/Spreadsheet_Excel_Writer-0.9.2";s:1:"x";a:1:{s:7:"attribs";a:1:{s:10:"xlink:href";s:17:"package.0.9.2.xml";}}}

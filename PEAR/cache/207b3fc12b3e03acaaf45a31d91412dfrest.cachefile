@@ -1,0 +1,5 @@
+a:8:{s:7:"attribs";a:4:{s:5:"xmlns";s:36:"http://pear.php.net/dtd/rest.package";s:9:"xmlns:xsi";s:41:"http://www.w3.org/2001/XMLSchema-instance";s:11:"xmlns:xlink";s:28:"http://www.w3.org/1999/xlink";s:18:"xsi:schemaLocation";s:80:"http://pear.php.net/dtd/rest.package    http://pear.php.net/dtd/rest.package.xsd";}s:1:"n";s:9:"xmlReader";s:1:"c";s:12:"pecl.php.net";s:2:"ca";a:2:{s:7:"attribs";a:1:{s:10:"xlink:href";s:11:"/rest/c/XML";}s:8:"_content";s:3:"XML";}s:1:"l";s:11:"PHP License";s:1:"s";s:144:"Provides fast, non-cached, forward-only access to XML data under PHP 5.
+
+NOTE: This extension is part of core, thus, the PECL extension is dead.";s:1:"d";s:211:"This extension wraps the libxml xmlReader API. The reader acts as a cursor 
+going forward on the document stream and stopping at each node in the way. 
+xmlReader is similar to SAX though uses a much simpler API.";s:1:"r";a:1:{s:7:"attribs";a:1:{s:10:"xlink:href";s:17:"/rest/r/xmlreader";}}}
