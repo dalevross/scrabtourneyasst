@@ -1,4 +1,0 @@
-<FilesMatch "lexwstiletracker\.js$">
-Header set Cache-Control "no-cache, must-revalidate, public"
-</FilesMatch>
-
