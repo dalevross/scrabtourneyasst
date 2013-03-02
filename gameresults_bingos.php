@@ -26,7 +26,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 			&&
 			filter_var($password,FILTER_VALIDATE_REGEXP,array("options"=>array("regexp"=>"/^\w+$/"))))
 			{
-				$curl_data = $curl_data . "&pid=" . $pid . "&password=" . $password;
+				$curl_data = $curl_data . "&pid=" . $pid . "&password=" . $password . "&showGameOver=1";
 				
 			}
 			else
