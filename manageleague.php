@@ -452,7 +452,7 @@ function displaySpreadsheets($type="normal")
 
 		if($condition)
 		{
-			$color = ($type=="olympics")?"yellow":((strpos(strtolower($sheetname), 'lex'))?"#2BB0E8":"red");
+			$color = ($type=="olympics")?"yellow":((strpos(strtolower($worksheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red"));
 			
 			?>
 		<table style="border-style:solid;border-width:1px;border-color:<?echo $color;?>;padding:10px;margin-top:10px">
@@ -492,7 +492,7 @@ function displayWorksheets($key,$type)
 
 		if((strpos(strtolower($worksheetname), 'lex') !==false) ||(strpos(strtolower($worksheetname), 'ws') !==false) || (strpos(strtolower($worksheetname), 'wordscraper') !==false) )
 		{
-			$color = (strpos(strtolower($worksheetname), 'lex') !==false)?"#2BB0E8":"red";
+			$color = (strpos(strtolower($worksheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red");
 	
 			echo "<table style='border-style:solid;border-width:1px;border-color:$color;padding:10px;margin-top:10px'>";
 			echo '<tr><th colspan="4" style="text-align:center;background-color:' . $color .  ';color:white"><span id="wsname">'. $worksheetname . "</span></td></tr>";
