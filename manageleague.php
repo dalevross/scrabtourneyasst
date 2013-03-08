@@ -110,7 +110,7 @@ function displayStandings()
 
 		if((strpos($sheetname, 'Score Sheet')!==false)  &&  (strpos(strtolower($sheetname), 'closed')===false) &&  (strpos(strtolower($sheetname), 'example')===false) &&  (strpos(strtolower($sheetname), 'break')===false))
 		{
-			$color = (strpos(strtolower($sheetname), 'lex'))?"#2BB0E8":"red";
+			$color = (strpos(strtolower($sheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($sheetname), 'lex')!==false)?"#2BB0E8":"red");
 			$handicap = (strpos(strtolower($sheetname), 'handicap')!==false);
 			?>
 	<table style="border-style:solid;border-width:1px;border-color:<?echo $color;?>;padding:10px;margin-top:10px;width:500px">
@@ -147,7 +147,7 @@ function processWorksheetStandings($key,$handicap)
 		$worksheetname = $entry->title->text;
 		$currWkshtId = explode('/', $entry->id->text);
 		$currWkshtId = $currWkshtId[8];
-		$color = (strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red";
+		$color = (strpos(strtolower($worksheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red");
 
 		?>
 	<table style="border-style: none; margin-top: 10px; width: 100%">
@@ -452,7 +452,7 @@ function displaySpreadsheets($type="normal")
 
 		if($condition)
 		{
-			$color = ($type=="olympics")?"yellow":((strpos(strtolower($worksheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red"));
+			$color = ($type=="olympics")?"yellow":((strpos(strtolower($sheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($sheetname), 'lex')!==false)?"#2BB0E8":"red"));
 			
 			?>
 		<table style="border-style:solid;border-width:1px;border-color:<?echo $color;?>;padding:10px;margin-top:10px">
