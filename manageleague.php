@@ -896,7 +896,7 @@ function processResults($pid1,$pscore1,$pid2,$pscore2,$ssheetid,$wsheetid,$type)
 	<div
 		style='width: 600px; text-align: center; margin-left: auto; margin-right: auto'>
 		<a href='manageleague.php?clear=true'>Logout</a> <br /> <img
-			src="pumping.gif" /> <br />
+			src="owl.jpg" /> <br />
 			<a href='manageleague.php?olympics=true'>Olympics Submissions</a>
 			<br/>
 	</div>

@@ -101,7 +101,7 @@ function displayStandings($round)
     $feed = $gdClient->getSpreadsheetFeed();
     
 	//echo "== Available Spreadsheets ==</br>";
-	echo '<div id="standingstop"><a href="managetbreak.php">Submission Page</a><img src="ironing.gif"/>';
+	echo '<div id="standingstop"><a href="managetbreak.php">Submission Page</a><img src="owl.jpg"/>';
 	echo '<br/><label for="txtsround">Round:</label>&nbsp&nbsp<input type="text" value="' . $round .'" title="Enter Round#" id="txtsround" name="stround"/>';
 	echo '&nbsp&nbsp<a id="standingslink" href="managetbreak.php?standings=1">View Standings</a>';
 	?>
@@ -551,7 +551,7 @@ function displaySpreadsheets()
     $feed = $gdClient->getSpreadsheetFeed();
     
 	//echo "== Available Spreadsheets ==</br>";
-	echo '<div><label for="txtsround">Round:</label>&nbsp&nbsp<input type="text" title="Enter Round#" id="txtsround" name="stround"/>&nbsp&nbsp<a id="standingslink" href="managetbreak.php?standings=1">View Standings</a><img src="ironing.gif"/></div>';
+	echo '<div><label for="txtsround">Round:</label>&nbsp&nbsp<input type="text" title="Enter Round#" id="txtsround" name="stround"/>&nbsp&nbsp<a id="standingslink" href="managetbreak.php?standings=1">View Standings</a><img src="owl.jpg"/></div>';
 	$entries = iterator_to_array ($feed->entries);
 	
 	usort($entries,"cmp_entries");
@@ -743,7 +743,7 @@ function generateMatchups($round,$ssheetid,$wsheetid,$updatesheet,$game)
 	else
 	{
 	*/
-	echo '<a href="managetbreak.php">Submission Page</a><img src="ironing.gif"/><br/>';
+	echo '<a href="managetbreak.php">Submission Page</a><img src="owl.jpg"/><br/>';
 	$query = new Zend_Gdata_Spreadsheets_CellQuery();
 	$query->setSpreadsheetKey($ssheetid);
 	$query->setWorksheetId($wsheetid);
