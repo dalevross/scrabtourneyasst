@@ -440,7 +440,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 		echo "<tr id='{$data[$i]['id']}' class='playerrow$class' ><td>$rank.</td><td class='playername'>{$data[$i]['name']}</td><td title='Click score to show game history' style='text-align:right;'>";
 		foreach($data[$i]['links'] as $oppindex=>$link)
 		{
-			echo "<input type='hidden' data-link='$link' data-for='{$data[$i]['for'][$oppindex]}' data-against='{$data[$i]['against'][$oppindex]} data-opponent='{$player_names[$oppindex]}' class='$oppindex' />";
+			echo "<input type='hidden' data-link='$link' data-for='{$data[$i]['for'][$oppindex]}' data-against='{$data[$i]['against'][$oppindex]}' data-opponent='{$player_names[$oppindex]}' class='$oppindex' />";
 		}
 		echo "<a class='curscore' href='#'>{$data[$i]['winstoplayed']}</a></td>";
 		echo "<td style='text-align:right;'>{$data[$i]['spread']}</td></tr>";
