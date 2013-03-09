@@ -370,7 +370,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 					
 					
 				$missingids[$player_names[$i]]=$player_ids[$j];
-
+				$missingids[$player_names[$j]]=$player_ids[$i];
 			}
 
 		}
@@ -432,9 +432,9 @@ function processStandingsForWorskeet($key,$currWkshtId)
 			
 		echo "<tr><td colspan='4' style='text-align:center;'>Missing Games</td></tr>";
 		$ix = false;
-		foreach ($missing as $key => $value) {
+		foreach ($missing as $p2 => $p1) {
 			$class = ($ix)?" evenmiss":"";
-			echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$key]}' >$key</td><td style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td></td><td class='againstname' data-id='{$missingids[$value]}'>$value</td></tr>";
+			echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$p1]}' >$p1</td><td style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td></td><td class='againstname' data-id='{$missingids[$p2]}'>$p2</td></tr>";
 			$ix = !$ix;
 		}
 	}
