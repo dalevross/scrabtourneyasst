@@ -302,6 +302,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 	$completed = 0;
 	foreach($feed as $cellEntry) {
 		$column = $cellEntry->cell->getColumn();
+		$row = $cellEntry->cell->getRow();
 		$r = ((int)(round(($row - 4)/2))) - 1;
 		$c = ($column-4);
 		if((($column > 17) && ($column != 29)) )
