@@ -1143,7 +1143,7 @@ if (isset($_GET['token'])) {
 				html = html + '</div><table style="border-style:solid;border-width:1px;border-color:brown;">';
 				html = html + '<tr style="text-align:center;background-color:brown;color:white;"><th>Opponent #</th><th>Opponent</th><th>Game Link</th><th>For</th><th>Against</th><th>Margin</th></tr>';
 				hiddenvals.each(function(){
-					  var margin = $(this).data('for') - $(this)data('against');
+					  var margin = $(this).data('for') - $(this).data('against');
 					  margin = (margin > 0) ? "+" + margin : margin; 
 					 var ifbold = ($(this).data('for')> $(this).data('against'))?bold:'';
 					  html = html + '<tr '+ ifbold + '><td>' + $(this).attr('class') + '</td><td>' + this.data('opponent') + '</td><td><a href="' + $(this).data('link') + '" target="_blank">' + $(this).data('link') + '</a></td><td>' + $(this).data('for') + '</td><td>' + $(this).data('against') + '</td><td>' + margin + '</td></tr>';
