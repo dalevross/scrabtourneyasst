@@ -428,13 +428,13 @@ function processStandingsForWorskeet($key,$currWkshtId)
 	if((count($missing)>0))
 	{
 		 
-		echo "<tr class='hiderow'><td colspan='3' style='text-align:center;background-color:brown;color:white;'>Click here to <span class='hidestatus'>hide</span> missing games</td>";
+		echo "<tr class='hiderow'><td colspan='4' style='text-align:center;background-color:brown;color:white;'>Click here to <span class='hidestatus'>hide</span> missing games</td>";
 			
-		echo "<tr><td colspan='3' style='text-align:center;'>Missing Games</td></tr>";
+		echo "<tr><td colspan='4' style='text-align:center;'>Missing Games</td></tr>";
 		$ix = false;
 		foreach ($missing as $key => $value) {
 			$class = ($ix)?" evenmiss":"";
-			echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$key]}' >$key</td><td style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td class='againstname' data-id='{$missingids[$value]}'>$value</td></tr>";
+			echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$key]}' >$key</td><td style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td></td><td class='againstname' data-id='{$missingids[$value]}'>$value</td></tr>";
 			$ix = !$ix;
 		}
 	}
