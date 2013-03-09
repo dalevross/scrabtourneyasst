@@ -317,15 +317,19 @@ function processStandingsForWorskeet($key,$currWkshtId)
 				case 2:
 					$player_names[] = $val;
 					break;
-				case (($column > 2) && ($column < 15) && (($row % 2)!=0) && ($r < $c)):
-					$for[$r][$c] = intval($val);
-					$against[$c][$r] = intval($val);
-					break;
-				case (($column > 2) && ($column < 15) && (($row % 2)==0) && ($r < $c)):
-					$against[$r][$c] = intval($val);
-					$for[$c][$r] = intval($val);
-					$links[$r][$c] = $inputVal;
-					$links[$c][$r] = $inputVal;
+				case (($column > 2) && ($column < 15) ):
+					if((($row % 2)!=0) && ($r < $c))
+					{
+						$for[$r][$c] = intval($val);
+						$against[$c][$r] = intval($val);
+					}
+					elseif ((($row % 2)==0) && ($r < $c))
+					{
+						$against[$r][$c] = intval($val);
+						$for[$c][$r] = intval($val);
+						$links[$r][$c] = $inputVal;
+						$links[$c][$r] = $inputVal;
+					}
 					break;
 				case 15:
 					$wins[] = floatval($val);
@@ -346,6 +350,12 @@ function processStandingsForWorskeet($key,$currWkshtId)
 			}
 		}
 	}
+	
+	 if(isset($_GET["debug"]))
+	 {
+	 	print_r($for);
+	 	
+	 }
 
 	if(!is_array($for))
 	{
