@@ -414,7 +414,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 	{
 		$class = (count($data[$i]['links'])==10)?" finished":"";
 		$rank  = $i + 1;
-		echo "<tr id='{$data[$i]['id']}' class='playerrow$class' ><td>$rank.</td><td>{$data[$i]['name']}</td><td title='Click score to show game history' style='text-align:right;'>";
+		echo "<tr id='{$data[$i]['id']}' class='playerrow$class' ><td>$rank.</td><td class='playername'>{$data[$i]['name']}</td><td title='Click score to show game history' style='text-align:right;'>";
 		foreach($data[$i]['links'] as $oppindex=>$link)
 		{
 			echo "<input type='hidden' data-link='$link' data-for='{$data[$i]['for'][$oppindex]}' data-against='{$data[$i]['against'][$oppindex]} data-opponent='{$player_names[$oppindex]}' class='$oppindex' />";
@@ -434,7 +434,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 		$ix = false;
 		foreach ($missing as $p2 => $p1) {
 			$class = ($ix)?" evenmiss":"";
-			echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$p1]}' >$p1</td><td style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td></td><td class='againstname' data-id='{$missingids[$p2]}'>$p2</td></tr>";
+			echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$p1]}' >$p1</td><td colspan='2'  style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td class='againstname' data-id='{$missingids[$p2]}'>$p2</td></tr>";
 			$ix = !$ix;
 		}
 	}
@@ -1143,7 +1143,7 @@ if (isset($_GET['token'])) {
 				html = html + '</div><table style="border-style:solid;border-width:1px;border-color:brown;">';
 				html = html + '<tr style="text-align:center;background-color:brown;color:white;"><th>Opponent #</th><th>Opponent</th><th>Game Link</th><th>For</th><th>Against</th><th>Margin</th></tr>';
 				hiddenvals.each(function(){
-					  var margin = $(this).data('for') - $(this).data('against');
+					  var margin = $(this).data("for") - $(this).data("against");
 					  margin = (margin > 0) ? "+" + margin : margin; 
 					 var ifbold = ($(this).data('for')> $(this).data('against'))?bold:'';
 					  html = html + '<tr '+ ifbold + '><td>' + $(this).attr('class') + '</td><td>' + this.data('opponent') + '</td><td><a href="' + $(this).data('link') + '" target="_blank">' + $(this).data('link') + '</a></td><td>' + $(this).data('for') + '</td><td>' + $(this).data('against') + '</td><td>' + margin + '</td></tr>';
