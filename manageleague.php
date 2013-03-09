@@ -97,17 +97,22 @@ function displayStandings()
 	//echo "== Available Spreadsheets ==</br>";
 	echo '<a href="manageleague.php">Submission Page</a>';
 	?>
-	<br/>
-	<br/>
+	<br />
+	<br />
 	<form>
-	Name Filter:&nbsp&nbsp<input type="text" id="srchtxtname" name="srchname" /><br/>
-	<input type="radio" name="srchtype" value="cont" checked="1"/> Contains
-	&nbsp&nbsp&nbsp <input type="radio" name="srchtype" value="str" /> Starts With
-	&nbsp&nbsp&nbsp <input type="radio" name="srchtype" value="end" /> Ends With
-	&nbsp&nbsp&nbsp <input type="radio" name="srchtype" value="eq" /> Equals
+		Name Filter:&nbsp&nbsp
+		<input type="text" id="srchtxtname" name="srchname" />
+		<br />
+		<input type="radio" name="srchtype" value="cont" checked="1" />
+		Contains &nbsp&nbsp&nbsp
+		<input type="radio" name="srchtype" value="str" /> Starts With
+		&nbsp&nbsp&nbsp
+		<input type="radio" name="srchtype" value="end" /> Ends With
+		&nbsp&nbsp&nbsp
+		<input type="radio" name="srchtype" value="eq" /> Equals
 	</form>
-	
-	<?php 
+
+	<?php
 	$entries = iterator_to_array ($feed->entries);
 
 	usort($entries,"cmp_entries");
@@ -162,14 +167,16 @@ function processWorksheetStandings($key,$handicap)
 		$color = (strpos(strtolower($worksheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red");
 
 		?>
-	   <table class='standingstable' data-ssheetid='<?php echo $key;?>' data-wsheetid='<?php echo $currWkshtId;?>' style="border-style: none; margin-top: 10px; width: 100%">
+	<table class='standingstable' data-ssheetid='<?php echo $key;?>'
+		data-wsheetid='<?php echo $currWkshtId;?>'
+		style="border-style: none; margin-top: 10px; width: 100%">
 		<tr>
-			<th colspan="<? echo ($handicap)?"4":"3"; ?>" style="background-color:<?echo $color;?>;color:white;text-align:center;"><span class="division">
-			<?
-			echo $worksheetname;
-			?>
-			</span></th>
-			<th class='piccell' title='Click here to hide leader' style="background-color:<?php echo $color;?>;color:white;text-align:center;"><span class='leaderpic' ></span></th>
+			<th colspan="<? echo ($handicap)?"4":"3"; ?>" style="background-color:<?echo $color;?>;color:white;text-align:center;"><span
+				class="division"> <?
+				echo $worksheetname;
+				?> </span></th>
+			<th class='piccell' title='Click here to hide leader' style="background-color:<?php echo $color;?>;color:white;text-align:center;"><span
+				class='leaderpic'></span></th>
 		</tr>
 		<?
 		if($handicap)
@@ -270,8 +277,8 @@ function processStandingsForWorskeet($key,$currWkshtId)
 	$query = new Zend_Gdata_Spreadsheets_CellQuery();
 	$query->setSpreadsheetKey($key);
 	$query->setWorksheetId($currWkshtId);
-	
-    $numPlayers = 11;
+
+	$numPlayers = 11;
 	$query->setMinCol(3);
 	$query->setMaxCol(3);
 	$query->setMinRow(31);
@@ -279,14 +286,14 @@ function processStandingsForWorskeet($key,$currWkshtId)
 	$feed = $gdClient->getCellFeed($query);
 	foreach($feed as $cellEntry) {
 		$val = $cellEntry->cell->getText();
-		
+
 		preg_match("/profileid=(?P<profileid>\d+)/",$val,$match);
 		$profileid = $match['profileid'] ;
 		$player_ids[] = $profileid;
-		
+
 	}
-	
-	
+
+
 	$query->setMinCol(1);
 	$query->setMaxCol(29);
 	$query->setMinRow(5);
@@ -295,7 +302,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 	$completed = 0;
 	foreach($feed as $cellEntry) {
 		$column = $cellEntry->cell->getColumn();
-		$r = (int)(round(($row - 4)/2)) - 1;
+		$r = ((int)(round(($row - 4)/2))) - 1;
 		$c = ($column-4);
 		if((($column > 17) && ($column != 29)) )
 		continue;
@@ -314,7 +321,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 					$for[$r][$c] = intval($val);
 					$against[$c][$r] = intval($val);
 					break;
-				case (($column > 2) && ($column < 15) && (($row % 2)==0)):
+				case (($column > 2) && ($column < 15) && (($row % 2)==0) && ($r < $c)):
 					$against[$r][$c] = intval($val);
 					$for[$c][$r] = intval($val);
 					$links[$r][$c] = $inputVal;
@@ -375,6 +382,15 @@ function processStandingsForWorskeet($key,$currWkshtId)
 
 		}
 
+
+
+
+
+
+	}
+
+	for($i=0;$i<count($player_names);$i++)
+	{
 		if(!array_key_exists($i,$links))
 		{
 			$links[$i] = array();
@@ -390,12 +406,8 @@ function processStandingsForWorskeet($key,$currWkshtId)
 		{
 			$against[$i] = array();
 		}
-
-		
-		
-
 	}
-	
+
 	ksort($links);
 	ksort($for);
 	ksort($against);
@@ -427,7 +439,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 
 	if((count($missing)>0))
 	{
-		 
+			
 		echo "<tr class='hiderow'><td colspan='4' style='text-align:center;background-color:brown;color:white;'>Click here to <span class='hidestatus'>hide</span> missing games</td>";
 			
 		echo "<tr><td colspan='4' style='text-align:center;'>Missing Games</td></tr>";
@@ -1226,28 +1238,28 @@ if (isset($_GET['token'])) {
 		});
 	});
 </script>
-<style type="text/css">
-tr.finished
-{
-  background-color:#93FC8F;
+		<style type="text/css">
+tr.finished {
+	background-color: #93FC8F;
 }
-span.rematch
-{
-  color:#F70909;
+
+span.rematch {
+	color: #F70909;
 }
-tr.evenmiss
-{
-  background-color:#939393;
+
+tr.evenmiss {
+	background-color: #939393;
 }
-table.standingstable
-{
-	border-collapse:collapse;
+
+table.standingstable {
+	border-collapse: collapse;
 }
-a.scrabble
-{
-	display:none;
+
+a.scrabble {
+	display: none;
 }
 </style>
+
 </head>
 <body>
 	<div
