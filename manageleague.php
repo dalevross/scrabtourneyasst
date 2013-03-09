@@ -384,7 +384,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 			if((!array_key_exists($j,$for[$i])) && ($i != $j))
 			{
 
-				$missing[$player_names[$i]]= $player_names[$j];
+				$missing[$player_names[$i]][]= $player_names[$j];
 					
 					
 				$missingids[$player_names[$i]]=$player_ids[$j];
@@ -455,10 +455,13 @@ function processStandingsForWorskeet($key,$currWkshtId)
 			
 		echo "<tr><td colspan='4' style='text-align:center;'>Missing Games</td></tr>";
 		$ix = false;
-		foreach ($missing as $p2 => $p1) {
-			$class = ($ix)?" evenmiss":"";
-			echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$p1]}' >$p1</td><td colspan='2'  style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td class='againstname' data-id='{$missingids[$p2]}'>$p2</td></tr>";
-			$ix = !$ix;
+		foreach ($missing as $player=> $arrmiss) {
+			foreach($arrmiss as $ind=>$opp)
+			{
+				$class = ($ix)?" evenmiss":"";
+				echo "<tr class='playerrow$class' ><td class='forname' data-id='{$missingids[$player]}' >$player</td><td colspan='2'  style='text-align:center;'><input class='forscore' size='4'/>&nbsp<a class='manualsubmit' href='#'>Submit</a>&nbsp<input class='againstscore' size='4'/></td><td class='againstname' data-id='{$missingids[$opp]}'>$opp</td></tr>";
+				$ix = !$ix;
+			}
 		}
 	}
 
