@@ -447,7 +447,7 @@ function displaySpreadsheets($type="normal")
 		}
 		else
 		{			
-			$condition = ((strpos($sheetname, 'Score Sheet')!==false) && (strpos($link, 'full')!==false)  &&  (strpos(strtolower($sheetname), 'closed')===false) &&  (strpos(strtolower($sheetname), 'break')===false));
+			$condition = ((strpos($sheetname, 'Score Sheet')!==false) && (strpos($link, 'full')!==false)  &&  (strpos(strtolower($sheetname), 'closed')===false) &&  (strpos(strtolower($sheetname), 'break')===false)) &&  (strpos(strtolower($sheetname), 'scrabble')===false);
 		}
 
 		if($condition)
