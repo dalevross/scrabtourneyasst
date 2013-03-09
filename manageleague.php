@@ -754,7 +754,7 @@ if (isset($_GET['token'])) {
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Wordscraper/Lex League Assistant</title> <script
-		type="text/javascript" src="jquery-1.4.3.min.js"></script>
+		type="text/javascript" src="jquery-1.7.min.js"></script>
 	<script src="jquery.alerts.js" type="text/javascript"></script>
 	<link href="jquery.alerts.css" rel="stylesheet" type="text/css"
 		media="screen" />
@@ -1224,7 +1224,28 @@ if (isset($_GET['token'])) {
 		});
 	});
 </script>
-
+<style type="text/css">
+tr.finished
+{
+  background-color:#93FC8F;
+}
+span.rematch
+{
+  color:#F70909;
+}
+tr.evenmiss
+{
+  background-color:#939393;
+}
+table.standingstable
+{
+	border-collapse:collapse;
+}
+a.scrabble
+{
+	display:none;
+}
+</style>
 </head>
 <body>
 	<div
