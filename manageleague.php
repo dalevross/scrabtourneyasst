@@ -387,11 +387,11 @@ function processStandingsForWorskeet($key,$currWkshtId)
 				$missing[$player_names[$i]][]= $player_names[$j];
 					
 					
-				$missingids[$player_names[$i]]=$player_ids[$j];
-				$missingids[$player_names[$j]]=$player_ids[$i];
+				
 			}
 
 		}
+		$missingids[$player_names[$i]]=$player_ids[$i];
 
 
 
