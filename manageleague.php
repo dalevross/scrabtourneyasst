@@ -319,7 +319,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 				case 2:
 					$player_names[] = $val;
 					break;
-				case (($column > 2) && ($column < 15) ):
+				case (($column > 3) && ($column < 15) ):
 					if((($row % 2)!=0) && ($r < $c))
 					{
 						$for[$r][$c] = intval($val);
