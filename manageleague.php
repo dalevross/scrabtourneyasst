@@ -308,6 +308,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 		if((($column > 17) && ($column != 29)) )
 		continue;
 		$val = trim($cellEntry->cell->getText());
+		$inputVal= trim($cellEntry->cell->getInputValue());
 		if($val!="")
 		{
 			switch($column)
@@ -351,12 +352,12 @@ function processStandingsForWorskeet($key,$currWkshtId)
 			}
 		}
 	}
-	
-	 if(isset($_GET["debug"]))
-	 {
-	 	print_r($for);
-	 	
-	 }
+
+	if(isset($_GET["debug"]))
+	{
+		print_r($for);
+			
+	}
 
 	if(!is_array($for))
 	{
@@ -387,7 +388,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 				$missing[$player_names[$i]][]= $player_names[$j];
 					
 					
-				
+
 			}
 
 		}
@@ -440,7 +441,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 		echo "<tr id='{$data[$i]['id']}' class='playerrow$class' ><td>$rank.</td><td class='playername'>{$data[$i]['name']}</td><td title='Click score to show game history' style='text-align:right;'>";
 		foreach($data[$i]['links'] as $oppindex=>$link)
 		{
-			echo "<input type='hidden' data-link='$link' data-for='{$data[$i]['for'][$oppindex]}' data-against='{$data[$i]['against'][$oppindex]}' data-opponent='{$player_names[$oppindex]}' class='$oppindex' />";
+			echo "<input type='hidden' value='$link,{$data[$i]['for'][$oppindex]},{$data[$i]['against'][$oppindex]},{$player_names[$oppindex]}' class='$oppindex' />";
 		}
 		echo "<a class='curscore' href='#'>{$data[$i]['winstoplayed']}</a></td>";
 		echo "<td style='text-align:right;'>{$data[$i]['spread']}</td></tr>";
@@ -1169,10 +1170,16 @@ if (isset($_GET['token'])) {
 				html = html + '</div><table style="border-style:solid;border-width:1px;border-color:brown;">';
 				html = html + '<tr style="text-align:center;background-color:brown;color:white;"><th>Opponent #</th><th>Opponent</th><th>Game Link</th><th>For</th><th>Against</th><th>Margin</th></tr>';
 				hiddenvals.each(function(){
-					  var margin = $(this).data("for") - $(this).data("against");
+					  var params = $(this).val().split(",");
+						 var ifbold = (params[1]>params[2])?bold:'';
+						 var margin = params[1] - params[2];
+						  margin = (margin > 0) ? "+" + margin : margin; 
+						  html = html + '<tr '+ ifbold + '><td>' + $(this).attr('class') + '</td><td>' + params[3] + '</td><td><a href="' + params[0] + '" target="_blank">' + params[0] + '</a></td><td>' + params[1] + '</td><td>' + params[2] + '</td><td>' + margin + '</td></tr>';
+					  /*var margin = $(this).data("for") - $(this).data("against");
 					  margin = (margin > 0) ? "+" + margin : margin; 
 					 var ifbold = ($(this).data('for')> $(this).data('against'))?bold:'';
 					  html = html + '<tr '+ ifbold + '><td>' + $(this).attr('class') + '</td><td>' + this.data('opponent') + '</td><td><a href="' + $(this).data('link') + '" target="_blank">' + $(this).data('link') + '</a></td><td>' + $(this).data('for') + '</td><td>' + $(this).data('against') + '</td><td>' + margin + '</td></tr>';
+					  */
 					});
 				html = html + '</table>';
 				jAlert(html,bracket + ' Game History for ' + cname);
