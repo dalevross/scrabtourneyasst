@@ -1298,6 +1298,17 @@ a.scrabble {
 		<?
 		$client = Zend_Gdata_AuthSub::getHttpClient($_COOKIE['spread_token']);
 		$gdClient = new Zend_Gdata_Spreadsheets($client);
+		
+		if(isset($_POST['pids']) && isset($_POST['pscores']) && isset($_POST['ssheetid'])&& isset($_POST['wsheetid']) && isset($_POST['game'])&& isset($_POST['gameid']))
+		{
+			$type = (isset($_POST['olympics']))?"olympics":"normal";
+			$pids = explode(',',$_POST['pids']);
+			$pscores = explode(',',$_POST['pscores']);
+			$ssheetid = $_POST['ssheetid'];
+			$wsheetid = $_POST['wsheetid'];
+			processResults($pids[0],$pscores[0],$pids[1],$pscores[1],$ssheetid,$wsheetid,$type);
+		}
+		
 		if(isset($_GET['standings']) || isset($_POST['standings']))
 		{
 			displayStandings();
@@ -1313,16 +1324,6 @@ a.scrabble {
 		else
 		{
 			displaySpreadsheets();
-		}
-
-		if(isset($_POST['pids']) && isset($_POST['pscores']) && isset($_POST['ssheetid'])&& isset($_POST['wsheetid']) && isset($_POST['game'])&& isset($_POST['gameid']))
-		{
-			$type = (isset($_POST['olympics']))?"olympics":"normal";
-			$pids = explode(',',$_POST['pids']);
-			$pscores = explode(',',$_POST['pscores']);
-			$ssheetid = $_POST['ssheetid'];
-			$wsheetid = $_POST['wsheetid'];
-			processResults($pids[0],$pscores[0],$pids[1],$pscores[1],$ssheetid,$wsheetid,$type);
 		}
 		?>
 	</div>
