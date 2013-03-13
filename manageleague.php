@@ -1171,10 +1171,11 @@ if (isset($_GET['token'])) {
 				html = html + '<tr style="text-align:center;background-color:brown;color:white;"><th>Opponent #</th><th>Opponent</th><th>Game Link</th><th>For</th><th>Against</th><th>Margin</th></tr>';
 				hiddenvals.each(function(){
 					  var params = $(this).val().split(",");
+					  var playernum = $(this).attr('class') + 1;
 						 var ifbold = (params[1]>params[2])?bold:'';
 						 var margin = params[1] - params[2];
 						  margin = (margin > 0) ? "+" + margin : margin; 
-						  html = html + '<tr '+ ifbold + '><td>' + $(this).attr('class') + '</td><td>' + params[3] + '</td><td><a href="' + params[0] + '" target="_blank">' + params[0] + '</a></td><td>' + params[1] + '</td><td>' + params[2] + '</td><td>' + margin + '</td></tr>';
+						  html = html + '<tr '+ ifbold + '><td>' + playernum + '</td><td>' + params[3] + '</td><td><a href="' + params[0] + '" target="_blank">' + params[0] + '</a></td><td>' + params[1] + '</td><td>' + params[2] + '</td><td>' + margin + '</td></tr>';
 					  /*var margin = $(this).data("for") - $(this).data("against");
 					  margin = (margin > 0) ? "+" + margin : margin; 
 					 var ifbold = ($(this).data('for')> $(this).data('against'))?bold:'';
