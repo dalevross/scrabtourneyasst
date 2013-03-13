@@ -1182,7 +1182,7 @@ if (isset($_GET['token'])) {
 					  */
 					});
 				html = html + '</table>';
-				jAlert(html,bracket + ' Game History for ' + cname);
+				jAlert(html,division + ' Game History for ' + cname);
 			} 			
 			
 		});
