@@ -328,9 +328,12 @@ function processStandingsForWorskeet($key,$currWkshtId)
 					elseif ((($row % 2)==0) && ($r < $c))
 					{
 						$against[$r][$c] = intval($val);
-						$for[$c][$r] = intval($val);
+						$for[$c][$r] = intval($val);						
+					}
+					elseif((($row % 2)!=0) && ($c < $r))
+					{
 						$links[$r][$c] = $inputVal;
-						$links[$c][$r] = $inputVal;
+						$links[$c][$r] = $inputVal;						
 					}
 					break;
 				case 15:
