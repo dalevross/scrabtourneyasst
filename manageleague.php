@@ -355,7 +355,7 @@ function processStandingsForWorskeet($key,$currWkshtId)
 
 	if(isset($_GET["debug"]))
 	{
-		print_r($for);
+		print_r($links);
 			
 	}
 
