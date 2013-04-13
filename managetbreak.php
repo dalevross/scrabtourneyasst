@@ -260,12 +260,16 @@ function processStandingsForWorskeet($key,$currWkshtId,$round,$numRounds,$wgame)
 				case 1:
 					$player_names[$i] = $val;
 					break;
+				case 3:
+					$total_vps[$i] = intval($val);
+					break;
 				case (3 + 5*$round):
 					$this_round_vp[$i] = intval($val);					
 				case (((($column - 3)%5)==0) && ($column != 3)):
-					if(!isset($total_vps[$i]))
+					/*if(!isset($total_vps[$i]))
 						$total_vps[$i] = 0;
 					$total_vps[$i] = intval($val) + $total_vps[$i];
+					*/
 					$vps[$i][($column-3)/5] = intval($val);
 					break;
 				case (($column%5)==0):
