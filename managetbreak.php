@@ -397,7 +397,7 @@ function processStandingsForWorskeet($key,$currWkshtId,$round,$numRounds,$wgame)
 	
 	array_multisort($total_vps, SORT_DESC,$this_round_vp, SORT_DESC,$this_round_diff, SORT_DESC,$rank,SORT_ASC, $data);
 	
-	print_r($data);
+	//print_r($data);
 	
 	
 	if($round == $numRounds)
@@ -497,13 +497,18 @@ function getStatusForWorskeet($key,$currWkshtId,$round)
 				case 1:
 					$player_names[$i] = $val;
 					break;
+				case 3:					
+					$total_vps[$i] = intval($val);
+					break;	
 				case (3 + 5*$round):
 					$this_round_vp[$i] = intval($val);
-				case (((($column - 3)%5)==0) && ($column != 3)):
+					break;
+				/*case (((($column - 3)%5)==0) && ($column != 3)):
 					if(!isset($total_vps[$i]))
 						$total_vps[$i] = 0;
 					$total_vps[$i] = intval($val) + $total_vps[$i];
-					break;				
+					break;	
+				*/			
 				case (2 + 5*$round):
 					$this_round_diff[$i] = intval($val);
 					break;
