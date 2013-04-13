@@ -396,6 +396,11 @@ function processStandingsForWorskeet($key,$currWkshtId,$round,$numRounds,$wgame)
 	}
 	
 	array_multisort($total_vps, SORT_DESC,$this_round_vp, SORT_DESC,$this_round_diff, SORT_DESC,$rank,SORT_ASC, $data);
+	if (isset($_GET["debug"]))
+	{
+		print_r($data);
+	}
+	
 	if($round == $numRounds)
 	{
 		$baseurl = "http://" . $_SERVER['SERVER_NAME'] . dirname($_SERVER["REQUEST_URI"]);
