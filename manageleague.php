@@ -1280,6 +1280,8 @@ table.standingstable {
 	border-collapse: collapse;
 }
 
+table.standingstable td { white-space: nowrap; }
+
 a.scrabble {
 	display: none;
 }
