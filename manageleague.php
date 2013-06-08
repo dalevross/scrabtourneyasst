@@ -162,7 +162,7 @@ function processWorksheetStandings($key,$handicap)
 
 	foreach($feed->entries as $entry) {
 		$worksheetname = $entry->title->text;
-		if((strpos(strtolower($worksheetname), 'teams')!==false) ||(strpos(strtolower($worksheetname), 'links'))
+		if((strpos(strtolower($worksheetname), 'teams')!==false) ||(strpos(strtolower($worksheetname), 'links')!==false))
  			continue;
 		$currWkshtId = explode('/', $entry->id->text);
 		$currWkshtId = $currWkshtId[8];
