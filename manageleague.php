@@ -162,10 +162,12 @@ function processWorksheetStandings($key,$handicap)
 
 	foreach($feed->entries as $entry) {
 		$worksheetname = $entry->title->text;
+		if(strpos(strtolower($worksheetname), 'teams')===false)
+ 			return;
 		$currWkshtId = explode('/', $entry->id->text);
 		$currWkshtId = $currWkshtId[8];
 		$color = (strpos(strtolower($worksheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red");
-
+ 		
 		?>
 	<table class='standingstable' data-ssheetid='<?php echo $key;?>'
 		data-wsheetid='<?php echo $currWkshtId;?>'
