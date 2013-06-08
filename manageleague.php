@@ -654,7 +654,7 @@ function displayWorksheets($key,$type)
 		$currWkshtId = $currWkshtId[8];
 		//echo '<li><span id="wsname">'. $worksheetname . "</span>   <input type='text' autocomplete='off' class='txtname' name='name' /> <a id='submitlink' href='$key,$currWkshtId'>Submit Game</a><span id='loading' style='display:none'><img src='ajax-loader.gif' />Processing...</span></li>";
 
-		if((strpos(strtolower($worksheetname), 'lex') !==false) ||(strpos(strtolower($worksheetname), 'ws') !==false) || (strpos(strtolower($worksheetname), 'wordscraper') !==false) || (strpos(strtolower($worksheetname), 'scrabble')!==false)  )
+		if(((strpos(strtolower($worksheetname), 'lex') !==false) ||(strpos(strtolower($worksheetname), 'ws') !==false) || (strpos(strtolower($worksheetname), 'wordscraper') !==false) || (strpos(strtolower($worksheetname), 'scrabble')!==false)) && (strpos(strtolower($worksheetname), 'teams')===false)  )
 		{
 			$color = (strpos(strtolower($worksheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($worksheetname), 'lex')!==false)?"#2BB0E8":"red");
 
