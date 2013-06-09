@@ -1294,8 +1294,8 @@ a.scrabble {
 	<div
 		style='width: 600px; text-align: center; margin-left: auto; margin-right: auto'>
 		<a href='manageleague.php?clear=true'>Logout</a> <br /> <img
-			src="owl.jpg" /> <br /> <a href='manageleague.php?olympics=true'>Olympics
-			Submissions</a> <br />
+			src="owl.jpg" /> <br /> <!--  <a href='manageleague.php?olympics=true'>Olympics
+			Submissions</a> <br />-->
 	</div>
 	<div id='content'
 		style='width: 600px; text-align: left; margin-left: auto; margin-right: auto'>
