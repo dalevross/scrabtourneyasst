@@ -12,13 +12,13 @@ function loadjQueryui() {
 				function() {
 					if(getTilesLeft())
 					{
-						ttimer = setInterval("getTilesLeft()",60000);
+						ttimer = setInterval(getTilesLeft,60000);
 					}
 				});
 	} else {
 		if(getTilesLeft())
 		{
-			ttimer = setInterval("getTilesLeft()",60000);
+			ttimer = setInterval(getTilesLeft,60000);
 		}
 		
 	}
