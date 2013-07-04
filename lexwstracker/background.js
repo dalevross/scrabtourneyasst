@@ -6,7 +6,7 @@ var currentUrl = "about:blank";
 // Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
   // If the letter 'g' is found in the tab's URL...
-  if (((tab.url.indexOf('lexulous') > -1)||(tab.url.indexOf('wordscraper') > -1))&&(tab.url.indexOf('apps.facebook.com') > -1)) {
+  if (((tab.url.indexOf('lexulous') > -1)||(tab.url.indexOf('wordscraper') > -1)|| (tab.url.indexOf('ea_scrabble_closed') > -1))&&(tab.url.indexOf('apps.facebook.com') > -1)) {
     // ... show the page action.
     chrome.pageAction.show(tabId);
 	
