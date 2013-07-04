@@ -12,7 +12,7 @@ var trackingGenerator = {
 		var dist = {"A":9,"B":2,"C":2,"D":4,"E":12,"F":2,"G":3,"H":2,"I":9,"J":1,"K":1,"L":4,"M":2,"N":6,"O":8,"P":2,"Q":1,"R":6,"S":4,"T":6,"U":4,"V":2,"W":2,"X":1,"Y":2,"Z":1,"blank":2};
 		var left = {};
 		//var applink =  chrome.extension.getBackgroundPage().currentUrl;
-		var game = applink.match(/(lexulous|wordscraper|ea_scrabble_closed)/g);
+		var game = applink.match(/(lexulous|wordscraper|ea_scrabble_closed|livescrabble)/g);
 
 		if (game === null) {
 
@@ -23,7 +23,7 @@ var trackingGenerator = {
 		}
 		var loadinghtml = '<div><span>Loading...</span><br/><img src="https://scrabtourneyasst.herokuapp.com/scrabtourneyasst/trackerloading.gif" /></div>';
 		
-		if(game[0]=="ea_scrabble_closed")
+		if((game[0]=="ea_scrabble_closed")||(game[0]=="livescrabble"))
 		{
 			$dialog.html(loadinghtml);
 			 chrome.tabs.query({'active': true}, function (tabs) {
@@ -130,7 +130,7 @@ var trackingGenerator = {
 	
 							html = data['html'] + suffix;
 	
-							$dialog.html(html).effect('pulsate',{},500,releaseFocus);
+							$dialog.html(html);
 	
 						},
 	
@@ -138,10 +138,8 @@ var trackingGenerator = {
 	
 							$dialog.html(textStatus);
 	
-							document.body.style.cursor = 'default';
+							document.body.style.cursor = 'default';							
 							
-							$(iframeRef).focus();
-	
 							return false;
 	
 						}
