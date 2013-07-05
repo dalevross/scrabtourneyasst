@@ -138,8 +138,6 @@ var trackingGenerator = {
 	
 							$dialog.html(textStatus);
 	
-							document.body.style.cursor = 'default';							
-							
 							return false;
 	
 						}
