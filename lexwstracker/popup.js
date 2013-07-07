@@ -130,8 +130,8 @@ var trackingGenerator = {
 	
 							var d = new Date();
 	
-							var suffix = '<br/><span> Retrieved at ' + d.toLocaleString() + '</span>';
-	
+							var suffix = '<br/><span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
+
 							html = data['html'] + suffix;
 	
 							$dialog.html(html);

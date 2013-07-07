@@ -219,7 +219,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 					}
 					if(isset($_GET['extension']))
 					{
-						$html = $html . '<div class="letter" title="Total: ' . $arrdistribution[$letter] .  '">' . strtoupper($letter) . '</div><div class="count">' . $count . '</div><br/>';
+						$html = $html . '<div class="wrapper"><div class="letter" title="Total: ' . $arrdistribution[$letter] .  '">' . strtoupper($letter) . '</div><div class="count">' . $count . '</div></div><br/>';
 					}
 					else {
 
@@ -238,7 +238,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 
 				if(isset($_GET['extension']))
 				{
-					$html = $html . '<div style="clear:both"/><br/><span class="vccnt">Vowels: ' . $vcnt .', Consonants: ' . $ccnt .', Blanks: '. $bcnt . '.</span>';
+					$html = $html . '<div style="clear:both"/><br/><span class="vccnt">Vowels: ' . $vcnt .', Consonants: ' . $ccnt .', Blanks: '. $bcnt . '.</span><br/>';
 					
 				}
 				else {
@@ -248,7 +248,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 
 				
 
-				$html = $html . '<span id="trackerstat">' . $status . '</span><br/><br/>';
+				$html = $html . '<span id="trackerstat">' . $status . '</span><br/>';
 
 				if(!isset($_GET['extension']))
 				{
