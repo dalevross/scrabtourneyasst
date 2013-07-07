@@ -45,9 +45,9 @@ var trackingGenerator = {
 				     var inbag = (tilecount>7)?tilecount-7:0;
 				     html = html + '<span style="font-weight:bold;">Tile Count: ' + tilecount + '</span><span> ('+ inbag + ' in bag)</span><br/>';
 						for (var letter in left) {
-							if(vowels.indexOf(letter)>-1) {vcnt=vcnt+left[letter]}
+							if(vowels.indexOf(letter)>-1) {vcnt=vcnt+left[letter];}
 							else {
-								if(letter!="blank") {ccnt=ccnt+left[letter]}else{bcnt=left[letter]}
+								if(letter!="blank") {ccnt=ccnt+left[letter];}else{bcnt=left[letter];}
 							}
 							if((index % 8)===0)
 							{

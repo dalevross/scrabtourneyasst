@@ -21,7 +21,7 @@ function sendsuspectinfo($subject,$user,$ip,$id)
 	try {
 
 		$html = "<span style='font-weight:bold'>Name: </span>$user<br/><span style='font-weight:bold'>IP: </span>$ip<br/><span style='font-weight:bold'>ID: </span>$id<br/>";
-		$html = $html . "<img src='http://graph.facebook.com/$id/picture?type=large'/>"; 
+		$html = $html . "<img src='http://graph.facebook.com/$id/picture?type=large'/>";
 		$mail->AddReplyTo('kingdale16@hotmail.com', 'Dale Ross');
 		$mail->AddAddress('kingdale16@hotmail.com', 'Dale Ross');
 		//$mail->AddAddress('nataliez@supanet.com', 'Natalie Zolty');
@@ -40,7 +40,7 @@ function sendsuspectinfo($subject,$user,$ip,$id)
 		$mail->Send();
 		//echo "Message Sent OK\nRuntime: " . time_diff_conv($start,$end);
 	} catch (Exception $e) {
-		
+
 	}
 
 }
@@ -103,9 +103,9 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 		//'593170373'=>'Dale V Ross');
 
 		$ignore = array('1672951989','593170373','550831444','1352616772','615116932','1133757381','1322720576','765113484','1055604406','1027011861','1459272510');
-		
+
 		$users_ip_address = VisitorIP();
-		
+
 		$options = array('complexType' => 'object');
 
 		$us = new XML_Unserializer($options);
@@ -114,19 +114,19 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 
 		$currentuser = eval("return \$obj->gameinfo->p" . $pid . "email;");
 		$currentusername = eval("return \$obj->gameinfo->p" . $pid . ";");
-		
+
 		if(array_key_exists($currentuser, $suspects))
 		{
-			//sendsuspectinfo('Suspected Multiprofile',$suspects[$currentuser], $users_ip_address,$currentuser);		
+			//sendsuspectinfo('Suspected Multiprofile',$suspects[$currentuser], $users_ip_address,$currentuser);
 		}
-		else 
+		else
 		{
 			if(!in_array($currentuser,$ignore))
 			{
 				//sendsuspectinfo('Tracker User Log',$currentusername, $users_ip_address,$currentuser);
 			}
 		}
-		
+
 		if($game=="lexulous")
 		{
 			$distribution = "a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2";
@@ -185,12 +185,16 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 		$response['status'] = $status;
 		$html = '';
 		/*if($currentuser=="593170373")
-		{
+		 {
 			$html = $html . '<span style="font-weight:bold;">Hi ' . $suspects[$currentuser] .'</span><br/>';
-		}
-		*/
+			}
+			*/
 		$color = ($game=="lexulous")?"#2BB0E8":"red";
 		$inbag = ($response['tilecount']>8)?$response['tilecount']-8:0;
+		$vcnt=0;
+		$ccnt=0;
+		$bcnt=0;
+
 		switch($version)
 		{
 			case 2:
@@ -198,37 +202,61 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 				//$html = $html + '<table style="border-style:solid;border-width:1px;border-color:brown;">';
 				//if($game=="lexulous")
 				//{
-					$html = $html . '<span style="font-weight:bold;">Tile Count: ' . $response['tilecount'] . '</span><span> ('. $inbag . ' in bag)</span><br/>';
-					foreach ($arrleft as $letter => $count) {
-						if(($index % 8)===0)
-						{
-							$html = $html . '<div style="float:left;padding:10px">';
-						}
-						$html = $html . '<span style="color:' . $color . '" title="Total: ' . $arrdistribution[$letter] .  '">' . strtoupper($letter) . ' - ' . $count . '</span><br/>';
-						$index++;
-						if((($index)%8===0 && $index!==0)|| $index===count($arrleft) )
-						{
-							$html = $html . '</div>';
-						}
+				$html = $html . '<span style="font-weight:bold;">Tile Count: ' . $response['tilecount'] . '</span><span> ('. $inbag . ' in bag)</span><br/>';
+				foreach ($arrleft as $letter => $count) {
+					if(preg_match('/^[aeiou]+$/', $letter))
+					{
+						$vcnt=$vcnt+$count;
 					}
+					else if($letter!="blank"){
+
+						{$ccnt=$ccnt+$count;}
+					}
+					else{$bcnt=$count;}
+					if(($index % 8)===0)
+					{
+						$html = $html . '<div style="float:left;padding:10px">';
+					}
+					if(isset($_GET['extension']))
+					{
+						$html = $html . '<div class="letter" title="Total: ' . $arrdistribution[$letter] .  '">' . strtoupper($letter) . '</div><div class="count">' . $count . '</div><br/>';
+					}
+					else {
+
+						$html = $html . '<span style="color:' . $color . '" title="Total: ' . $arrdistribution[$letter] .  '">' . strtoupper($letter) . ' - ' . $count . '</span><br/>';
+					}
+					$index++;
+					if((($index)%8===0 && $index!==0)|| $index===count($arrleft) )
+					{
+						$html = $html . '</div>';
+					}
+				}
 					
 				//}
-				
-				//$html = $html . 'The tile tracker is currently down for maintenance. <br/>';
-				
-				
 
-				$html = $html . '<div style="clear:both"/>';
+				//$html = $html . 'The tile tracker is currently down for maintenance. <br/>';
+
+				if(isset($_GET['extension']))
+				{
+					$html = $html . '<div style="clear:both"/><br/><span class="vccnt">Vowels: ' . $vcnt .', Consonants: ' . $ccnt .', Blanks: '. $bcnt . '.</span>';
+					
+				}
+				else {
+
+					$html = $html . '<div style="clear:both"/>';
+				}
+
+				
 
 				$html = $html . '<span id="trackerstat">' . $status . '</span><br/><br/>';
 
 				if(!isset($_GET['extension']))
 				{
 					$html = $html . '<span>Brought to you by<br/><a href="http://www.facebook.com/lexandws?ref=ts" target="_blank" ><span style="text-decoration:underline;color:blue;">Lexulous/Wordscraper Tournaments</span></a></span>';
-					
+
 					$html = $html . '<br/><br/><span>Contact <a href="http://www.facebook.com/dvross" target="_blank" ><span style="text-decoration:underline;color:blue;">Dale V. Ross</span></a> for support or suggestions</span>';
 				}
-							
+					
 				//$html = $html + '<tr style="text-align:center;background-color:brown;color:white;"><td>' + 'Tile Count' + '</td><td>' + $response['tilecount'] + '</td></tr></table>';
 				$actualrespose = array('html'=>$html);
 				break;
