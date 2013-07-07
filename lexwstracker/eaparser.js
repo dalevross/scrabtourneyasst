@@ -1,4 +1,4 @@
-if((window.location.href.indexOf('https://scrabblefb-live2.sn.eamobile.com/live/https/') > -1)){
+if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(window.location.href)){
 	
 	chrome.runtime.onMessage.addListener(
 	  function(request, sender, sendResponse) {

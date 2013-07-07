@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
+<?xml-stylesheet type="text/css"
+  href="chrome://foxyowlstracker/skin/browserOverlay.css" ?>
+
+<!DOCTYPE overlay SYSTEM
+  "chrome://foxyowlstracker/locale/browserOverlay.dtd">
+
+<overlay id="foxyowlstracker-browser-overlay"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript"
+    src="chrome://foxyowlstracker/content/browserOverlay.js" />
+
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="foxyowlstracker-string-bundle"
+      src="chrome://foxyowlstracker/locale/browserOverlay.properties" />
+  </stringbundleset>
+  
+   <hbox id="urlbar-icons">
+      <image id="foxyowlstrackerurlbarIcon" insertbefore="star-button" src="chrome://foxyowlstracker/skin/icon16.png" onclick="FoxyOWLSTracker.BrowserOverlay.sayHello(event);" tooltiptext="&foxyowlstracker.tooltiptext;" />
+   </hbox>
+</overlay>

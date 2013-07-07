@@ -1,0 +1,5 @@
+content   foxyowlstracker                content/
+skin      foxyowlstracker  classic/1.0   skin/
+locale    foxyowlstracker  en-US         locale/en-US/
+
+overlay chrome://browser/content/browser.xul  chrome://foxyowlstracker/content/browserOverlay.xul

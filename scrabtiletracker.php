@@ -222,10 +222,12 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 
 				$html = $html . '<span id="trackerstat">' . $status . '</span><br/><br/>';
 
-
-				$html = $html . '<span>Brought to you by<br/><a href="http://www.facebook.com/lexandws?ref=ts" target="_blank" ><span style="text-decoration:underline;color:blue;">Lexulous/Wordscraper Tournaments</span></a></span>';
-				
-				$html = $html . '<br/><br/><span>Contact <a href="http://www.facebook.com/dvross" target="_blank" ><span style="text-decoration:underline;color:blue;">Dale V. Ross</span></a> for support or suggestions</span>';
+				if(!isset($_GET['extension']))
+				{
+					$html = $html . '<span>Brought to you by<br/><a href="http://www.facebook.com/lexandws?ref=ts" target="_blank" ><span style="text-decoration:underline;color:blue;">Lexulous/Wordscraper Tournaments</span></a></span>';
+					
+					$html = $html . '<br/><br/><span>Contact <a href="http://www.facebook.com/dvross" target="_blank" ><span style="text-decoration:underline;color:blue;">Dale V. Ross</span></a> for support or suggestions</span>';
+				}
 							
 				//$html = $html + '<tr style="text-align:center;background-color:brown;color:white;"><td>' + 'Tile Count' + '</td><td>' + $response['tilecount'] + '</td></tr></table>';
 				$actualrespose = array('html'=>$html);

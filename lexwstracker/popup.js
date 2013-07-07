@@ -97,11 +97,11 @@ var trackingGenerator = {
 	
 			if ((pid === null) || (password === null)) {
 	
-				params = {gid : gid[1],game : game[0],version : 2};
+				params = {gid : gid[1],game : game[0],version : 2,extension:1};
 	
 			} else {
 	
-				params = {gid : gid[1],game : game[0],pid : pid[1],password : password[1],version : 2};
+				params = {gid : gid[1],game : game[0],pid : pid[1],password : password[1],version : 2,extension:1};
 	
 			}
 	
