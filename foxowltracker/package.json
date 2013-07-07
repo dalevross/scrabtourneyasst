@@ -10,6 +10,7 @@
   "permissions": {
     "cross-domain-content": ["https://scrabblefb-live2.sn.eamobile.com/", "http://scrabblefb-live2.sn.eamobile.com/","https://scrabtourneyasst.herokuapp.com/","https://scrabtourneyasst.herokuapp.com/"]
 	},
-  "icon":"data/icon.jpg"
+  "icon":"data/icon.png",
+  "icon64":"data/icon64.png"
 	
 }
