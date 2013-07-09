@@ -98,12 +98,12 @@ var trackingGenerator = {
 			return false;
 
 		}
-		var loadinghtml = '<div><span>Loading...</span><br/><img src="https://scrabtourneyasst.herokuapp.com/scrabtourneyasst/trackerloading.gif" /></div>';
+		var loadinghtml = '<div><span>Loading...</span><br/><img src="trackerloading.gif" /></div>';
 		
 		if((game[0]=="ea_scrabble_closed")||(game[0]=="livescrabble"))
 		{
 			$dialog.html(loadinghtml);
-			 chrome.tabs.query({'active': true}, function (tabs) {
+			 chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
 				 chrome.tabs.sendMessage(tabs[0].id, {command: "sendresults"}, function(response) {
 				     var used = response.used;
 				     var dist = response.dist;
@@ -183,7 +183,7 @@ var trackingGenerator = {
 
 // Run our kitten generation script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
-  chrome.tabs.query({'active': true}, function (tabs) {
+  chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
 			var applink = tabs[0].url;
 			trackingGenerator.getTilesLeft(applink);
 		});
