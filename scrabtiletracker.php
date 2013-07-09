@@ -248,7 +248,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 
 				
 
-				$html = $html . '<span id="trackerstat">' . $status . '</span><br/>';
+				$html = $html . '<br/><span id="trackerstat">' . $status . '</span><br/>';
 
 				if(!isset($_GET['extension']))
 				{
