@@ -2,14 +2,28 @@
 
 var trackingGenerator = {
 		
-	  loadToDialog: function($dialog,dist,used,game){
+	  loadToDialog: function($dialog,response,game){
+		  
+		  var used = response.used;
+		  var dist = response.dist;
+		  var oppoName = response.name;
+		  var oppoID= response.ID;
+		  var word=response.first;
+		  var dictionary=response.dictionary;
+		  var playerId=response.player;
+		  var playerScore=response.scoreP;
+		  var oppoScore=response.scoreO;
+		  var finished = response.finished;
+		  
 		  var left = {};
 		  var tilecount = 0;
 		  var vowels = "AEIOU";
 		  var vcnt=0;var ccnt=0;var bcnt=0;
-			
-		     for(var letter in used){
-		    	    if((dist[letter]-used[letter])>0)
+		  
+		  if(!word) {word=response.second;}
+
+		  for(var letter in used){
+			  if((dist[letter]-used[letter])>0)
 		    	    {
 		    	    	left[letter] = dist[letter]-used[letter];
 		    	    	tilecount+=dist[letter]-used[letter];
@@ -18,6 +32,8 @@ var trackingGenerator = {
 		     //var color = (game==="lexulous")?"#2BB0E8":"red";
 		     var index = 0;
 		     var html = '';
+		     html=html+'Your game with '+oppoName+' (<a href="http://facebook.com/'+oppoID+'" target="_blank">View Profile</a>)<br/><br/>';
+				
 		     var inbag = (tilecount>7)?tilecount-7:0;
 		     html = html + '<span style="font-weight:bold;">Tile Count: ' + tilecount + '</span><span> ('+ inbag + ' in bag)</span><br/>';
 				for (var letter in left) {
@@ -29,7 +45,7 @@ var trackingGenerator = {
 					{
 						html = html + '<div style="float:left;padding:10px">';
 					}
-					html = html + '<div class="wrapper"><div   class="letter" title="Total: ' + dist[letter] +  '">' + letter + '</div><div class="count">' + left[letter] + '</div></div><br/>';
+					html = html + '<div class="wrapper"><div   class="letter" title="Total: ' + dist[letter] +  '">' + letter + '</div><div class="count">' + left[letter] + '</div></div>';
 					index++;
 					if(((index)%8===0 && index!==0)|| index===Object.keys(left).length )
 					{
@@ -48,6 +64,17 @@ var trackingGenerator = {
 
 			html = html + suffix;
 			
+			if(playerId=='593170373'||playerId=='712117020') {
+				if(finished) {
+					html=html + '<div class="sendScore"><form action="http://moltengold.com/cgi-bin/scrabble/extn.pl" method="post" target="scoring"> <input name="playerScore" value="'+ playerScore +'" type="hidden" > <input name="oppoScore" value="'+ oppoScore +'" type="hidden" >  <input name="playerId" value="'+playerId+'" type="hidden"> <input name="oppoId" value="'+oppoID+'" type="hidden">  <input name="dictionary" value="'+dictionary+'" type="hidden"> <input name="word" value="'+ word +'" type="hidden" > <input name="app" value="Scrabble" type="hidden"> Save final scores in Facebook Scrabble League <input type="submit" value="Save"></form></div>';
+				}
+				else if(word) {
+
+					html=html + '<div class="sendWord"><form action="http://moltengold.com/cgi-bin/scrabble/extn.pl" method="post" target="scoring"> <input name="word" value="'+ word +'" type="hidden" > <input name="playerId" value="'+playerId+'" type="hidden"> <input name="oppoId" value="'+oppoID+'" type="hidden">  <input name="dictionary" value="'+dictionary+'" type="hidden"> <input name="app" value="Scrabble" type="hidden"> Record first word ('+word+') in Facebook Scrabble League <input type="submit" value="Send"></form></div>';
+				}
+				
+			}
+
 			$dialog.html(html);
 		  
 	  },
@@ -66,7 +93,7 @@ var trackingGenerator = {
 
 		if (game === null) {
 
-			$dialog.html('Invalid link in address bar!');		
+			$dialog.html('Invalid link,' + applink +',found in address bar!');		
 
 			return false;
 
@@ -80,7 +107,7 @@ var trackingGenerator = {
 				 chrome.tabs.sendMessage(tabs[0].id, {command: "sendresults"}, function(response) {
 				     var used = response.used;
 				     var dist = response.dist;
-				     trackingGenerator.loadToDialog($dialog,dist,used,game);
+				     trackingGenerator.loadToDialog($dialog,response,game);
 					  });
 				});
 		

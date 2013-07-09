@@ -25,25 +25,31 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 	    	
 			var playerID=localStorage.cacheUser;
 			
-			var winnerId = $("div#eog1Place img").attr('src').split('_')[1];
-			var winnerScore = $("div#eog1Place div.eogTotal div.value").text();
-			var loserId = $("div#eog2Place img").attr('src').split('_')[1];
-			var loserScore = $("div#eog2Place div.eogTotal div.value").text();
 			
 			var finished;
 			
-			if(winnerId == null)
+			if($("div#eog1Place img").length == 0)
 			{
 				finished = false;
 			}
-			else if(winnerId===playerID)
+			else
 			{
-				finished = ((winnerScore == playerScore) && (loserId == oppoID) && (oppoScore==loserScore))
+				var winnerId = $("div#eog1Place img").attr('src').split('_')[1];
+				var winnerScore = $("div#eog1Place div.eogTotal div.value").text();
+				var loserId = $("div#eog2Place img").attr('src').split('_')[1];
+				var loserScore = $("div#eog2Place div.eogTotal div.value").text();
+				
+				if(winnerId===playerID)
+				{
+					finished = ((winnerScore == playerScore) && (loserId == oppoID) && (oppoScore==loserScore))
+				}
+				else if(winnerId===oppoID)
+				{
+					finished = ((winnerScore == oppoScore) && (loserId == oppoScore) && (oppoScore==playerScore))
+				}		
+				
 			}
-			else if(winnerId===oppoID)
-			{
-				finished = ((winnerScore == oppoScore) && (loserId == oppoScore) && (oppoScore==playerScore))
-			}
+			
 
 			var word=$('tr[class="even"]').eq(0).find('td').eq(1).find('p').text().split('\"')[1];
 			var word2=$('tr[class="even"]').eq(1).find('td').eq(1).find('p').text().split('\"')[1];
@@ -95,7 +101,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 	    	        }
 	    	      });
 	       //var resptext = $("p.gameCardScore").first().text();
-	       sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, dictionary:dict, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished});
+	       sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished});
 	    }
   });
 }

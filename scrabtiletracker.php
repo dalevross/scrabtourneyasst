@@ -219,7 +219,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 					}
 					if(isset($_GET['extension']))
 					{
-						$html = $html . '<div class="wrapper"><div class="letter" title="Total: ' . $arrdistribution[$letter] .  '">' . strtoupper($letter) . '</div><div class="count">' . $count . '</div></div><br/>';
+						$html = $html . '<div class="wrapper"><div class="letter" title="Total: ' . $arrdistribution[$letter] .  '">' . strtoupper($letter) . '</div><div class="count">' . $count . '</div></div>';
 					}
 					else {
 
