@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+<movesnode>
+<m1>1,p1,VEG,16,r</m1>
+<m2>2,p2,DIVERgED,56,r</m2>
+<m3>3,p1,OBI,21,r</m3>
+<m4>4,p2,YU,24,r</m4>
+<m5>5,p1,HON,24,r</m5>
+<m6>6,p2,SIX,38,r</m6>
+<m7>7,p1,CASE,20,r</m7>
+<m8>8,p2,WHYS,32,r</m8>
+<m9>9,p1,JOE,42,r</m9>
+<cnt>9</cnt>
+</movesnode>
+<boardnode>
+<nodeval>
+V,7,6,1|E,7,7,1|G,7,8,1|D,5,6,2|I,6,6,2|E,8,6,2|R,9,6,2|g,10,6,2|E,11,6,2|D,12,6,2|O,12,7,3|B,13,7,3|I,14,7,3|Y,8,5,4|U,9,5,4|H,12,8,5|O,13,8,5|N,14,8,5|S,4,5,6|I,5,5,6|X,6,5,6|C,9,4,7|A,10,4,7|S,11,4,7|E,12,4,7|W,4,2,8|H,4,3,8|Y,4,4,8|J,10,3,9|O,11,3,9|E,12,3,9
+</nodeval>
+<lastmovetiles>10,3,11,3,12,3</lastmovetiles>
+<fr/>
+</boardnode>
+<messages>
+<m1>
+<![CDATA[ 1~!~09-Jul-13 11:15 GMT~!~1~!~Hi Dippy ]]>
+</m1>
+<m2>
+<![CDATA[ 2~!~09-Jul-13 11:16 GMT~!~1~!~All the best! ]]>
+</m2>
+<m3>
+<![CDATA[ 3~!~09-Jul-13 11:16 GMT~!~2~!~hello, gl ]]>
+</m3>
+<cnt>3</cnt>
+</messages>
+<gameinfo>
+<p1email>593170373</p1email>
+<p2email>753535462</p2email>
+<gameid>100693147</gameid>
+<dictionary>sow</dictionary>
+<playersNo>2</playersNo>
+<status>A</status>
+<gametype>r</gametype>
+<winner/>
+<currentturnpid>2</currentturnpid>
+<tilesinbag>42</tilesinbag>
+<p1>Dale R</p1>
+<p1status></p1status>
+<p2>Dippy E</p2>
+<p2status></p2status>
+<currentturn>Dippy E</currentturn>
+<p1score>123</p1score>
+<p2score>150</p2score>
+<p3score>0</p3score>
+<p4score>0</p4score>
+<p1racklen>8</p1racklen>
+<p2racklen>8</p2racklen>
+<p3racklen>0</p3racklen>
+<p4racklen>0</p4racklen>
+<myturn>n</myturn>
+<myrack>ISIAUFEA</myrack>
+<lastmoveword>JOE</lastmoveword>
+<lastmovetype>r</lastmovetype>
+<lastmoveplayer>Dale R</lastmoveplayer>
+<lastmovepoints>42</lastmovepoints>
+<playwith>753535462</playwith>
+<boarddes>
+RWWLWWWRWWWLWWRWWPWWWLWLWWWPWWWPWWWBWWWBWWWPWLWWWPWWWWWPWWWLWWWPWWWWWWWPWWWWWBWWWLWLWWWBWWWLWWWLWWWLWWWLWRWWWWWWWWWWWWWRWLWWWLWWWLWWWLWWWBWWWLWLWWWBWWWWWPWWWWWWWPWWWLWWWPWWWWWPWWWLWPWWWBWWWBWWWPWWWPWWWLWLWWWPWWRWWLWWWRWWWLWWR
+</boarddes>
+<bdsqval>P,2W|L,2L|B,3L|R,3W|G,4W|W,</bdsqval>
+<tilevalues>
+A,1|B,4|C,4|D,2|E,1|F,5|G,2|H,5|I,1|J,10|K,6|L,1|M,4|N,1|O,1|P,4|Q,12|R,1|S,1|T,2|U,1|V,5|W,5|X,10|Y,5|Z,12|a,0|b,0|c,0|d,0|e,0|f,0|g,0|h,0|i,0|j,0|k,0|l,0|m,0|n,0|o,0|p,0|q,0|r,0|s,0|t,0|u,0|v,0|w,0|x,0|y,0|z,0
+</tilevalues>
+<tile_count>
+a,2|b,2|c,2|d,2|e,2|f,2|g,2|h,2|i,2|j,2|k,2|l,2|m,2|n,2|o,2|p,2|q,2|r,2|s,2|t,2|u,2|v,2|w,2|x,2|y,2|z,2|blank,2
+</tile_count>
+</gameinfo>
+</xml>
