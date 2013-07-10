@@ -1,5 +1,44 @@
 if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(window.location.href)){
 
+	$(document).ready(function () {
+
+
+		$("input#lookupTxt").keyup( function(e) {
+			if(e.keyCode == 13) {
+				var $input = $(this);
+
+				setTimeout(function(){
+
+					var longdict = $.trim($("span#wordsBtnImage").attr('title'));
+					var shortdict = longdict.match(/(Collins|TWL|OSPD4|German|Spanish|Italian|French|Portuguese)/g);
+
+					var langs={
+							"Collins":"en",
+							"TWL" :"en",
+							"OSPD4" : "en",
+							"French": "fr",
+							"Italian":"it",
+							"German": "de",
+							"Portuguese":"pt",
+							"Spanish": "es"
+					};
+					var lang=langs[shortdict];
+
+					var validWord="";
+					if($("p#lookupResult span").attr("class")=="typo_green") {
+						validWord=$.trim($input.val());
+						
+						if($("p#lookupResult img#owl").length === 0) {
+							iconURL =  chrome.extension.getURL("owl-lookup.png");
+							$("p#lookupResult span").html('<a href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define"><img id="owl" src="'+iconURL+'" align="left"> '+validWord+'</a>');
+						}
+					}
+
+				},50);
+			}
+		});
+	});
+
 	chrome.runtime.onMessage.addListener(
 			function(request, sender, sendResponse) {
 
@@ -60,7 +99,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 					var longdict = $.trim($("span#wordsBtnImage").attr('title'));
 					var shortdict = longdict.match(/(Collins|TWL|OSPD4|German|Spanish|Italian|French|Portuguese)/g);
-					
+
 					var langs={
 							"Collins":"en",
 							"TWL" :"en",
