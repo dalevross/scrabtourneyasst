@@ -123,6 +123,9 @@ var trackingGenerator = {
 				return false;
 	
 			}
+			
+			
+						
 	
 			var pid = /pid=(\d)/g.exec(applink);
 			var password = /password=(\w+)/g.exec(applink);
