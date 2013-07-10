@@ -17,12 +17,12 @@
     }
   ],
   "permissions": [
-    "https://scrabtourneyasst.herokuapp.com/",
+    "https://aws.rjs.in/",
     "tabs"
   ],
   "icons" : {
     "48" : "icon-48.png",
     "128" : "icon-128.png"
   },
-   "content_security_policy": "script-src 'self' https://scrabtourneyasst.herokuapp.com https://aws.rjs.in; object-src 'self'"
+   "content_security_policy": "script-src 'self'; object-src 'self'"
 }
