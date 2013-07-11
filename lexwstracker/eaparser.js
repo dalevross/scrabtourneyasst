@@ -6,7 +6,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		theirTurns=$("div#theirTurnGamesList > div").size();
 		$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');			
 	}
-	
+
 	$(document).ready(function () {
 
 		var myTurns=0;
@@ -20,26 +20,46 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
 		}
 
-		$("div#myTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
+		$("div#myTurnGamesList").on('DOMNodeInserted DOMNodeRemoved', function(event) {
 			myTurns=$("div#myTurnGamesList > div").size();
 			$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
 
 		});
 
-		$("div#theirTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
+		$("div#theirTurnGamesList").on('DOMNodeInserted DOMNodeRemoved', function(event) {
 			theirTurns=$("div#theirTurnGamesList > div").size();
 			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');			
 		});
 
 
-				
+		$("div#myTurnGames span.moduleTitle").on('DOMCharacterDataModified DOMSubtreeModified', function(event) {
+			if($(this).text().indexOf(")") == -1)
+			{
+				myTurns=$("div#myTurnGamesList > div").size();
+				$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
+			}
+
+		});
+
+		$("div#theirTurnGames span.moduleTitle").on('DOMCharacterDataModified DOMSubtreeModified', function(event) {
+			if($(this).text().indexOf(")") == -1)
+			{
+				theirTurns=$("div#theirTurnGamesList > div").size();
+				$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
+			}
+		});
+
+
+
+
+
 
 		$("input#lookupTxt").keyup( function(e) {
 			if(e.keyCode == 13) {
-				
+
 				//Update counts that might have vanished due to refresh
 				updateCounts();
-				
+
 				var $input = $(this);
 
 				setTimeout(function(){
@@ -70,7 +90,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 							iconURL =  chrome.extension.getURL("owl-lookup.png");
 							$("p#lookupResult").find("span").html('<A href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define" class="typo_green" style="text-decoration:underline"><img src="'+iconURL+'" align="left">'+validWord+'</a>');
 						}
-						
+
 					}
 
 				},50);
@@ -86,7 +106,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 					//Update counts that might have vanished due to refresh
 					updateCounts();
-					
+
 					if($("p.gameCardName").eq(0).text()=="You ") {
 						var playerScore = $("p.gameCardScore").eq(0).text();
 						var oppoScore = $("p.gameCardScore").eq(1).text(); 	
@@ -154,7 +174,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					};
 					var lang=langs[shortdict];
 
-					
+
 					var alldist = {
 							"Collins":{"A":9,"B":2,"C":2,"D":4,"E":12,"F":2,"G":3,"H":2,"I":9,"J":1,"K":1,"L":4,"M":2,"N":6,"O":8,"P":2,"Q":1,"R":6,"S":4,"T":6,"U":4,"V":2,"W":2,"X":1,"Y":2,"Z":1,"blank":2},
 							"TWL" :{"A":9,"B":2,"C":2,"D":4,"E":12,"F":2,"G":3,"H":2,"I":9,"J":1,"K":1,"L":4,"M":2,"N":6,"O":8,"P":2,"Q":1,"R":6,"S":4,"T":6,"U":4,"V":2,"W":2,"X":1,"Y":2,"Z":1,"blank":2},

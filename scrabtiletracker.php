@@ -208,7 +208,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 					{
 						$vcnt=$vcnt+$count;
 					}
-					else if($letter!="blank"){
+					else if($letter!="?"){
 
 						{$ccnt=$ccnt+$count;}
 					}
