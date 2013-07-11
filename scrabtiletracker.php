@@ -210,9 +210,11 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 					}
 					else if($letter!="?"){
 
-						{$ccnt=$ccnt+$count;}
+						$ccnt=$ccnt+$count;
 					}
-					else{$bcnt=$count;}
+					else{
+						$bcnt=$count;
+					}
 					if(($index % 8)===0)
 					{
 						$html = $html . '<div style="float:left;padding:10px">';
