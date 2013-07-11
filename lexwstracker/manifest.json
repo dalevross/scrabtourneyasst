@@ -3,7 +3,7 @@
 
   "name": "OWLS Tile Tracker",
   "description": "This extension displays available tiles in Lexulous, Wordscraper or Scrabble",
-  "version": "1.9.0",
+  "version": "1.9.2",
   "background": { "scripts": ["background.js"] },
   "page_action": {
     "default_icon": "icon-19.png",
@@ -27,5 +27,5 @@
     "48" : "icon-48.png",
     "128" : "icon-128.png"
   },
-   "content_security_policy": "script-src 'self' https://scrabtourneyasst.herokuapp.com; object-src 'self'"
+   "content_security_policy": "script-src 'self'; object-src 'self'"
 }

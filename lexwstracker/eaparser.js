@@ -1,10 +1,45 @@
 if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(window.location.href)){
 
+	function updateCounts(){		
+		myTurns=$("div#myTurnGamesList > div").size();
+		$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
+		theirTurns=$("div#theirTurnGamesList > div").size();
+		$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');			
+	}
+	
 	$(document).ready(function () {
 
+		var myTurns=0;
+		if($("div#myTurnGamesList")) {
+			myTurns=$("div#myTurnGamesList > div").size();
+			$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
+		}
+		var theirTurns=0;
+		if($("div#theirTurnGamesList")) {
+			theirTurns=$("div#theirTurnGamesList > div").size();
+			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
+		}
+
+		$("div#myTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
+			myTurns=$("div#myTurnGamesList > div").size();
+			$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
+
+		});
+
+		$("div#theirTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
+			theirTurns=$("div#theirTurnGamesList > div").size();
+			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');			
+		});
+
+
+				
 
 		$("input#lookupTxt").keyup( function(e) {
 			if(e.keyCode == 13) {
+				
+				//Update counts that might have vanished due to refresh
+				updateCounts();
+				
 				var $input = $(this);
 
 				setTimeout(function(){
@@ -26,12 +61,16 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 					var validWord="";
 					if($("p#lookupResult span").attr("class")=="typo_green") {
-						validWord=$.trim($input.val());
-						
-						if($("p#lookupResult img#owl").length === 0) {
-							iconURL =  chrome.extension.getURL("owl-lookup.png");
-							$("p#lookupResult span").html('<a href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define"><img id="owl" src="'+iconURL+'" align="left"> '+validWord+'</a>');
+						validWord = $.trim($input.val()).toUpperCase();
+
+						if(validWord == "") {
+							$("p#lookupResult").html('');
 						}
+						else if($("p#lookupResult img#owl").length === 0) {
+							iconURL =  chrome.extension.getURL("owl-lookup.png");
+							$("p#lookupResult").find("span").html('<A href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define" class="typo_green" style="text-decoration:underline"><img src="'+iconURL+'" align="left">'+validWord+'</a>');
+						}
+						
 					}
 
 				},50);
@@ -45,6 +84,9 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				if (request.command == "sendresults")
 				{
 
+					//Update counts that might have vanished due to refresh
+					updateCounts();
+					
 					if($("p.gameCardName").eq(0).text()=="You ") {
 						var playerScore = $("p.gameCardScore").eq(0).text();
 						var oppoScore = $("p.gameCardScore").eq(1).text(); 	
@@ -65,7 +107,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 					var playerID=localStorage.cacheUser;
 
-
+					var rack=new Array();
 					var finished;
 
 					if($("div#eog1Place img").length == 0)
@@ -81,11 +123,11 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 						if(winnerId===playerID)
 						{
-							finished = ((winnerScore == playerScore) && (loserId == oppoID) && (oppoScore==loserScore))
+							finished = ((winnerScore == playerScore) && (loserId == oppoID) && (oppoScore==loserScore));
 						}
 						else if(winnerId===oppoID)
 						{
-							finished = ((winnerScore == oppoScore) && (loserId == oppoScore) && (oppoScore==playerScore))
+							finished = ((winnerScore == oppoScore) && (loserId == oppoScore) && (oppoScore==playerScore));
 						}		
 
 					}
@@ -112,23 +154,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					};
 					var lang=langs[shortdict];
 
-					var validWord="";
-					if($("p#lookupResult").find("span").attr("class")=="typo_green") {
-						validWord=$("p#lookupResult").find("span").text();
-						if(validWord.indexOf('Define')==-1) {
-							iconURL =  chrome.extension.getURL("owl-lookup.png");
-							$("p#lookupResult").find("span").html('<A href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define"><img src="'+iconURL+'" align="left"> '+validWord+'</a>');
-						}
-					}
-					else {
-						if($("p#lookupResult").find("span").attr("class")=="typo_lightRed") {
-							// do nothing
-						}
-						else {
-							$("p#lookupResult").html('<span class="typo_lightRed">Click the owl for definitions of valid words</span>');
-						}
-					}
-
+					
 					var alldist = {
 							"Collins":{"A":9,"B":2,"C":2,"D":4,"E":12,"F":2,"G":3,"H":2,"I":9,"J":1,"K":1,"L":4,"M":2,"N":6,"O":8,"P":2,"Q":1,"R":6,"S":4,"T":6,"U":4,"V":2,"W":2,"X":1,"Y":2,"Z":1,"blank":2},
 							"TWL" :{"A":9,"B":2,"C":2,"D":4,"E":12,"F":2,"G":3,"H":2,"I":9,"J":1,"K":1,"L":4,"M":2,"N":6,"O":8,"P":2,"Q":1,"R":6,"S":4,"T":6,"U":4,"V":2,"W":2,"X":1,"Y":2,"Z":1,"blank":2},
@@ -165,12 +191,19 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					$("div.tile.active").each(function (i) {
 						if (($(this).find("span.score_0").length > 0)&&($(this).data("id")!="-1")) {
 							used["blank"]++;
+							rack.push("?");
 						} else {
 							used[$(this).data("letter")]++;
+							rack.push($(this).data("letter"));
 						}
 					});
-					//var resptext = $("p.gameCardScore").first().text();
-					sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, defineMe:validWord});
+
+					rack.sort();
+					var rackstring="";
+					for(var i=0;i<rack.length;i++) {
+						rackstring=rackstring+rack[i];
+					}
+					sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring});
 				}
 			});
 }

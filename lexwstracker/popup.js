@@ -14,7 +14,8 @@ var trackingGenerator = {
 			var playerScore=response.scoreP;
 			var oppoScore=response.scoreO;
 			var finished = response.finished;
-			var toDefine = response.defineMe;
+			var rack = response.rack;
+			
 
 			var left = {};
 			var tilecount = 0;
@@ -57,8 +58,7 @@ var trackingGenerator = {
 
 
 
-
-			html = html + '<div style="clear:both"/><div class="vccnt">Vowels: '+vcnt+', Consonants: '+ccnt+', Blanks: '+bcnt+'.</div>';
+			html = html + '<div style="clear:both"/><div class="vccnt">Vowels: '+vcnt+', Consonants: '+ccnt+', Blanks: '+bcnt+'.<BR>Your sorted rack: <b>'+rack+'</b></div>';
 
 			var d = new Date();
 
@@ -66,15 +66,7 @@ var trackingGenerator = {
 
 			html = html + suffix;
 
-			var lang="en";
-			if(toDefine) {
-				if(dictionary=="German") {lang="de";}
-				if(dictionary=="Spanish") {lang="es";}
-				if(dictionary=="Italian") {lang="it";}
-				if(dictionary=="French") {lang="fr";}
-				if(dictionary=="Portuguese") {lang="pt";}
-				//	html=html+'<div class="define"><A href="http://google.com/search?hl='+lang+'&q=define:'+toDefine+'" target="define">Define '+toDefine+'</a></div>';
-			}
+
 			if(playerId=='593170373'||playerId=='712117020') {
 				if(finished) {
 					html=html + '<div class="sendScore"><form action="http://moltengold.com/cgi-bin/scrabble/extn.pl" method="post" target="scoring"> <input name="playerScore" value="'+ playerScore +'" type="hidden" > <input name="oppoScore" value="'+ oppoScore +'" type="hidden" >  <input name="playerId" value="'+playerId+'" type="hidden"> <input name="oppoId" value="'+oppoID+'" type="hidden">  <input name="dictionary" value="'+dictionary+'" type="hidden"> <input name="word" value="'+ word +'" type="hidden" > <input name="app" value="Scrabble" type="hidden"> Save final scores in Facebook Scrabble League <input type="submit" value="Save"></form></div>';
