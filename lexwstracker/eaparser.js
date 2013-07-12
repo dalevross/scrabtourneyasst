@@ -1,9 +1,9 @@
 if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(window.location.href)){
 
 	function updateCounts(){		
-		myTurns=$("div#myTurnGamesList > div").size();
+		myTurns=$("div#myTurnGamesList > div.match").size();
 		$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
-		theirTurns=$("div#theirTurnGamesList > div").size();
+		theirTurns=$("div#theirTurnGamesList > div.match").size();
 		$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');			
 	}
 
@@ -11,89 +11,76 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 		var myTurns=0;
 		if($("div#myTurnGamesList")) {
-			myTurns=$("div#myTurnGamesList > div").size();
+			myTurns=$("div#myTurnGamesList > div.match").size();
 			$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
 		}
 		var theirTurns=0;
 		if($("div#theirTurnGamesList")) {
-			theirTurns=$("div#theirTurnGamesList > div").size();
+			theirTurns=$("div#theirTurnGamesList > div.match").size();
 			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
 		}
 
-		$("div#myTurnGamesList").on('DOMNodeInserted DOMNodeRemoved', function(event) {
-			myTurns=$("div#myTurnGamesList > div").size();
+		$("div#myTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
+			myTurns=$("div#myTurnGamesList > div.match").size();
 			$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
 
 		});
 
-		$("div#theirTurnGamesList").on('DOMNodeInserted DOMNodeRemoved', function(event) {
-			theirTurns=$("div#theirTurnGamesList > div").size();
-			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');			
+		$("div#theirTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
+			theirTurns=$("div#theirTurnGamesList > div.match").size();
+			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
 		});
 
 
-		$("div#myTurnGames span.moduleTitle").on('DOMCharacterDataModified DOMSubtreeModified', function(event) {
-			if($(this).text().indexOf(")") == -1)
+
+		$("p#lookupResult").on('DOMNodeInserted', function(event) {
+			if($("p#lookupResult span").attr("class")=="typo_lightRed")
 			{
-				myTurns=$("div#myTurnGamesList > div").size();
-				$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
+				return;
+			}
+			var $input = $("input#lookupTxt").eq(0);
+
+			var longdict = $.trim($("span#wordsBtnImage").attr('title'));
+			var shortdict = longdict.match(/(Collins|TWL|OSPD4|German|Spanish|Italian|French|Portuguese)/g);
+
+			var langs={
+					"Collins":"en",
+					"TWL" :"en",
+					"OSPD4" : "en",
+					"French": "fr",
+					"Italian":"it",
+					"German": "de",
+					"Portuguese":"pt",
+					"Spanish": "es"
+			};
+			var lang=langs[shortdict];
+
+			var validWord="";
+			if($("p#lookupResult span").attr("class")=="typo_green") {
+				validWord = $.trim($input.val()).toUpperCase();
+
+				if(validWord == "") {
+					$("p#lookupResult").html('');
+				}
+				else if($("p#lookupResult img#owl").length === 0) {
+					iconURL =  chrome.extension.getURL("owl-lookup.png");
+					$("p#lookupResult").find("span").html('<A href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define" class="typo_green" style="text-decoration:underline"><img src="'+iconURL+'" align="left">'+validWord+'</a>');
+				}
+
 			}
 
 		});
-
-		$("div#theirTurnGames span.moduleTitle").on('DOMCharacterDataModified DOMSubtreeModified', function(event) {
-			if($(this).text().indexOf(")") == -1)
-			{
-				theirTurns=$("div#theirTurnGamesList > div").size();
-				$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
-			}
-		});
-
-
-
-
-
-
+		
 		$("input#lookupTxt").keyup( function(e) {
 			if(e.keyCode == 13) {
-
 				//Update counts that might have vanished due to refresh
 				updateCounts();
-
+				
 				var $input = $(this);
-
-				setTimeout(function(){
-
-					var longdict = $.trim($("span#wordsBtnImage").attr('title'));
-					var shortdict = longdict.match(/(Collins|TWL|OSPD4|German|Spanish|Italian|French|Portuguese)/g);
-
-					var langs={
-							"Collins":"en",
-							"TWL" :"en",
-							"OSPD4" : "en",
-							"French": "fr",
-							"Italian":"it",
-							"German": "de",
-							"Portuguese":"pt",
-							"Spanish": "es"
-					};
-					var lang=langs[shortdict];
-
-					var validWord="";
-					if($("p#lookupResult span").attr("class")=="typo_green") {
-						validWord = $.trim($input.val()).toUpperCase();
-
-						if(validWord == "") {
-							$("p#lookupResult").html('');
-						}
-						else if($("p#lookupResult img#owl").length === 0) {
-							iconURL =  chrome.extension.getURL("owl-lookup.png");
-							$("p#lookupResult").find("span").html('<A href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define" class="typo_green" style="text-decoration:underline"><img src="'+iconURL+'" align="left">'+validWord+'</a>');
-						}
-
-					}
-
-				},50);
+				if($.trim($input.val())==="")
+				{
+					$("p#lookupResult").html('');					
+				}				
 			}
 		});
 	});
