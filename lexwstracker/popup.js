@@ -15,7 +15,7 @@ var trackingGenerator = {
 			var oppoScore=response.scoreO;
 			var finished = response.finished;
 			var rack = response.rack;
-			
+
 
 			var left = {};
 			var tilecount = 0;
@@ -31,7 +31,7 @@ var trackingGenerator = {
 					tilecount+=dist[letter]-used[letter];
 				}
 			}
-			
+
 			var index = 0;
 			var html = '';
 
@@ -66,6 +66,11 @@ var trackingGenerator = {
 
 			html = html + suffix;
 
+			/*
+			 chrome.tabs.captureVisibleTab( function (dataURL){
+				html = html + '<br/>' + '<a href="' + dataURL  + '" target="_blank">Download Screen Shot</a>' + '<br/>';
+			}
+			);*/
 
 			if(playerId=='593170373'||playerId=='712117020') {
 				if(finished) {
@@ -186,6 +191,8 @@ var trackingGenerator = {
 
 //Run our tile tracker script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
+	$( "#tabs" ).tabs();
+
 	chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
 		var applink = tabs[0].url;
 		trackingGenerator.getTilesLeft(applink);

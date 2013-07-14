@@ -1,0 +1,73 @@
+body {
+	min-width: 357px;
+	overflow-x: hidden;
+	font-family: arial;
+	font-size: 12px;
+	background-image: url('../icon-48.png');
+	background-repeat: no-repeat;
+	background-position: right bottom;
+}
+
+.heading {
+	background-color: darkgreen;
+	height: 31px;
+	padding-top: 10px;
+	text-align: center;
+	color: white;
+	margin-bottom: 10px;
+}
+
+.profile,.profile a {
+	font-size: 11px;
+	color: white;
+	float: right;
+	padding-right: 5px;
+	padding-top: 1px;
+}
+
+.letter {
+	width: 35px;
+	color: darkgreen;
+	float: left;
+	display: inline-block;
+}
+
+.count {
+	width: 20px;
+	color: darkgreen;
+	float: right;
+	text-align: right;
+	display: inline-block;
+	padding-right: 10px;
+}
+
+.wrapper {
+	border-right: 1px darkgreen solid;
+	height: 20px;
+}
+
+.vccnt {
+	color: darkgreen;
+}
+
+#trackerstat {
+	color: darkgreen;
+}
+
+div#lexwstracker {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.sendWord {
+	margin-top: 10px;
+	font-size: 12px;
+	color: darkgreen;
+}
+
+.sendScore {
+	margin-top: 10px;
+	font-size: 12px;
+	color: red;
+	font-weight: bold;
+}
