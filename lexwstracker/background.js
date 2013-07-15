@@ -11,7 +11,7 @@ function checkForValidUrl(tabId, changeInfo, tab) {
 	// If the letter 'g' is found in the tab's URL...
 	if (((tab.url.indexOf('lexulous') > -1 && tab.url.indexOf('gid') > -1 )||(tab.url.indexOf('wordscraper') > -1  && tab.url.indexOf('gid') > -1)|| (tab.url.indexOf('ea_scrabble_closed') > -1)|| (tab.url.indexOf('livescrabble') > -1))&&(tab.url.indexOf('apps.facebook.com') > -1)) {
 		// ... show the page action.
-		chrome.pageAction.show(tabId);
+		chrome.pageAction.show(tabId);		
 
 	}
 	else
@@ -28,43 +28,74 @@ chrome.pageAction.onClicked.addListener(function(tab) {
 //Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(checkForValidUrl);
 
-var oWLStorgage =  {
+var oWLStorage =  {
 
 		DB_NAME : 'owlswgedb',
-		DB_VERSION : 1,
+		DB_VERSION : 3,
 		DB_NOTES_STORE_NAME : 'notes',
 		DB_GCG_STORE_NAME : 'gcg',
 		db : {},
-		
 
-		openDB : function()  {
+
+		openDB : function(callback)  {
 			var req = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 			req.onsuccess = function (evt) {
 
-				db = this.result;
+				this.db = evt.target.result;
+				console.log("Open Succeeded");
+				callback(true);
 
 			};
 			req.onerror = function (evt) {
 				console.error("openDb:", evt.target.errorCode);
+				callback(false);
 			};
 
 			req.onupgradeneeded = function (evt) {
 				console.log("openDb.onupgradeneeded");
-				var notes_store = evt.currentTarget.result.createObjectStore(
-						this.DB_NOTES_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
-				notes_store.createIndex('recordid', 'recordid', { unique: true });
-				notes_store.createIndex('profileid', 'profileid', { unique: false});
-				notes_store.createIndex('game', 'game', { unique: false});
-				notes_store.createIndex('gameid', 'gameid', { unique: false });
 
-				var gcg_store = evt.currentTarget.result.createObjectStore(
-						this.DB_NOTES_GCG_NAME, { keyPath: 'id', autoIncrement: true });
+				var delReq = evt.currentTarget.result.deleteObjectStore(this.DB_NOTES_STORE_NAME);
 
-				gcg_store.createIndex('recordid', 'recordid', { unique: true });
-				gcg_store.createIndex('profileid', 'profileid', { unique: false});
-				gcg_store.createIndex('game', 'game', { unique: false});
-				gcg_store.createIndex('gameid', 'gameid', { unique: false });
+				req.onsuccess = function (evt) {
+
+					console.log("Notes Store Deleted");
+					var notes_store = evt.currentTarget.result.createObjectStore(
+							this.DB_NOTES_STORE_NAME, { keyPath: 'id', autoIncrement: true });
+
+					notes_store.createIndex('recordid', 'recordid', { unique: true });
+					notes_store.createIndex('profileid', 'profileid', { unique: false});
+					notes_store.createIndex('game', 'game', { unique: false});
+					notes_store.createIndex('gameid', 'gameid', { unique: false });					
+					
+				};
+				delReq.onerror = function (evt) {
+					console.error("openDb:", evt.target.errorCode);
+					//callback(true);
+				};
+
+
+				var delReq = evt.currentTarget.result.deleteObjectStore(this.DB_GCG_STORE_NAME);
+
+				req.onsuccess = function (evt) {
+
+					var gcg_store = evt.currentTarget.result.createObjectStore(
+							this.DB_GCG_STORE_NAME, { keyPath: 'id', autoIncrement: true });
+
+					gcg_store.createIndex('recordid', 'recordid', { unique: true });
+					gcg_store.createIndex('profileid', 'profileid', { unique: false});
+					gcg_store.createIndex('game', 'game', { unique: false});
+					gcg_store.createIndex('gameid', 'gameid', { unique: false });
+					//callback(true);
+
+
+				};
+				delReq.onerror = function (evt) {
+					console.error("openDb:", evt.target.errorCode);
+					//callback(false);
+				};
+				callback(true);
+				
 			};
 		},
 
@@ -72,8 +103,8 @@ var oWLStorgage =  {
 		 * @param {string} store_name
 		 * @param {string} mode either "readonly" or "readwrite"
 		 */
-		this.getObjectStore : function (store_name, mode) {
-			var tx = db.transaction(store_name, mode);
+		getObjectStore : function (store_name, mode) {
+			var tx = this.db.transaction(store_name, mode);
 			return tx.objectStore(store_name);
 		},
 
@@ -270,7 +301,7 @@ var oWLStorgage =  {
 
 }
 
-oWLStorgage.openDB();
+
 
 
 

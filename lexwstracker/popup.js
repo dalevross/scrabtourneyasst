@@ -1,11 +1,11 @@
 
 
 var trackingGenerator = {
-		
+
 		g_playerid:'',
 		g_game:'',
 		g_gameid:'',
-		
+
 		loadToDialog: function($dialog,response,game){
 
 			var used = response.used;
@@ -102,7 +102,7 @@ var trackingGenerator = {
 
 			// var applink = chrome.extension.getBackgroundPage().currentUrl;
 			var game = applink.match(/(lexulous|wordscraper|ea_scrabble_closed|livescrabble)/g);
-			
+
 			g_game = game;
 			if (game === null) {
 
@@ -128,7 +128,7 @@ var trackingGenerator = {
 			else
 			{
 				var gid = /gid=(\d+)/g.exec(applink);
-				
+
 				g_gameid = gid;
 
 				if (gid === null) {
@@ -194,11 +194,11 @@ var trackingGenerator = {
 			return true;
 
 		},
-		
+
 		getStorageRecordId : function (userid,game,gameid)
 		{
 			return userid + game + gameid;
-			
+
 		}
 };
 
@@ -228,77 +228,83 @@ document.addEventListener('DOMContentLoaded', function () {
 		           xhtml: true,
 		           bodyid: 'editor'		
 	});
-	
-	
+
+
 	var innerbody = editor.i.contentWindow.document.body;
-	
+
 	$(innerbody).attr('contenteditable',false);
 	$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
-	
+
 	var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
-	
+
 	var bkg = chrome.extension.getBackgroundPage();
-	
-	bkg.oWLStorgage.getNoteByRecordId(recid,function(note){		
-		if($.trim(note)=="")
+
+	bkg.oWLStorage.openDB(function(result){
+		if(result)
 		{
-			$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+			bkg.oWLStorage.getNoteByRecordId(recid,function(note){		
+				if($.trim(note)=="")
+				{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+				}
+				else
+				{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");
+					$(innerbody).html(note);			
+				}
+			});
 		}
-		else
-		{
-			$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");
-			$(innerbody).html(note);			
-		}
+
 	});	
-	
+
 	$(innerbody).attr('contenteditable',false);
-	("div#notestatus").html('');
-	
-	
+	$("div#notestatus").html('');
+
+
 	$('div.tinyeditor').mouseup(function(){
 
-		 delay(function(){
-		    	editor.post();
-		    	//console.log($("#tinyeditor").val());
-		    	if($.trim($("#tinyeditor").val())=="")
-		    	{
-					$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
-				}
-				else
-				{
-					$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");								
-				}		    	
-		    	bkg.oWLStorgage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val())); 
-		      }, 500 );		
+		delay(function(){
+			editor.post();
+			//console.log($("#tinyeditor").val());
+			if($.trim($("#tinyeditor").val())=="")
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+			}
+			else
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");								
+			}		    	
+			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val())); 
+		}, 500 );		
 	});
-	
-	
+
+
 	var delay = (function(){
-		  var timer = 0;
-		  return function(callback, ms){
-		    clearTimeout (timer);
-		    timer = setTimeout(callback, ms);
-		  };
-		})();
-	
-	
-	
+		var timer = 0;
+		return function(callback, ms){
+			clearTimeout (timer);
+			timer = setTimeout(callback, ms);
+		};
+	})();
+
+
+
 	$(innerbody).on("paste keyup mouseup", function(){
-		
-		 delay(function(){
-		    	editor.post();
-		    	if($.trim($("#tinyeditor").val())=="")
-		    	{
-					$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
-				}
-				else
-				{
-					$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");						
-				}	
-		    	bkg.oWLStorgage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()));
-		      }, 500 );		
+
+		delay(function(){
+			editor.post();
+			if($.trim($("#tinyeditor").val())=="")
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+			}
+			else
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");						
+			}	
+			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()));
+		}, 500 );		
 	} );
-	
-	
+
+
 
 });
