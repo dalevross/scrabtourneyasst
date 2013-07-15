@@ -193,14 +193,16 @@ var trackingGenerator = {
 			}
 			return true;
 
+		},
+		
+		getStorageRecordId : function (userid,game,gameid)
+		{
+			return userid + game + gameid;
+			
 		}
 };
 
-$('document').ready(function(){
 
-	
-	
-});
 //Run our tile tracker script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
 	$( "#tabs" ).tabs();
@@ -208,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
 		var applink = tabs[0].url;
 		trackingGenerator.getTilesLeft(applink);
-	});
+	});	
 
 	var editor = new TINY.editor.edit('editor', {
 		id: 'tinyeditor',
@@ -227,11 +229,46 @@ document.addEventListener('DOMContentLoaded', function () {
 		           bodyid: 'editor'		
 	});
 	
+	
+	var innerbody = editor.i.contentWindow.document.body;
+	
+	$(innerbody).attr('contenteditable',false);
+	("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
+	
+	var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
+	
+	var bkg = chrome.extension.getBackgroundPage();
+	
+	bkg.oWLStorgage.getNoteByRecordId(recid,function(note){		
+		if($.trim(note)=="")
+		{
+			$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+		}
+		else
+		{
+			$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");
+			$(innerbody).html(note);			
+		}
+	});	
+	
+	$(innerbody).attr('contenteditable',false);
+	("div#notestatus").html('');
+	
+	
 	$('div.tinyeditor').mouseup(function(){
 
 		 delay(function(){
 		    	editor.post();
-		    	console.log($("#tinyeditor").val());
+		    	//console.log($("#tinyeditor").val());
+		    	if($.trim($("#tinyeditor").val())=="")
+		    	{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+				}
+				else
+				{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");								
+				}		    	
+		    	bkg.oWLStorgage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val())); 
 		      }, 500 );		
 	});
 	
@@ -244,13 +281,21 @@ document.addEventListener('DOMContentLoaded', function () {
 		  };
 		})();
 	
-	var innerbody = editor.i.contentWindow.document.body;
+	
 	
 	$(innerbody).on("paste keyup mouseup", function(){
 		
 		 delay(function(){
 		    	editor.post();
-		    	console.log($("#tinyeditor").val());
+		    	if($.trim($("#tinyeditor").val())=="")
+		    	{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+				}
+				else
+				{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");						
+				}	
+		    	bkg.oWLStorgage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()));
 		      }, 500 );		
 	} );
 	
