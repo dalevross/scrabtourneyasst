@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	var innerbody = editor.i.contentWindow.document.body;
 	
 	$(innerbody).attr('contenteditable',false);
-	("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
+	$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
 	
 	var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
 	

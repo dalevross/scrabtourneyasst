@@ -25,7 +25,8 @@
   "permissions": [
     "https://scrabtourneyasst.herokuapp.com/",
     "https://apps.facebook.com/",
-    "tabs"
+    "tabs",
+    "unlimitedStorage"
   ],
   "icons" : {
     "48" : "icon-48.png",

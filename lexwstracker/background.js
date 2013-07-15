@@ -38,7 +38,7 @@ var oWLStorgage =  {
 		
 
 		openDB : function()  {
-			var req = indexedDB.open(DB_NAME, DB_VERSION);
+			var req = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 			req.onsuccess = function (evt) {
 
 				db = this.result;
@@ -51,7 +51,7 @@ var oWLStorgage =  {
 			req.onupgradeneeded = function (evt) {
 				console.log("openDb.onupgradeneeded");
 				var notes_store = evt.currentTarget.result.createObjectStore(
-						DB_NOTES_STORE_NAME, { keyPath: 'id', autoIncrement: true });
+						this.DB_NOTES_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
 				notes_store.createIndex('recordid', 'recordid', { unique: true });
 				notes_store.createIndex('profileid', 'profileid', { unique: false});
@@ -59,7 +59,7 @@ var oWLStorgage =  {
 				notes_store.createIndex('gameid', 'gameid', { unique: false });
 
 				var gcg_store = evt.currentTarget.result.createObjectStore(
-						DB_NOTES_GCG_NAME, { keyPath: 'id', autoIncrement: true });
+						this.DB_NOTES_GCG_NAME, { keyPath: 'id', autoIncrement: true });
 
 				gcg_store.createIndex('recordid', 'recordid', { unique: true });
 				gcg_store.createIndex('profileid', 'profileid', { unique: false});
@@ -72,20 +72,20 @@ var oWLStorgage =  {
 		 * @param {string} store_name
 		 * @param {string} mode either "readonly" or "readwrite"
 		 */
-		getObjectStore : function (store_name, mode) {
+		this.getObjectStore : function (store_name, mode) {
 			var tx = db.transaction(store_name, mode);
 			return tx.objectStore(store_name);
 		},
 
 		clearObjectStore: function (store_name) {
-			var store = getObjectStore(store_name, 'readwrite');
+			var store = this.getObjectStore(store_name, 'readwrite');
 			var req = store.clear();
 			req.onsuccess = function(evt) {
-				displayActionSuccess("Store cleared");	      
+				this.displayActionSuccess("Store cleared");	      
 			};
 			req.onerror = function (evt) {
 				console.error("clearObjectStore:", evt.target.errorCode);
-				displayActionFailure(this.error);
+				this.displayActionFailure(this.error);
 			};
 		},
 
@@ -119,22 +119,22 @@ var oWLStorgage =  {
 
 			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,note:note};
 
-			var store = getObjectStore(DB_NOTES_STORE_NAME, 'readwrite');
+			var store = this.getObjectStore(this.DB_NOTES_STORE_NAME, 'readwrite');
 			var req;
 			try {
 				req = store.put(obj);
 			} catch (e) {
-				displayActionFailure(e);
+				this.displayActionFailure(e);
 				//throw e;
 			}
 			req.onsuccess = function (evt) {
 				//console.log("Insertion in DB successful");
-				displayActionSuccess();
+				this.displayActionSuccess();
 				//displayPubList(store);
 			};
 			req.onerror = function() {
 				console.error("addPublication error", this.error);
-				displayActionFailure(this.error);
+				this.displayActionFailure(this.error);
 			};
 		},
 
@@ -151,22 +151,22 @@ var oWLStorgage =  {
 
 			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,gcginfo:gcginfo};
 
-			var store = getObjectStore(DB_GCG_STORE_NAME, 'readwrite');
+			var store = this.getObjectStore(this.DB_GCG_STORE_NAME, 'readwrite');
 			var req;
 			try {
 				req = store.put(obj);
 			} catch (e) {
-				displayActionFailure(e);
+				this.displayActionFailure(e);
 				//throw e;
 			}
 			req.onsuccess = function (evt) {
 				//console.log("Insertion in DB successful");
-				displayActionSuccess();
+				this.displayActionSuccess();
 				//displayPubList(store);
 			};
 			req.onerror = function() {
 				console.error("addPublication error", this.error);
-				displayActionFailure(this.error);
+				this.displayActionFailure(this.error);
 			};
 		},
 
@@ -175,17 +175,17 @@ var oWLStorgage =  {
 		 * @param {string} store_name
 		 */
 		deleteRecordFromStore: function (recordid,store_name) {
-			var store = getObjectStore(store_name, 'readwrite');
+			var store = this.getObjectStore(store_name, 'readwrite');
 			var req = store.index('recordid');
 			req.get(recordid).onsuccess = function(evt) {
 				if (typeof evt.target.result == 'undefined') {
-					displayActionFailure("No matching record found");
+					this.displayActionFailure("No matching record found");
 					return;
 				}
 				deleteRecord(evt.target.result.id, store,store_name);
 			};
 			req.onerror = function (evt) {
-				displayActionFailure("Error Code: " + evt.target.errorCode);
+				this.displayActionFailure("Error Code: " + evt.target.errorCode);
 			};
 		},
 
@@ -200,7 +200,7 @@ var oWLStorgage =  {
 			console.log("deletePublication:", arguments);
 
 			if (typeof store == 'undefined')
-				store = getObjectStore(store_name, 'readwrite');
+				store = this.getObjectStore(store_name, 'readwrite');
 
 			// As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
 			// the result of the Object Store Deletion Operation algorithm is
@@ -211,7 +211,7 @@ var oWLStorgage =  {
 				var record = evt.target.result;
 				console.log("record:", record);
 				if (typeof record == 'undefined') {
-					displayActionFailure("No matching record found");
+					this.displayActionFailure("No matching record found");
 					return;
 				}
 				// Warning: The exact same key used for creation needs to be passed for
@@ -219,8 +219,7 @@ var oWLStorgage =  {
 				// be a Number for deletion.
 				req = store.delete(key);
 				req.onsuccess = function(evt) {
-					displayActionSuccess("Deletion successful");
-					displayPubList(store);
+					this.displayActionSuccess("Deletion successful");					
 				};
 				req.onerror = function (evt) {
 					console.error("deletePublication:", evt.target.errorCode);
@@ -235,11 +234,11 @@ var oWLStorgage =  {
 		 * @param {string} recordid
 		 */
 		getNoteByRecordId : function (recordid,callback) {
-			var store = getObjectStore(DB_NOTES_STORE_NAME, 'readwrite');
+			var store = this.getObjectStore(this.DB_NOTES_STORE_NAME, 'readwrite');
 			var req = store.index('recordid');
 			req.get(recordid).onsuccess = function(evt) {
 				if (typeof evt.target.result == 'undefined') {
-					displayActionFailure("No matching record found");
+					this.displayActionFailure("No matching record found");
 					callback("");
 					return;
 				}
