@@ -203,10 +203,6 @@ chrome.tabs.onUpdated.addListener(checkForValidUrl);
 	      // be a Number for deletion.
 	      req = store.delete(key);
 	      req.onsuccess = function(evt) {
-	        console.log("evt:", evt);
-	        console.log("evt.target:", evt.target);
-	        console.log("evt.target.result:", evt.target.result);
-	        console.log("delete successful");
 	        displayActionSuccess("Deletion successful");
 	        displayPubList(store);
 	      };
