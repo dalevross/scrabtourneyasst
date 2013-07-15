@@ -182,7 +182,7 @@ function processWorksheetStandings($key,$handicap)
 				class='leaderpic'></span></th>
 		</tr>
 		<?
-		if($handicap)
+		if($handicap===true)
 		{
 			processStandingsForHandicapWorskeet($key,$currWkshtId);
 		}
