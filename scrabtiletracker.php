@@ -260,7 +260,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 				}
 					
 				//$html = $html + '<tr style="text-align:center;background-color:brown;color:white;"><td>' + 'Tile Count' + '</td><td>' + $response['tilecount'] + '</td></tr></table>';
-				$actualrespose = array('html'=>$html);
+				$actualrespose = array('html'=>$html,id=>$currentuser);
 				break;
 			default:
 				$actualrespose = $response;

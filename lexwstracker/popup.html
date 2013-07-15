@@ -1,34 +1,54 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>OWLS Word Games Enhancer</title>
-    <script src="jquery-1.7.min.js"></script>
-    <script src="jquery-ui.js"></script>
-    <script src="popup.js"></script>
-    <link type="text/css" href="css/south-street/jquery-ui.css" rel="stylesheet" />
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-  </head>
-  <body>
-  <iframe src="http://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fowls-tile-tracker%2Fpdpejcfahhppmalemodibekpbiopmogo%3Fhl%3Den-US&amp;send=false&amp;layout=standard&amp;width=357&amp;show_faces=false&amp;font=tahoma&amp;colorscheme=light&amp;action=like&amp;height=35&amp;appId=390735480949561" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:357px; height:20px;" allowTransparency="true"></iframe>
-  <div id="tabs">
-  <ul>
-    <li><a href="#lexwstracker"><span>Board Info</span></a></li>
-    <li><a href="#notes"><span>Notes</span></a></li>
-    <li><a href="#settings"><span>Settings</span></a></li>
-  </ul>
-  <div id="lexwstracker">
-  </div>
-  <div id="notes">
-   <iframe sandbox="allow-same-origin allow-scripts" src="editor.html" width="350" height="350" style="border:none;"></iframe>  
-  </div>
-  <div id="settings">    
-  </div>
-</div>  
-  <br/>
-<span style="font-size:12px"> Join the Scrabble, Lexulous and Wordscraper tournaments at<br/><a href="https://www.facebook.com/groups/ScrabulousTournamentGroup/" target="_blank" >OWLS</a> and <a href="https://www.facebook.com/groups/scrabble.league/" target="_blank" >The Facebook Scrabble League</a>
-<br/><br/>Contact <a href="https://www.facebook.com/DaJenGroup" target="_blank" >DaJen Group</a> for support or suggestions
-<br/>Share this extension: http://tinyurl.com/free-tracker</span>
-  </body>
+<head>
+<meta charset="utf-8" />
+<title>OWLS Word Games Enhancer</title>
+<script src="jquery-1.7.min.js"></script>
+<script src="jquery-ui.js"></script>
+<script src="popup.js"></script>
+<script src="tinyeditor/tiny.editor.packed.js"></script>
+<link rel="stylesheet" href="tinyeditor/tinyeditor.css">
+
+<link type="text/css" href="css/south-street/jquery-ui.css"
+	rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<iframe
+		src="http://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fowls-tile-tracker%2Fpdpejcfahhppmalemodibekpbiopmogo%3Fhl%3Den-US&amp;send=false&amp;layout=standard&amp;width=357&amp;show_faces=false&amp;font=tahoma&amp;colorscheme=light&amp;action=like&amp;height=35&amp;appId=390735480949561"
+		scrolling="no" frameborder="0"
+		style="border: none; overflow: hidden; width: 357px; height: 20px;"
+		allowTransparency="true"></iframe>
+	<div id="tabs">
+		<ul>
+			<li><a href="#lexwstracker"><span>Board Info</span>
+			</a>
+			</li>
+			<li><a href="#notes"><span>Notes</span>
+			</a>
+			</li>
+			<li><a href="#settings"><span>Settings</span>
+			</a>
+			</li>
+		</ul>
+		<div id="lexwstracker"></div>
+		<div id="notes">
+			<textarea id="tinyeditor" style="width: 350px; height: 250px"></textarea>
+			<br/>
+			<button id="saveNote">Save</button>
+		</div>
+		<div id="settings"></div>
+	</div>
+	<br />
+	<span style="font-size: 12px"> Join the Scrabble, Lexulous and
+		Wordscraper tournaments at<br />
+	<a href="https://www.facebook.com/groups/ScrabulousTournamentGroup/"
+		target="_blank">OWLS</a> and <a
+		href="https://www.facebook.com/groups/scrabble.league/"
+		target="_blank">The Facebook Scrabble League</a> <br />
+	<br />Contact <a href="https://www.facebook.com/DaJenGroup"
+		target="_blank">DaJen Group</a> for support or suggestions <br />Share
+		this extension: http://tinyurl.com/free-tracker</span>
+</body>
 </html>
 

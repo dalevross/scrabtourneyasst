@@ -1,7 +1,11 @@
 
 
 var trackingGenerator = {
-
+		
+		g_playerid:'',
+		g_game:'',
+		g_gameid:'',
+		
 		loadToDialog: function($dialog,response,game){
 
 			var used = response.used;
@@ -10,12 +14,12 @@ var trackingGenerator = {
 			var oppoID= response.ID;
 			var word=response.first;
 			var dictionary=response.dictionary;
-			var playerId=response.player;
+			var playerId=response.player,g_playerid = response.player;
 			var playerScore=response.scoreP;
 			var oppoScore=response.scoreO;
 			var finished = response.finished;
 			var rack = response.rack;
-
+			var gameid = response.gid,g_gid = response.gid;
 
 			var left = {};
 			var tilecount = 0;
@@ -98,7 +102,8 @@ var trackingGenerator = {
 
 			// var applink = chrome.extension.getBackgroundPage().currentUrl;
 			var game = applink.match(/(lexulous|wordscraper|ea_scrabble_closed|livescrabble)/g);
-
+			
+			g_game = game;
 			if (game === null) {
 
 				$dialog.html('Invalid link,' + applink +',found in address bar!');		
@@ -123,6 +128,8 @@ var trackingGenerator = {
 			else
 			{
 				var gid = /gid=(\d+)/g.exec(applink);
+				
+				g_gameid = gid;
 
 				if (gid === null) {
 
@@ -169,7 +176,7 @@ var trackingGenerator = {
 						var suffix = '<br/><span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
 
 						html = data['html'] + suffix;
-
+						g_playerid = data['id'];
 						$dialog.html(html);
 
 					},
@@ -189,6 +196,11 @@ var trackingGenerator = {
 		}
 };
 
+$('document').ready(function(){
+
+	
+	
+});
 //Run our tile tracker script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
 	$( "#tabs" ).tabs();
@@ -198,5 +210,50 @@ document.addEventListener('DOMContentLoaded', function () {
 		trackingGenerator.getTilesLeft(applink);
 	});
 
+	var editor = new TINY.editor.edit('editor', {
+		id: 'tinyeditor',
+		width: 320,
+		height: 250,
+		cssclass: 'tinyeditor',
+		css:'body{background-color:#ffffff}', 
+		controlclass: 'tinyeditor-control',
+		rowclass: 'tinyeditor-header',
+		dividerclass: 'tinyeditor-divider',
+		controls: ['bold', 'italic', 'underline', 'strikethrough',
+		           '|', 'outdent', 'indent', '|','undo', 'redo','unformat','n'
+		           , 'size', '|', 'image', 'link', 'unlink', '|', 'print'],
+		           footer: false,
+		           xhtml: true,
+		           bodyid: 'editor'		
+	});
+	
+	$('div.tinyeditor').mouseup(function(){
+
+		 delay(function(){
+		    	editor.post();
+		    	console.log($("#tinyeditor").val());
+		      }, 500 );		
+	});
+	
+	
+	var delay = (function(){
+		  var timer = 0;
+		  return function(callback, ms){
+		    clearTimeout (timer);
+		    timer = setTimeout(callback, ms);
+		  };
+		})();
+	
+	var innerbody = editor.i.contentWindow.document.body;
+	
+	$(innerbody).on("paste keyup mouseup", function(){
+		
+		 delay(function(){
+		    	editor.post();
+		    	console.log($("#tinyeditor").val());
+		      }, 500 );		
+	} );
+	
+	
 
 });

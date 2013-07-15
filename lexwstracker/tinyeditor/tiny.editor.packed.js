@@ -13,7 +13,7 @@ TINY.editor = function() {
 	c['superscript'] = [ 9, 'Superscript', 'a', 'superscript' ];
 	c['orderedlist'] = [ 10, 'Insert Ordered List', 'a', 'insertorderedlist' ];
 	c['unorderedlist'] = [ 11, 'Insert Unordered List', 'a',
-			'insertunorderedlist' ];
+	                       'insertunorderedlist' ];
 	c['outdent'] = [ 12, 'Outdent', 'a', 'outdent' ];
 	c['indent'] = [ 13, 'Indent', 'a', 'indent' ];
 	c['leftalign'] = [ 14, 'Left Align', 'a', 'justifyleft' ];
@@ -23,10 +23,10 @@ TINY.editor = function() {
 	c['undo'] = [ 18, 'Undo', 'a', 'undo' ];
 	c['redo'] = [ 19, 'Redo', 'a', 'redo' ];
 	c['image'] = [ 20, 'Insert Image', 'i', 'insertimage', 'Enter Image URL:',
-			'http://' ];
+	               'http://' ];
 	c['hr'] = [ 21, 'Insert Horizontal Rule', 'a', 'inserthorizontalrule' ];
 	c['link'] = [ 22, 'Insert Hyperlink', 'i', 'createlink', 'Enter URL:',
-			'http://' ];
+	              'http://' ];
 	c['unlink'] = [ 23, 'Remove Hyperlink', 'a', 'unlink' ];
 	c['unformat'] = [ 24, 'Remove Formatting', 'a', 'removeformat' ];
 	c['print'] = [ 25, 'Print', 'a', 'print' ];
@@ -37,9 +37,8 @@ TINY.editor = function() {
 		this.obj = obj;
 		this.xhtml = obj.xhtml;
 		var p = document.createElement('div'), w = document
-				.createElement('div'), h = document.createElement('div'), l = obj.controls.length, i = 0;
+		.createElement('div'), h = document.createElement('div'), l = obj.controls.length, i = 0;
 		this.i = document.createElement('iframe');
-		this.i.setAttribute("sandbox","allow-same-origin allow-scripts");
 		this.i.width = obj.width || '500';
 		this.i.height = obj.height || '250';
 		this.ie = T$$$();
@@ -59,10 +58,12 @@ TINY.editor = function() {
 				h.appendChild(d);
 			} else if (id == 'font') {
 				var sel = document.createElement('select'), fonts = obj.fonts
-						|| [ 'Verdana', 'Arial', 'Georgia' ], fl = fonts.length, x = 0;
+				|| [ 'Verdana', 'Arial', 'Georgia' ], fl = fonts.length, x = 0;
 				sel.className = 'tinyeditor-font';
-				sel.onchange = new Function(this.n
-						+ '.ddaction(this, "fontname")');
+				/*sel.onchange = new Function(this.n
+						+ '.ddaction(this, "fontname")');*/
+				sel.onchange = function() {editor.ddaction(this, "fontname");};
+
 				sel.options[0] = new Option('Font', '');
 				for (x; x < fl; x++) {
 					var font = fonts[x];
@@ -71,10 +72,12 @@ TINY.editor = function() {
 				h.appendChild(sel);
 			} else if (id == 'size') {
 				var sel = document.createElement('select'), sizes = obj.sizes
-						|| [ 1, 2, 3, 4, 5, 6, 7 ], sl = sizes.length, x = 0;
+				|| [ 1, 2, 3, 4, 5, 6, 7 ], sl = sizes.length, x = 0;
 				sel.className = 'tinyeditor-size';
-				sel.onchange = new Function(this.n
-						+ '.ddaction(this, "fontsize")');
+				/*sel.onchange = new Function(this.n
+						+ '.ddaction(this, "fontsize")');*/
+				sel.onchange = function() {editor.ddaction(this, "fontsize");};
+
 				for (x; x < sl; x++) {
 					var size = sizes[x];
 					sel.options[x] = new Option(size, size);
@@ -82,13 +85,17 @@ TINY.editor = function() {
 				h.appendChild(sel);
 			} else if (id == 'style') {
 				var sel = document.createElement('select'), styles = obj.styles
-						|| [ [ 'Style', '' ], [ 'Paragraph', '<p>' ],
-								[ 'Header 1', '<h1>' ], [ 'Header 2', '<h2>' ],
-								[ 'Header 3', '<h3>' ], [ 'Header 4', '<h4>' ],
-								[ 'Header 5', '<h5>' ], [ 'Header 6', '<h6>' ] ], sl = styles.length, x = 0;
+				|| [ [ 'Style', '' ], [ 'Paragraph', '<p>' ],
+				     [ 'Header 1', '<h1>' ], [ 'Header 2', '<h2>' ],
+				     [ 'Header 3', '<h3>' ], [ 'Header 4', '<h4>' ],
+				     [ 'Header 5', '<h5>' ], [ 'Header 6', '<h6>' ] ], sl = styles.length, x = 0;
 				sel.className = 'tinyeditor-style';
-				sel.onchange = new Function(this.n
+				/*sel.onchange = new Function(this.n
 						+ '.ddaction(this, "formatblock")');
+				 */
+				sel.onchange = function() {editor.ddaction(this, "formatblock");};
+
+
 				for (x; x < sl; x++) {
 					var style = styles[x];
 					sel.options[x] = new Option(style[0], style[1]);
@@ -96,20 +103,31 @@ TINY.editor = function() {
 				h.appendChild(sel);
 			} else if (c[id]) {
 				var div = document.createElement('div'), x = c[id], func = x[2], ex, pos = x[0]
-						* offset;
+				* offset;
 				div.className = obj.controlclass;
 				div.unselectable = 'on';
 				div.style.backgroundPosition = '0px ' + pos + 'px';
 				div.title = x[1];
-				ex = func == 'a' ? '.action("' + x[3] + '", 0, ' + (x[4] || 0)
+				/*ex = func == 'a' ? '.action("' + x[3] + '", 0, ' + (x[4] || 0)
 						+ ')' : '.insert("' + x[4] + '", "' + x[5] + '", "'
 						+ x[3] + '")';
 				div.onmousedown = new Function(this.n
-						+ (id == 'print' ? '.print()' : ex));
-				div.onmouseover = new Function(this.n + '.hover(this, ' + pos
-						+ ', 1)');
-				div.onmouseout = new Function(this.n + '.hover(this, ' + pos
-						+ ', 0)');
+						+ (id == 'print' ? '.print()' : ex));*/
+
+				(function(x){
+					div.onmousedown = (id == 'print')? function(){editor.print();}:
+						((func == 'a')?function(){editor.action( x[3],0,(x[4]||0));}:
+							function(){editor.insert(x[4] , x[5] , x[3]);}); 
+
+				})(x);	/*div.onmouseover = new Function(this.n + '.hover(this, ' + pos
+						+ ', 1)');				
+				div.onmouseout =   (this.n + '.hover(this, ' + pos
+						+ ', 0)');*/
+
+				div.onmouseover = function(){editor.hover(this, "'" + pos.toString() + "'",1);};
+
+				div.onmouseout = function(){editor.hover(this,"'" +pos.toString()+ "'",0);};
+
 				h.appendChild(div);
 				if (this.ie) {
 					div.unselectable = 'on';
@@ -129,15 +147,18 @@ TINY.editor = function() {
 				var to = obj.toggle, ts = document.createElement('div');
 				ts.className = to.cssclass || 'toggle';
 				ts.innerHTML = obj.toggletext || 'source';
-				ts.onclick = new Function(this.n
-						+ '.toggle(0, this);return false');
+				/*ts.onclick = new Function(this.n
+						+ '.toggle(0, this);return false');*/
+				ts.onclick = function(){editor.toggle(0, this);return false;};
+
 				f.appendChild(ts);
 			}
 			if (obj.resize) {
 				var ro = obj.resize, rs = document.createElement('div');
 				rs.className = ro.cssclass || 'resize';
-				rs.onmousedown = new Function('event', this.n
-						+ '.resize(event);return false');
+				/*rs.onmousedown = new Function('event', this.n
+						+ '.resize(event);return false');*/
+				rs.onmousedown = function(event){editor.resize(event);return false;};
 				rs.onselectstart = function() {
 					return false;
 				};
@@ -156,7 +177,7 @@ TINY.editor = function() {
 			m += '<style type="text/css">' + obj.css + '</style>';
 		}
 		m += '</head><body' + bodyid + ' contenteditable="true">'
-				+ (obj.content || this.t.value);
+		+ (obj.content || this.t.value);
 		m += '</body></html>';
 		this.e.write(m);
 		this.e.close();
@@ -225,8 +246,10 @@ TINY.editor = function() {
 			this.freeze();
 		}
 		this.i.bcs = TINY.cursor.top(e);
-		this.mv = new Function('event', this.n + '.move(event)');
-		this.sr = new Function(this.n + '.freeze()');
+		/*this.mv = new Function('event', this.n + '.move(event)');
+		this.sr = new Function(this.n + '.freeze()');*/
+		this.mv = function(event){editor.move(event);};
+		this.sr = function(){editor.freeze();};
 		if (this.ie) {
 			document.attachEvent('onmousemove', this.mv);
 			document.attachEvent('onmouseup', this.sr);
@@ -257,9 +280,9 @@ TINY.editor = function() {
 			}
 			if (this.xhtml && !this.ie) {
 				v = v.replace(/<strong>(.*)<\/strong>/gi,
-						'<span style="font-weight:bold;">$1</span>');
+				'<span style="font-weight:bold;">$1</span>');
 				v = v.replace(/<em>(.*)<\/em>/gi,
-						'<span style="font-weight:italic;">$1</span>');
+				'<span style="font-weight:italic;">$1</span>');
 			}
 			this.e.body.innerHTML = v;
 			this.t.style.display = 'none';
@@ -269,7 +292,7 @@ TINY.editor = function() {
 			var v = this.e.body.innerHTML;
 			if (this.xhtml) {
 				v = v.replace(/<span class="apple-style-span">(.*)<\/span>/gi,
-						'$1');
+				'$1');
 				v = v.replace(/ class="apple-style-span"/gi, '');
 				v = v.replace(/<span style="">/gi, '');
 				v = v.replace(/<br>/gi, '<br />');
@@ -277,31 +300,31 @@ TINY.editor = function() {
 				v = v.replace(/^<br ?\/?>/gi, '');
 				v = v.replace(/(<img [^>]+[^\/])>/gi, '$1 />');
 				v = v.replace(/<b\b[^>]*>(.*?)<\/b[^>]*>/gi,
-						'<strong>$1</strong>');
+				'<strong>$1</strong>');
 				v = v.replace(/<i\b[^>]*>(.*?)<\/i[^>]*>/gi, '<em>$1</em>');
 				v = v.replace(/<u\b[^>]*>(.*?)<\/u[^>]*>/gi,
-						'<span style="text-decoration:underline">$1</span>');
+				'<span style="text-decoration:underline">$1</span>');
 				v = v
-						.replace(
-								/<(b|strong|em|i|u) style="font-weight:normal;?">(.*)<\/(b|strong|em|i|u)>/gi,
-								'$2');
+				.replace(
+						/<(b|strong|em|i|u) style="font-weight:normal;?">(.*)<\/(b|strong|em|i|u)>/gi,
+				'$2');
 				v = v
-						.replace(
-								/<(b|strong|em|i|u) style="(.*)">(.*)<\/(b|strong|em|i|u)>/gi,
-								'<span style="$2"><$4>$3</$4></span>');
+				.replace(
+						/<(b|strong|em|i|u) style="(.*)">(.*)<\/(b|strong|em|i|u)>/gi,
+				'<span style="$2"><$4>$3</$4></span>');
 				v = v.replace(
 						/<span style="font-weight:normal;?">(.*)<\/span>/gi,
-						'$1');
+				'$1');
 				v = v.replace(
 						/<span style="font-weight:bold;?">(.*)<\/span>/gi,
-						'<strong>$1</strong>');
+				'<strong>$1</strong>');
 				v = v.replace(
 						/<span style="font-style:italic;?">(.*)<\/span>/gi,
-						'<em>$1</em>');
+				'<em>$1</em>');
 				v = v
-						.replace(
-								/<span style="font-weight:bold;?">(.*)<\/span>|<b\b[^>]*>(.*?)<\/b[^>]*>/gi,
-								'<strong>$1</strong>');
+				.replace(
+						/<span style="font-weight:bold;?">(.*)<\/span>|<b\b[^>]*>(.*?)<\/b[^>]*>/gi,
+				'<strong>$1</strong>');
 			}
 			if (div) {
 				div.innerHTML = this.obj.toggletext || 'wysiwyg';
