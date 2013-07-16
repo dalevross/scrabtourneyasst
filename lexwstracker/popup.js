@@ -1,14 +1,11 @@
 
+
 var trackingGenerator = {
-		processLexWSResponse: function($dialog,response,game,playerNum){
-			oppNum = (playerNum=="1")?"2":"1";
-			language="";
-			if(game="lexulous")
-			{
-				
-				
-			}
-		},
+
+		g_playerid:'',
+		g_game:'',
+		g_gameid:'',
+
 		loadToDialog: function($dialog,response,game){
 
 			var used = response.used;
@@ -17,10 +14,12 @@ var trackingGenerator = {
 			var oppoID= response.ID;
 			var word=response.first;
 			var dictionary=response.dictionary;
-			var playerId=response.player;
+			var playerId=response.player,g_playerid = response.player;
 			var playerScore=response.scoreP;
 			var oppoScore=response.scoreO;
 			var finished = response.finished;
+			var rack = response.rack;
+			var gameid = response.gid,g_gid = response.gid;
 
 			var left = {};
 			var tilecount = 0;
@@ -36,10 +35,11 @@ var trackingGenerator = {
 					tilecount+=dist[letter]-used[letter];
 				}
 			}
-			//var color = (game==="lexulous")?"#2BB0E8":"red";
+
 			var index = 0;
 			var html = '';
-			html=html+'Your game with '+oppoName+' (<a href="http://facebook.com/'+oppoID+'" target="_blank">View Profile</a>)<br/><br/>';
+
+			html=html+'<div class="heading">Your game with '+oppoName+' <span class="profile"><a href="http://facebook.com/'+oppoID+'" target="_blank">Facebook Profile</a></span></div>';
 
 			var inbag = (tilecount>7)?tilecount-7:0;
 			html = html + '<span style="font-weight:bold;">Tile Count: ' + tilecount + '</span><span> ('+ inbag + ' in bag)</span><br/>';
@@ -62,18 +62,23 @@ var trackingGenerator = {
 
 
 
-
-			html = html + '<div style="clear:both"/><br/><span class="vccnt">Vowels: '+vcnt+', Consonants: '+ccnt+', Blanks: '+bcnt+'.</span>';
+			html = html + '<div style="clear:both"/><div class="vccnt">Vowels: '+vcnt+', Consonants: '+ccnt+', Blanks: '+bcnt+'.<BR>Your sorted rack: <b>'+rack+'</b></div>';
 
 			var d = new Date();
 
-			var suffix = '<br/><span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
+			var suffix = '<span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
 
 			html = html + suffix;
 
+			/*
+			 chrome.tabs.captureVisibleTab( function (dataURL){
+				html = html + '<br/>' + '<a href="' + dataURL  + '" target="_blank">Download Screen Shot</a>' + '<br/>';
+			}
+			);*/
+
 			if(playerId=='593170373'||playerId=='712117020') {
 				if(finished) {
-					html=html + '<div class="sendScore"><form action="http://moltengold.com/cgi-bin/scrabble/extn.pl" method="post" target="scoring"> <input name="playerScore" value="'+ playerScore +'" type="hidden" > <input name="oppoScore" value="'+ oppoScore +'" type="hidden" >  <input name="playerId" value="'+playerId+'" type="hidden"> <input name="oppoId" value="'+oppoID+'" type="hidden">  <input name="dictionary" value="'+dictionary+'" type="hidden"> <input name="word" value="'+ word +'" type="hidden" > <input name="app" value="'+ game + '" type="hidden"> Save final scores in Facebook Scrabble League <input type="submit" value="Save"></form></div>';
+					html=html + '<div class="sendScore"><form action="http://moltengold.com/cgi-bin/scrabble/extn.pl" method="post" target="scoring"> <input name="playerScore" value="'+ playerScore +'" type="hidden" > <input name="oppoScore" value="'+ oppoScore +'" type="hidden" >  <input name="playerId" value="'+playerId+'" type="hidden"> <input name="oppoId" value="'+oppoID+'" type="hidden">  <input name="dictionary" value="'+dictionary+'" type="hidden"> <input name="word" value="'+ word +'" type="hidden" > <input name="app" value="Scrabble" type="hidden"> Save final scores in Facebook Scrabble League <input type="submit" value="Save"></form></div>';
 				}
 				else if(word) {
 
@@ -96,8 +101,9 @@ var trackingGenerator = {
 			var dist = {"A":9,"B":2,"C":2,"D":4,"E":12,"F":2,"G":3,"H":2,"I":9,"J":1,"K":1,"L":4,"M":2,"N":6,"O":8,"P":2,"Q":1,"R":6,"S":4,"T":6,"U":4,"V":2,"W":2,"X":1,"Y":2,"Z":1,"blank":2};
 
 			// var applink = chrome.extension.getBackgroundPage().currentUrl;
-			var game = applink.match(/(lexulous|wordscraper|scrabble)/g);
+			var game = applink.match(/(lexulous|wordscraper|ea_scrabble_closed|livescrabble)/g);
 
+			g_game = game;
 			if (game === null) {
 
 				$dialog.html('Invalid link,' + applink +',found in address bar!');		
@@ -123,6 +129,8 @@ var trackingGenerator = {
 			{
 				var gid = /gid=(\d+)/g.exec(applink);
 
+				g_gameid = gid;
+
 				if (gid === null) {
 
 					$dialog.html('Invalid game link!');		
@@ -131,27 +139,17 @@ var trackingGenerator = {
 
 				}
 
-
-				var showGameOver = /showGameOver=(\d)/g.exec(applink);
-
-
-
-
 				var pid = /pid=(\d)/g.exec(applink);
 				var password = /password=(\w+)/g.exec(applink);
 
 				if ((pid === null) || (password === null)) {
 
-					params = {gid : gid[1],pid : 1,action:'gameinfo'};
+					params = {gid : gid[1],game : game[0],version : 2,extension:1};
 
 				} else {
 
-					params = {gid : gid[1],game : game[0],pid : pid[1],password : password[1],action:'gameinfo'};
+					params = {gid : gid[1],game : game[0],pid : pid[1],password : password[1],version : 2,extension:1};
 
-				}
-
-				if (showGameOver !== null) {
-					params["showGameOver"]= showGameOver[1];
 				}
 
 
@@ -161,54 +159,25 @@ var trackingGenerator = {
 
 				$dialog.html(loadinghtml);
 
-				var url = "https://aws.rjs.in/" + ((game=="lexulous")?"fblexulous":"wordscraper") + "/engine/xmlv3.php";
 
-				$.ajax({url : url,	
-					context : this,	
-					data : (params),	
-					dataType : "xml",	
-					success : function(response) {					
-						//Response was successful but empty, try again with gameOver
-						if(($.trim($(response).find('p1score').text())===""))
-						{
-							if(params.showGameOver == null)
-							{
-								params.showGameOver = '1';
-								$.ajax({url : url,	
-									context : this,	
-									data : (params),	
-									dataType : "xml",	
-									success : function(response) {
 
-										if(($.trim($(response).find('p1score').text())===""))
-										{
-											$dialog.html('An error was encountered retrieving the game information.<br/>Please try again');												
-										}
-										else
-										{
-											trackingGenerator.processLexWSResponse($dialog,response,game,params.pid);												
-										}
+				$.ajax({url : 'https://scrabtourneyasst.herokuapp.com/scrabtourneyasst/scrabtiletracker.php?callback=?',
 
-									},
-									failure: function(jqXHR, textStatus, errorThrown) {
-										$dialog.html(textStatus);											
-										return false;
-									}
-								});
+					context : this,
 
-							}
-							else
-							{
-								$dialog.html('An error was encountered retrieving the game information.<br/>Please try again');									
-							}							
+					data : (params),
 
-						}
-						else
-						{
-							trackingGenerator.processLexWSResponse($dialog,response,game,params.pid);
+					dataType : "jsonp",
 
-						}
-						
+					success : function(data) {					
+
+						var d = new Date();
+
+						var suffix = '<br/><span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
+
+						html = data['html'] + suffix;
+						g_playerid = data['id'];
+						$dialog.html(html);
 
 					},
 
@@ -224,15 +193,118 @@ var trackingGenerator = {
 			}
 			return true;
 
+		},
+
+		getStorageRecordId : function (userid,game,gameid)
+		{
+			return userid + game + gameid;
+
 		}
 };
 
-//Run our kitten generation script as soon as the document's DOM is ready.
+
+//Run our tile tracker script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
+	$( "#tabs" ).tabs();
+
 	chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
 		var applink = tabs[0].url;
 		trackingGenerator.getTilesLeft(applink);
+	});	
+
+	var editor = new TINY.editor.edit('editor', {
+		id: 'tinyeditor',
+		width: 320,
+		height: 250,
+		cssclass: 'tinyeditor',
+		css:'body{background-color:#ffffff}', 
+		controlclass: 'tinyeditor-control',
+		rowclass: 'tinyeditor-header',
+		dividerclass: 'tinyeditor-divider',
+		controls: ['bold', 'italic', 'underline', 'strikethrough',
+		           '|', 'outdent', 'indent', '|','undo', 'redo','unformat','n'
+		           , 'size', '|', 'image', 'link', 'unlink', '|', 'print'],
+		           footer: false,
+		           xhtml: true,
+		           bodyid: 'editor'		
 	});
+
+
+	var innerbody = editor.i.contentWindow.document.body;
+
+	$(innerbody).attr('contenteditable',false);
+	$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
+
+	var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
+
+	var bkg = chrome.extension.getBackgroundPage();
+
+	bkg.oWLStorage.openDB(function(result){
+		if(result)
+		{
+			bkg.oWLStorage.getNoteByRecordId(recid,function(note){		
+				if($.trim(note)=="")
+				{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+				}
+				else
+				{
+					$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");
+					$(innerbody).html(note);			
+				}
+			});
+		}
+
+	});	
+
+	$(innerbody).attr('contenteditable',false);
+	$("div#notestatus").html('');
+
+
+	$('div.tinyeditor').mouseup(function(){
+
+		delay(function(){
+			editor.post();
+			//console.log($("#tinyeditor").val());
+			if($.trim($("#tinyeditor").val())=="")
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+			}
+			else
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");								
+			}		    	
+			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val())); 
+		}, 500 );		
+	});
+
+
+	var delay = (function(){
+		var timer = 0;
+		return function(callback, ms){
+			clearTimeout (timer);
+			timer = setTimeout(callback, ms);
+		};
+	})();
+
+
+
+	$(innerbody).on("paste keyup mouseup", function(){
+
+		delay(function(){
+			editor.post();
+			if($.trim($("#tinyeditor").val())=="")
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+			}
+			else
+			{
+				$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");						
+			}	
+			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()));
+		}, 500 );		
+	} );
+
 
 
 });

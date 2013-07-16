@@ -51,8 +51,6 @@ if (!isset($_COOKIE['spread_token'])) {
 		<br/>
         <span>Click <a href=<? echo $googleUri;?>>here</a> to authorize this application.</span>	 
 		</div>
-		</body>
-		</html>
 		<?php
         exit();
     }

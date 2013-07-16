@@ -128,7 +128,8 @@ function displayStandings()
 		if((strpos($sheetname, 'Score Sheet')!==false)  &&  (strpos(strtolower($sheetname), 'closed')===false) &&  (strpos(strtolower($sheetname), 'example')===false) &&  (strpos(strtolower($sheetname), 'break')===false))
 		{
 			$color = (strpos(strtolower($sheetname), 'scrabble')!==false)?"#036A4D":((strpos(strtolower($sheetname), 'lex')!==false)?"#2BB0E8":"red");
-			$handicap = (strpos(strtolower($sheetname), 'handicap')!==false);
+			//$handicap = (strpos(strtolower($sheetname), 'handicap')!==false);
+			$handicap = false;
 			?>
 	<table style="border-style:solid;border-width:1px;border-color:<?echo $color;?>;padding:10px;margin-top:10px;width:500px">
 		<tr>
@@ -181,12 +182,14 @@ function processWorksheetStandings($key,$handicap)
 				class='leaderpic'></span></th>
 		</tr>
 		<?
-		if($handicap)
+		if($handicap===true)
 		{
+			echo "<script>alert('Processing Handicap for some reason');</script>";
 			processStandingsForHandicapWorskeet($key,$currWkshtId);
 		}
 		else
 		{
+			echo "<script>alert('Processing Normally');</script>";
 			processStandingsForWorskeet($key,$currWkshtId);
 		}
 		echo '</table>';
