@@ -184,12 +184,10 @@ function processWorksheetStandings($key,$handicap)
 		<?
 		if($handicap===true)
 		{
-			echo "<script>alert('Processing Handicap for some reason');</script>";
 			processStandingsForHandicapWorskeet($key,$currWkshtId);
 		}
 		else
 		{
-			echo "<script>alert('Processing Normally');</script>";
 			processStandingsForWorskeet($key,$currWkshtId);
 		}
 		echo '</table>';
