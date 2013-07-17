@@ -15,13 +15,15 @@ var trackingGenerator = {
 			var word=response.first;
 			var dictionary=response.dictionary;
 			var playerId=response.player;
-			trackingGenerator.g_playerid = response.player;
 			var playerScore=response.scoreP;
 			var oppoScore=response.scoreO;
 			var finished = response.finished;
 			var rack = response.rack;
 			var gameid = response.gid;
-			trackingGenerator.g_gid = response.gid;
+			
+			trackingGenerator.g_playerid = response.player;			
+			trackingGenerator.g_gameid = response.gid;
+			trackingGenerator.g_game = game;
 
 			var left = {};
 			var tilecount = 0;
@@ -105,7 +107,6 @@ var trackingGenerator = {
 			// var applink = chrome.extension.getBackgroundPage().currentUrl;
 			var game = applink.match(/(lexulous|wordscraper|ea_scrabble_closed|livescrabble)/g);
 
-			trackingGenerator.g_game = game[0];
 			if (game === null) {
 
 				$dialog.html('Invalid link,' + applink +',found in address bar!');		
@@ -117,6 +118,8 @@ var trackingGenerator = {
 
 			if((game[0]=="ea_scrabble_closed")||(game[0]=="livescrabble"))
 			{
+				game = 'scrabble';
+				
 				$dialog.html(loadinghtml);
 				chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
 					chrome.tabs.sendMessage(tabs[0].id, {command: "sendresults"}, function(response) {
@@ -130,8 +133,14 @@ var trackingGenerator = {
 			}
 			else
 			{
+				
+				
 				var gid = /gid=(\d+)/g.exec(applink);
-
+				
+				trackingGenerator.g_game = game[0];
+				trackingGenerator.g_gameid = gid[1];
+				
+				
 
 
 				if (gid === null) {
@@ -142,7 +151,7 @@ var trackingGenerator = {
 
 				}
 
-				trackingGenerator.g_gameid = gid[1];
+				
 
 				var pid = /pid=(\d)/g.exec(applink);
 				var password = /password=(\w+)/g.exec(applink);

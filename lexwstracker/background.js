@@ -131,7 +131,6 @@ var oWLStorage =  {
 			var req = store.index('recordid');
 			req.get(recordid).onsuccess = function(evt) {
 				var record = evt.target.result;
-				record.note = note;
 				var putReq;
 				try {
 					if (typeof evt.target.result == 'undefined') {
@@ -139,6 +138,7 @@ var oWLStorage =  {
 					}
 					else
 					{
+						record.note = note;						
 						putReq = store.put(record);						
 					}
 					
