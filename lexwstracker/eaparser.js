@@ -204,13 +204,15 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 							rack.push($(this).data("letter"));
 						}
 					});
+					
+					var gid = $("div#myTurnGamesList > div.match.lastCurrentGame,div#myTurnGamesList > div.match.currentGame").data("match_id").toString();
 
 					rack.sort();
 					var rackstring="";
 					for(var i=0;i<rack.length;i++) {
 						rackstring=rackstring+rack[i];
 					}
-					sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring});
+					sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid});
 				}
 			});
 }

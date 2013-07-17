@@ -14,12 +14,14 @@ var trackingGenerator = {
 			var oppoID= response.ID;
 			var word=response.first;
 			var dictionary=response.dictionary;
-			var playerId=response.player,g_playerid = response.player;
+			var playerId=response.player;
+			trackingGenerator.g_playerid = response.player;
 			var playerScore=response.scoreP;
 			var oppoScore=response.scoreO;
 			var finished = response.finished;
 			var rack = response.rack;
-			var gameid = response.gid,g_gid = response.gid;
+			var gameid = response.gid;
+			trackingGenerator.g_gid = response.gid;
 
 			var left = {};
 			var tilecount = 0;
@@ -90,7 +92,7 @@ var trackingGenerator = {
 			$dialog.html(html);
 
 		},
-		getTilesLeft: function(applink) {
+		getTilesLeft: function(applink,callback) {
 
 			var html = '';
 
@@ -103,7 +105,7 @@ var trackingGenerator = {
 			// var applink = chrome.extension.getBackgroundPage().currentUrl;
 			var game = applink.match(/(lexulous|wordscraper|ea_scrabble_closed|livescrabble)/g);
 
-			g_game = game;
+			trackingGenerator.g_game = game[0];
 			if (game === null) {
 
 				$dialog.html('Invalid link,' + applink +',found in address bar!');		
@@ -121,6 +123,7 @@ var trackingGenerator = {
 						var used = response.used;
 						var dist = response.dist;
 						trackingGenerator.loadToDialog($dialog,response,game);
+						callback();
 					});
 				});
 
@@ -129,7 +132,7 @@ var trackingGenerator = {
 			{
 				var gid = /gid=(\d+)/g.exec(applink);
 
-				g_gameid = gid;
+
 
 				if (gid === null) {
 
@@ -138,6 +141,8 @@ var trackingGenerator = {
 					return false;
 
 				}
+
+				trackingGenerator.g_gameid = gid[1];
 
 				var pid = /pid=(\d)/g.exec(applink);
 				var password = /password=(\w+)/g.exec(applink);
@@ -176,8 +181,9 @@ var trackingGenerator = {
 						var suffix = '<br/><span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
 
 						html = data['html'] + suffix;
-						g_playerid = data['id'];
+						trackingGenerator.g_playerid = data['id'];
 						$dialog.html(html);
+						callback();
 
 					},
 
@@ -197,7 +203,7 @@ var trackingGenerator = {
 
 		getStorageRecordId : function (userid,game,gameid)
 		{
-			return userid + game + gameid;
+			return userid + '_' + game + '_'+ gameid;
 
 		}
 };
@@ -205,12 +211,11 @@ var trackingGenerator = {
 
 //Run our tile tracker script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
-	$( "#tabs" ).tabs();
+	$("#tabs").tabs();
+	$("#saveButton").button();
 
-	chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
-		var applink = tabs[0].url;
-		trackingGenerator.getTilesLeft(applink);
-	});	
+	var bkg = chrome.extension.getBackgroundPage();
+
 
 	var editor = new TINY.editor.edit('editor', {
 		id: 'tinyeditor',
@@ -223,61 +228,101 @@ document.addEventListener('DOMContentLoaded', function () {
 		dividerclass: 'tinyeditor-divider',
 		controls: ['bold', 'italic', 'underline', 'strikethrough',
 		           '|', 'outdent', 'indent', '|','undo', 'redo','unformat','n'
-		           , 'size', '|', 'image', 'link', 'unlink', '|', 'print'],
+		           , 'size', '|', 'image', 'link', 'unlink'],
 		           footer: false,
-		           xhtml: true,
+		           xhtml: false,
 		           bodyid: 'editor'		
-	});
+	});	
 
 
 	var innerbody = editor.i.contentWindow.document.body;
 
-	$(innerbody).attr('contenteditable',false);
-	$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
 
-	var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
+	chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
+		var applink = tabs[0].url;
+		trackingGenerator.getTilesLeft(applink,function(){
+			var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
 
-	var bkg = chrome.extension.getBackgroundPage();
-
-	bkg.oWLStorage.openDB(function(result){
-		if(result)
-		{
-			bkg.oWLStorage.getNoteByRecordId(recid,function(note){		
-				if($.trim(note)=="")
+			$(innerbody).attr('contenteditable',false);
+			$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
+			unbindNoteChangeEvents();
+			
+			bkg.oWLStorage.openDB(function(result){
+				if(result)
 				{
-					$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
+					
+					setTimeout(function(){
+						bkg.oWLStorage.getNoteByRecordId(recid,function(note){		
+							if($.trim(note)!="")
+							{
+								$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-locked'/>Notes");
+								$(innerbody).html(note);
+								editor.post();
+							}
+							else
+							{
+								$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes");
+											
+							}
+							
+							$(innerbody).attr('contenteditable',true);
+							$("div#notestatus").html('');
+							bindNoteChangeEvents();
+						});
+					},1000);
+
+					
 				}
 				else
 				{
-					$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");
-					$(innerbody).html(note);			
+				
+					$(innerbody).attr('contenteditable',true);
+					$("div#notestatus").html('');
+					bindNoteChangeEvents();
 				}
+
 			});
-		}
+			
+			
 
-	});	
-
-	$(innerbody).attr('contenteditable',false);
-	$("div#notestatus").html('');
-
-
-	$('div.tinyeditor').mouseup(function(){
-
-		delay(function(){
-			editor.post();
-			//console.log($("#tinyeditor").val());
-			if($.trim($("#tinyeditor").val())=="")
-			{
-				$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
-			}
-			else
-			{
-				$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");								
-			}		    	
-			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val())); 
-		}, 500 );		
+		});
 	});
 
+
+	$('button#saveButton').click(function(){
+
+		teval = $.trim($("#tinyeditor").val());
+		if(teval != $(innerbody).html())
+		{
+			$(innerbody).attr('contenteditable',false);
+			$("div#notestatus").html('<span>Saving...</span><br/><img src="note-loading.gif" />');
+			unbindNoteChangeEvents();
+			
+			editor.post();
+			var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
+			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()),function(result){
+				if(result)
+				{
+					if($.trim($("#tinyeditor").val())=="")
+					{
+						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes"); 
+					}
+					else
+					{
+						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-locked'/>Notes");								
+					}
+				}
+				
+				$(innerbody).attr('contenteditable',true);
+				$("div#notestatus").html('');
+				bindNoteChangeEvents();
+
+			});
+			
+			
+		}
+
+	});
 
 	var delay = (function(){
 		var timer = 0;
@@ -285,26 +330,33 @@ document.addEventListener('DOMContentLoaded', function () {
 			clearTimeout (timer);
 			timer = setTimeout(callback, ms);
 		};
-	})();
+	})();	
 
-
-
-	$(innerbody).on("paste keyup mouseup", function(){
+	function registerNoteChange()
+	{
 
 		delay(function(){
-			editor.post();
-			if($.trim($("#tinyeditor").val())=="")
-			{
-				$('#tab .ui-tabs-nav li:second').html("<span>Notes</span>"); 
-			}
-			else
-			{
-				$('#tab .ui-tabs-nav li:second').html("<span>Notes**</span>");						
+			teval = $.trim($("#tinyeditor").val());
+			if(teval != $(innerbody).html())
+			{			
+				
+				$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-unlocked'/>Notes");								
+				
 			}	
-			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()));
-		}, 500 );		
-	} );
-
+		}, 500 );
+	}	
+	
+	function bindNoteChangeEvents(){
+		$('div.tinyeditor').on('mouseup',registerNoteChange);
+		$(innerbody).on("paste keyup mouseup",registerNoteChange );
+	}
+	
+	function unbindNoteChangeEvents(){
+		$('div.tinyeditor').off('mouseup',registerNoteChange);
+		$(innerbody).off("paste keyup mouseup",registerNoteChange );
+	}
+	
+	bindNoteChangeEvents();
 
 
 });
