@@ -5,6 +5,8 @@ var trackingGenerator = {
 		g_playerid:'',
 		g_game:'',
 		g_gameid:'',
+		g_opponentId:'',
+		
 
 		loadToDialog: function($dialog,response,game){
 
@@ -24,6 +26,7 @@ var trackingGenerator = {
 			trackingGenerator.g_playerid = response.player;			
 			trackingGenerator.g_gameid = response.gid;
 			trackingGenerator.g_game = game;
+			trackingGenerator.g_opponentId = response.ID;
 
 			var left = {};
 			var tilecount = 0;
@@ -191,6 +194,7 @@ var trackingGenerator = {
 
 						html = data['html'] + suffix;
 						trackingGenerator.g_playerid = data['id'];
+						trackingGenerator.g_opponentId = data['oppid'];
 						$dialog.html(html);
 						callback();
 
@@ -309,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			
 			editor.post();
 			var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
-			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()),function(result){
+			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val(),trackingGenerator.g_opponentId),function(result){
 				if(result)
 				{
 					if($.trim($("#tinyeditor").val())=="")

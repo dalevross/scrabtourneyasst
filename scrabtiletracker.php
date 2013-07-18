@@ -113,7 +113,9 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 		$obj = $us->getUnserializedData();
 
 		$currentuser = eval("return \$obj->gameinfo->p" . $pid . "email;");
-		$currentusername = eval("return \$obj->gameinfo->p" . $pid . ";");
+		$currentusername = eval("return \$obj->gameinfo->p" . $pid . ";");		
+		
+		$opponent = eval("return \$obj->gameinfo->p" . (($pid % 2) + 1) . "email;");
 
 		if(array_key_exists($currentuser, $suspects))
 		{
@@ -260,7 +262,7 @@ if (isset($_GET["gid"]) && isset($_GET["game"]) )
 				}
 					
 				//$html = $html + '<tr style="text-align:center;background-color:brown;color:white;"><td>' + 'Tile Count' + '</td><td>' + $response['tilecount'] + '</td></tr></table>';
-				$actualrespose = array('html'=>$html,id=>$currentuser);
+				$actualrespose = array('html'=>$html,id=>$currentuser,oppid=$opponent);
 				break;
 			default:
 				$actualrespose = $response;

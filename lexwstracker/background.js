@@ -3,9 +3,7 @@
 //found in the LICENSE file.
 
 var currentUrl = "about:blank";
-var noteExists = false;
-var note = "";
-var game_info = {};
+
 //Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
 	// If the letter 'g' is found in the tab's URL...
@@ -60,7 +58,9 @@ var oWLStorage =  {
 				notes_store.createIndex('recordid', 'recordid', { unique: true });
 				notes_store.createIndex('profileid', 'profileid', { unique: false});
 				notes_store.createIndex('game', 'game', { unique: false});
-				notes_store.createIndex('gameid', 'gameid', { unique: false });					
+				notes_store.createIndex('gameid', 'gameid', { unique: false });
+				notes_store.createIndex('opponent', 'opponent', { unique: false });
+				notes_store.createIndex('savedDate', 'savedDate', { unique: false });
 				
 				var gcg_store = evt.currentTarget.result.createObjectStore(
 						oWLStorage.DB_GCG_STORE_NAME, { keyPath: 'id', autoIncrement: true });
@@ -69,6 +69,8 @@ var oWLStorage =  {
 				gcg_store.createIndex('profileid', 'profileid', { unique: false});
 				gcg_store.createIndex('game', 'game', { unique: false});
 				gcg_store.createIndex('gameid', 'gameid', { unique: false });
+				gcg_store.createIndex('opponent', 'opponent', { unique: false });
+				gcg_store.createIndex('savedDate', 'savedDate', { unique: false });
 				
 				
 				callback(true);
@@ -122,10 +124,14 @@ var oWLStorage =  {
 		 * @param {string} game
 		 * @param {string} gameid
 		 * @param {string} note
+		 * @param {string} opponent
+		 * @param {function} callback
 		 */
-		addNote: function (recordid, profile, game, gameid,note,callback) {
+		addNote: function (recordid, profile, game, gameid,note,opponent, callback) {
 
-			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,note:note};
+			var now = new Date();
+			
+			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,note:note,opponent:opponent,savedDate:now};
 
 			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
 			var req = store.index('recordid');
@@ -138,7 +144,8 @@ var oWLStorage =  {
 					}
 					else
 					{
-						record.note = note;						
+						record.note = note;	
+						record.savedDate = savedDate;
 						putReq = store.put(record);						
 					}
 					
@@ -166,9 +173,10 @@ var oWLStorage =  {
 		 * @param {object} gcginfo
 		 * @param {Blob=} screenshot
 		 */
-		addGCG: function (recordid, profile, game, gameid,objGCG,screenshot) {
+		addGCG: function (recordid, profile, game, gameid,objGCG,opponent,screenshot,callback) {
 
-			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,gcginfo:gcginfo};
+			var now = new Date();
+			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,gcginfo:gcginfo,opponent:opponent,savedDate:now};
 
 			var store = oWLStorage.getObjectStore(this.DB_GCG_STORE_NAME, 'readwrite');
 			var req;
@@ -263,8 +271,7 @@ var oWLStorage =  {
 				}
 				else
 				{
-					noteExists = true;
-					note = evt.target.result.note;
+					var note = evt.target.result.note;
 					callback(note);
 				}
 
