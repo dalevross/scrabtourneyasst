@@ -135,7 +135,8 @@ var oWLStorage =  {
 
 			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
 			var req = store.index('recordid');
-			req.get(recordid).onsuccess = function(evt) {
+			var getReq = req.get(recordid);
+			getReq.onsuccess = function(evt) {
 				var record = evt.target.result;
 				var putReq;
 				try {
@@ -144,9 +145,16 @@ var oWLStorage =  {
 					}
 					else
 					{
-						record.note = note;	
-						record.savedDate = savedDate;
-						putReq = store.put(record);						
+						if((note!="")&&(note!="<br>"))
+						{
+							record.note = note;	
+							record.savedDate = now;
+							putReq = store.put(record);	
+						}
+						else
+						{							
+							putReq = store.delete(record.id);							
+						}
 					}
 					
 				} catch (e) {
@@ -160,7 +168,11 @@ var oWLStorage =  {
 					console.error("addNote error", this.error);
 					callback(false);
 				};
-			};		
+			};
+			getReq.onerror = function() {
+				console.error("addNote error", this.error);
+				callback(false);
+			};
 			
 		},
 

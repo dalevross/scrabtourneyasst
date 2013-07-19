@@ -6,7 +6,7 @@ var trackingGenerator = {
 		g_game:'',
 		g_gameid:'',
 		g_opponentId:'',
-		
+
 
 		loadToDialog: function($dialog,response,game){
 
@@ -22,7 +22,7 @@ var trackingGenerator = {
 			var finished = response.finished;
 			var rack = response.rack;
 			var gameid = response.gid;
-			
+
 			trackingGenerator.g_playerid = response.player;			
 			trackingGenerator.g_gameid = response.gid;
 			trackingGenerator.g_game = game;
@@ -122,7 +122,7 @@ var trackingGenerator = {
 			if((game[0]=="ea_scrabble_closed")||(game[0]=="livescrabble"))
 			{
 				game = 'scrabble';
-				
+
 				$dialog.html(loadinghtml);
 				chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
 					chrome.tabs.sendMessage(tabs[0].id, {command: "sendresults"}, function(response) {
@@ -136,14 +136,14 @@ var trackingGenerator = {
 			}
 			else
 			{
-				
-				
+
+
 				var gid = /gid=(\d+)/g.exec(applink);
-				
+
 				trackingGenerator.g_game = game[0];
 				trackingGenerator.g_gameid = gid[1];
-				
-				
+
+
 
 
 				if (gid === null) {
@@ -154,7 +154,7 @@ var trackingGenerator = {
 
 				}
 
-				
+
 
 				var pid = /pid=(\d)/g.exec(applink);
 				var password = /password=(\w+)/g.exec(applink);
@@ -226,6 +226,7 @@ var trackingGenerator = {
 document.addEventListener('DOMContentLoaded', function () {
 	$("#tabs").tabs();
 	$("#saveButton").button();
+	$("#saveButton").hide();
 
 	var bkg = chrome.extension.getBackgroundPage();
 
@@ -259,44 +260,44 @@ document.addEventListener('DOMContentLoaded', function () {
 			$(innerbody).attr('contenteditable',false);
 			$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
 			unbindNoteChangeEvents();
-			
+
 			bkg.oWLStorage.openDB(function(result){
 				if(result)
 				{
-					
+
 					setTimeout(function(){
 						bkg.oWLStorage.getNoteByRecordId(recid,function(note){		
 							if($.trim(note)!="")
 							{
-								$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-locked'/>Notes");
+								$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-comment'/>Notes");
 								$(innerbody).html(note);
 								editor.post();
 							}
 							else
 							{
 								$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes");
-											
+
 							}
-							
+
 							$(innerbody).attr('contenteditable',true);
 							$("div#notestatus").html('');
 							bindNoteChangeEvents();
 						});
 					},1000);
 
-					
+
 				}
 				else
 				{
-				
+
 					$(innerbody).attr('contenteditable',true);
 					$("div#notestatus").html('');
 					bindNoteChangeEvents();
 				}
 
 			});
-			
-			
+
+
 
 		});
 	});
@@ -310,19 +311,19 @@ document.addEventListener('DOMContentLoaded', function () {
 			$(innerbody).attr('contenteditable',false);
 			$("div#notestatus").html('<span>Saving...</span><br/><img src="note-loading.gif" />');
 			unbindNoteChangeEvents();
-			
+
 			editor.post();
 			var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
-			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val(),trackingGenerator.g_opponentId),function(result){
+			bkg.oWLStorage.addNote(recid, trackingGenerator.g_playerid, trackingGenerator.g_game, trackingGenerator.g_gameid,$.trim($("#tinyeditor").val()),trackingGenerator.g_opponentId,function(result){
 				if(result)
 				{
-					if($.trim($("#tinyeditor").val())=="")
+					$('#saveButton').hide();
+					if(($.trim($("#tinyeditor").val())=="")||($.trim($("#tinyeditor").val())=="<br>"))
 					{
-						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes"); 
+						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes");
 					}
-					else
-					{
-						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-locked'/>Notes");								
+					else{
+						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-comment'/>Notes");
 					}
 				}
 				
@@ -331,8 +332,8 @@ document.addEventListener('DOMContentLoaded', function () {
 				bindNoteChangeEvents();
 
 			});
-			
-			
+
+
 		}
 
 	});
@@ -352,23 +353,23 @@ document.addEventListener('DOMContentLoaded', function () {
 			teval = $.trim($("#tinyeditor").val());
 			if(teval != $(innerbody).html())
 			{			
-				
-				$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-unlocked'/>Notes");								
-				
+
+				$('#saveButton').show();								
+
 			}	
 		}, 500 );
 	}	
-	
+
 	function bindNoteChangeEvents(){
 		$('div.tinyeditor').on('mouseup',registerNoteChange);
 		$(innerbody).on("paste keyup mouseup",registerNoteChange );
 	}
-	
+
 	function unbindNoteChangeEvents(){
 		$('div.tinyeditor').off('mouseup',registerNoteChange);
 		$(innerbody).off("paste keyup mouseup",registerNoteChange );
 	}
-	
+
 	bindNoteChangeEvents();
 
 

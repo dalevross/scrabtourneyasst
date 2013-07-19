@@ -205,7 +205,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 						}
 					});
 					
-					var gid = $("div#myTurnGamesList > div.match.lastCurrentGame,div#myTurnGamesList > div.match.currentGame").attr("data-match_id");
+					var gid = $("div[id$='TurnGamesList'] > div.match.lastCurrentGame,div[id$='TurnGamesList']  > div.match.currentGame").attr("data-match_id");
 
 					rack.sort();
 					var rackstring="";

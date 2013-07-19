@@ -82,11 +82,13 @@ overflow: auto;
 
 #notestatus{
 	float:left;
-	width:100px;
+	width:100px;	
 }
 
 #btnHolder{
 	float:right;
+	text-align:right;
+	height:30px
 	width:100px;
 }
 .ui-tabs .ui-tabs-nav li a img { float: left; margin-right: 5px}
