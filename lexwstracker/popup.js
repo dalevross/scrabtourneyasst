@@ -225,6 +225,7 @@ var trackingGenerator = {
 //Run our tile tracker script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
 	$("#tabs").tabs();
+	$("ul.ui-widget-header").removeClass(' ui-corner-all').css({ 'border' : 'none', 'border-bottom' : '1px solid #d4ccb0'});
 	$("#saveButton").button();
 	$("#saveButton").hide();
 
