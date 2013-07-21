@@ -19,6 +19,8 @@
 		scrolling="no" frameborder="0"
 		style="border: none; overflow: hidden; width: 357px; height: 20px;"
 		allowTransparency="true"></iframe>-->
+	<div id="toolbar"><img id="refreshButton" class="ui-icon ui-icon-refresh ui-state-highlight" title="Refresh"/><img id="closeButton" class="ui-icon ui-icon-close ui-state-highlight" title="Close"/></div>
+	<div class="heading" id="heading"></div>
 	<div id="tabs">
 		<ul>
 			<li><a href="#lexwstracker"><span>Board Info</span> </a></li>
@@ -27,16 +29,23 @@
 		</ul>
 		<div id="lexwstracker"></div>
 		<div id="notes">
-			<textarea id="tinyeditor" style="width: 350px; height: 250px"></textarea>
-			<br />
 			<div>
 				<div id="notestatus"></div>
 				<div id=btnHolder>
 					<button id="saveButton">Save</button>
 				</div>
 			</div>
+			<textarea id="tinyeditor" style="width: 350px; height: 250px"></textarea>
+			<br />
 		</div>
-		<div id="settings"><span>Coming Soon!</span></div>
+		<div id="settings">
+		<div>
+		<input type="checkbox" name="notesFirst"><span>Show notes first if a note exists?</span><br/><br/>
+		<input type="checkbox" name="showTotals"><span>Show total number of tiles x /y?</span><br/><br/>
+		<input type="checkbox" name="allTiles"><span>Show all tiles with depleted tiles faded?</span><br/><br/>
+		<input type="checkbox" name="distinguishVowels"><span>Show vowels in another colour?</span>		
+		</div>
+		</div>
 	</div>
 	<br />
 	<span style="font-size: 12px"> Join the Scrabble, Lexulous and

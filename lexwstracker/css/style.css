@@ -1,5 +1,5 @@
 body {
-	min-width: 357px;
+	width: 357px;
 	overflow-x: hidden;
 	font-family: arial;
 	font-size: 12px;
@@ -9,26 +9,29 @@ body {
 }
 
 .heading {
-	background-color: darkgreen;
-	height: 31px;
-	padding-top: 10px;
-	text-align: center;
-	color: white;
-	margin-bottom: 10px;
+	padding-top: 2px;
+	color: darkgreen;
+	margin-bottom: 5px;
+	font-size: 15px;
+	font-family: segoe ui, Arial, sans-serif;
+	width: 350px;
+	display: inline-block;
 }
 
 .profile,.profile a {
 	font-size: 11px;
-	color: white;
+	color: darkgreen;
+	text-align: right;
 	float: right;
-	padding-right: 5px;
-	padding-top: 1px;
+	padding-top: 2px;
+	font-family: arial, sans-serif;
+	display: inline-block;
 }
-
 
 #tinyeditor {
-	background-color: white;	
+	background-color: white;
 }
+
 .letter {
 	width: 35px;
 	color: darkgreen;
@@ -48,6 +51,14 @@ body {
 .wrapper {
 	border-right: 1px darkgreen solid;
 	height: 20px;
+}
+
+.depleted .letter,.depleted .count{
+	opacity:0.45;
+}
+
+.letter.vowel {
+	color: darkblue;	
 }
 
 .vccnt {
@@ -77,18 +88,28 @@ div#lexwstracker {
 }
 
 #tabs {
-overflow: auto;
+	overflow: auto;
 }
 
-#notestatus{
-	float:left;
-	width:100px;	
+#notestatus {
+	float: left;
+	width: 100px;
 }
 
-#btnHolder{
-	float:right;
-	text-align:right;
-	height:30px
-	width:100px;
+div#toolbar img#closeButton {
+	float: right;
 }
-.ui-tabs .ui-tabs-nav li a img { float: left; margin-right: 5px}
+div#toolbar img#refreshButton {
+	float: left;
+}
+
+#btnHolder {
+	float: right;
+	text-align: right;
+	height: 30px width : 100px;
+}
+
+.ui-tabs .ui-tabs-nav li a img {
+	float: left;
+	margin-right: 5px
+}
