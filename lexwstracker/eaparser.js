@@ -218,15 +218,17 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					if(finished)
 					{
 						///TODO Send screen shot and game info
-						/*html2canvas($('div#gameScene.body'), {
+						html2canvas($('div#gameScene.body'), {
+							  logging:true,
 							  onrendered: function(canvas) {
 							    boardimg = canvas.toDataURL();
 							    sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg});
+							    return true;
 							  }
 						});
-						*/
-						sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg});
-						return true;
+						
+						//sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg});
+						//return true;
 					}
 					else
 					{
