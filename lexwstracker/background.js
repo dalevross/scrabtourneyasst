@@ -275,7 +275,8 @@ var oWLStorage =  {
 		getNoteByRecordId : function (recordid,callback) {
 			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
 			var req = store.index('recordid');
-			req.get(recordid).onsuccess = function(evt) {
+			var getReq = req.get(recordid);
+			getReq.onsuccess = function(evt) {
 				if (typeof evt.target.result == 'undefined') {
 					oWLStorage.displayActionFailure("No matching record found");
 					callback("");
@@ -288,7 +289,7 @@ var oWLStorage =  {
 				}
 
 			};
-			req.onerror = function (evt) {
+			getReq.onerror = function (evt) {
 				console.error("getNoteByRecordId:", evt.target.errorCode);
 				callback("");
 			};

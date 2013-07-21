@@ -56,8 +56,18 @@ var trackingGenerator = {
 			var showAllTiles = $("div#settings input[name=allTiles]").prop('checked');
 			var showTotals = $("div#settings input[name=showTotals]").prop('checked');
 			var distinguishVowels = $("div#settings input[name=distinguishVowels]").prop('checked');
+			var useAllTilesLimit = $("div#settings input[name=useAllTilesLimit]").prop('checked');
+			var allTilesLimit = $("div#settings input[name=allTilesLimit]").val();
 			
+			
+			if(showAllTiles && useAllTilesLimit)
+			{
+				showAllTiles = 	(tilecount > allTilesLimit);			
+			}
+			 
 			var numTiles = (showAllTiles)?Object.keys(dist).length:Object.keys(left).length;
+			
+			
 			for (var letter in dist) {
 				if(!showAllTiles && !(left[letter]))
 					continue;
@@ -269,39 +279,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	var storage = chrome.storage.sync;
 
 	$chkNotesFirst = $("div#settings input[name=notesFirst]");
-	$("div#settings input:checkbox").each(function(){
-		var $checkbox = $(this);
-		var name = $checkbox.attr('name');
-		storage.get(name, function(items) {
-
-			if (items[name]) {
-				$checkbox.prop('checked', items[name]);	    	
-			}
-			else
-			{
-				var newSetting = {};
-				newSetting[name]=false;
-			    storage.set(newSetting);	    		    	
-			}
-		});
-	});
-
-	$("div#settings input:checkbox").change(function(){		
-		var name = $(this).attr('name');
-		var newSetting = {};
-		newSetting[name] = $(this).prop('checked');
-	    storage.set(newSetting);
-	    
-	    /*
-	     if(name!=='notesFirst')
-	    {
-	    	window.location.reload();
-	    }
-	    */
-		
-	});
-
 	
+	loadSettings();
 
 
 	var editor = new TINY.editor.edit('editor', {
@@ -444,6 +423,80 @@ document.addEventListener('DOMContentLoaded', function () {
 	function unbindNoteChangeEvents(){
 		$('div.tinyeditor').off('mouseup',registerNoteChange);
 		$(innerbody).off("paste keyup mouseup",registerNoteChange );
+	}
+	
+	function loadSettings()
+	{
+
+		$("div#settings input:checkbox").each(function(){
+			var $checkbox = $(this);
+			var name = $checkbox.attr('name');
+			storage.get(name, function(items) {
+
+				if (items[name]) {
+					$checkbox.prop('checked', items[name]);	    	
+				}
+				else
+				{
+					var newSetting = {};
+					newSetting[name]=false;
+				    storage.set(newSetting);	    		    	
+				}
+				if(name=="useAllTilesLimit")
+				{
+					$("div#settings input[name=allTilesLimit]").prop('disabled', !$("div#settings input[name=useAllTilesLimit]").prop('checked'));
+				}
+			});
+		});
+		
+		$("div#settings input[type=number]").each(function(){
+			var $input = $(this);
+			var name = $input.attr('name');
+			var origVal = $(this).val();
+			storage.get(name, function(items) {
+
+				if (items[name]) {
+					(function(n){
+					$input.val(n);
+					})(items[name]);
+				}
+				else
+				{
+					var newSetting = {};
+					newSetting[name]=origVal;
+				    storage.set(newSetting);	    		    	
+				}
+			});
+		});
+		
+		
+		$("div#settings input:checkbox").change(function(){		
+			var name = $(this).attr('name');
+			var newSetting = {};
+			newSetting[name] = $(this).prop('checked');
+		    storage.set(newSetting);
+		    
+		    if(name=='useAllTilesLimit')
+		    {	    	
+		    	$("div#settings input[name=allTilesLimit]").prop('disabled', !$(this).prop('checked'));
+		    }    
+		    /*
+		     if(name!=='notesFirst')
+		    {
+		    	window.location.reload();
+		    }
+		    */
+			
+		});
+		
+		$("div#settings input[type=number]").change(function(){		
+			var name = $(this).attr('name');
+			var newSetting = {};
+			newSetting[name] = $(this).val();
+		    storage.set(newSetting); 
+			
+		});		
+		
 	}
 
 	bindNoteChangeEvents();

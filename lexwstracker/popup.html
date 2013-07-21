@@ -40,12 +40,20 @@
 		</div>
 		<div id="settings">
 		<div>
-		<input type="checkbox" name="notesFirst"><span>Show notes first if a note exists?</span><br/><br/>
-		<input type="checkbox" name="showTotals"><span>Show total number of tiles x /y?</span><br/><br/>
-		<input type="checkbox" name="allTiles"><span>Show all tiles with depleted tiles faded?</span><br/><br/>
-		<input type="checkbox" name="distinguishVowels"><span>Show vowels in another colour?</span>		
+		<ul>
+		<li><input type="checkbox" name="notesFirst"><span>Show notes first if a note exists?</span></li>
+		<li><input type="checkbox" name="showTotals"><span>Show total number of tiles x /y?</span></li>
+		<li>
+		<input type="checkbox" name="allTiles"><span>Show all tiles with depleted tiles faded?</span>
+		<ul>
+		<li><input type="checkbox" name="useAllTilesLimit" />Until <input type="number" name="allTilesLimit" min="1" max="80" value="20" /> tiles are left.</ul>
+		</li>
+		<li><input type="checkbox" name="distinguishVowels"><span>Show vowels in another colour?</span>
+		</li>		
+		</ul>
 		</div>
 		</div>
+		
 	</div>
 	<br />
 	<span style="font-size: 12px"> Join the Scrabble, Lexulous and
