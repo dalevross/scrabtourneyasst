@@ -52,27 +52,27 @@ var trackingGenerator = {
 
 			var inbag = (tilecount>7)?tilecount-7:0;
 			html = html + '<span style="font-weight:bold;">Tile Count: ' + tilecount + '</span><span> ('+ inbag + ' in bag)</span><br/>';
-			
+
 			var showAllTiles = $("div#settings input[name=allTiles]").prop('checked');
 			var showTotals = $("div#settings input[name=showTotals]").prop('checked');
 			var distinguishVowels = $("div#settings input[name=distinguishVowels]").prop('checked');
 			var useAllTilesLimit = $("div#settings input[name=useAllTilesLimit]").prop('checked');
 			var allTilesLimit = $("div#settings input[name=allTilesLimit]").val();
-			
-			
+
+
 			if(showAllTiles && useAllTilesLimit)
 			{
 				showAllTiles = 	(tilecount > allTilesLimit);			
 			}
-			 
+
 			var numTiles = (showAllTiles)?Object.keys(dist).length:Object.keys(left).length;
-			
-			
+
+
 			for (var letter in dist) {
 				if(!showAllTiles && !(left[letter]))
 					continue;
-				
-							
+
+
 				if(left[letter])
 				{
 					if(vowels.indexOf(letter)>-1) 
@@ -81,14 +81,14 @@ var trackingGenerator = {
 					}
 					else if(letter!="blank")
 					{
-						 ccnt=ccnt+left[letter];
+						ccnt=ccnt+left[letter];
 					}
 					else
 					{
 						bcnt=left[letter];
 					}
 				}
-				
+
 				if((index % 8)===0)
 				{
 					html = html + '<div style="float:left;padding:10px">';
@@ -100,7 +100,7 @@ var trackingGenerator = {
 					html = html + '</div>';
 				}
 			}
-			
+
 
 
 			html = html + '<div style="clear:both"/><div class="vccnt">Vowels: '+vcnt+', Consonants: '+ccnt+', Blanks: '+bcnt+'.<BR>Your sorted rack: <b>'+rack+'</b></div>';
@@ -126,10 +126,70 @@ var trackingGenerator = {
 					html=html + '<div class="sendWord"><form action="http://moltengold.com/cgi-bin/scrabble/extn.pl" method="post" target="scoring"> <input name="word" value="'+ word +'" type="hidden" > <input name="playerId" value="'+playerId+'" type="hidden"> <input name="oppoId" value="'+oppoID+'" type="hidden">  <input name="dictionary" value="'+dictionary+'" type="hidden"> <input name="app" value="Scrabble" type="hidden"> Record first word ('+word+') in Facebook Scrabble League <input type="submit" value="Send"></form></div>';
 				}
 
+
+				$dialog.html(html);
+				$("input[type=submit]").button();
+				var $ajaxresult;
+				if (!$('#ajaxresult').is(':data(dialog)')) {
+
+					$ajaxresult = $('<div id="ajaxresult" ></div>').html('').dialog({autoOpen : false,title : 'Score Manager',
+						width : 250,
+						modal:true
+					});
+
+				} else {
+					$ajaxresult = $('#ajaxresult');
+				}
+
+				var params;
+				
+				var uGame = game.substring(0,1).toUpperCase() + game.substring(1);
+				//Override click for send event.				
+				$("div[class^=send] input[type=submit]").on('click',function(evt){				
+					evt.preventDefault();
+					if(finished)
+					{
+						params = {playerScore:playerScore,oppoScore:oppoScore,playerId:playerId,oppoId:oppoID,dictionary:dictionary[0],word:word,app:uGame,gameid:gameid};
+						
+					}
+					else
+					{
+						params = {word:word,playerId:playerId,oppoId:oppoID,dictionary:dictionary[0],app:uGame,gameid:gameid};
+					}
+					
+					var loadinghtml = '<div><span>Loading...</span><br/><img src="trackerloading.gif" /></div>';
+
+					if ($ajaxresult.dialog('isOpen')) {
+
+						$ajaxresult.html(loadinghtml);
+
+					} else {
+
+						$ajaxresult.html(loadinghtml).dialog('open');
+
+					}
+					var url = 'http://moltengold.com/cgi-bin/scrabble/extn.pl';
+					
+					$.ajax({url : url,//+ '?callback=?',
+						context : this,
+						data : (params),
+						dataType : "html",
+						type:"POST",
+						success : function(data) {		
+							$ajaxresult.html(data);							
+							return true;
+						},
+						failure : function(jqXHR, textStatus, errorThrown) {
+							$ajaxresult.html(textStatus);
+							return false;
+
+						}
+					});
+
+				});
 			}
 
-			$dialog.html(html);
-			$("input[type=submit]").button();
+
 
 		},
 		getTilesLeft: function(applink,callback) {
@@ -259,9 +319,9 @@ var trackingGenerator = {
 
 //Run our tile tracker script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
-	
+
 	var bkg = chrome.extension.getBackgroundPage();
-	
+
 	$("#tabs").tabs();
 	$("ul.ui-widget-header").removeClass(' ui-corner-all').css({ 'border' : 'none', 'border-bottom' : '1px solid #d4ccb0'});
 	$("#saveButton").button();
@@ -270,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	$("div#toolbar img#closeButton").on('click',function(){
 		window.close();		
 	});
-	
+
 	$("div#toolbar img#refreshButton").on('click',function(){
 		window.location.reload();		
 	});
@@ -279,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	var storage = chrome.storage.sync;
 
 	$chkNotesFirst = $("div#settings input[name=notesFirst]");
-	
+
 	loadSettings();
 
 
@@ -424,13 +484,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		$('div.tinyeditor').off('mouseup',registerNoteChange);
 		$(innerbody).off("paste keyup mouseup",registerNoteChange );
 	}
-	
+
 	function loadSettings()
 	{
 
 		$("div#settings input:checkbox").each(function(){
 			var $checkbox = $(this);
 			var name = $checkbox.attr('name');
+			var origVal = $checkbox.prop('checked');
 			storage.get(name, function(items) {
 
 				if (items[name]) {
@@ -439,8 +500,8 @@ document.addEventListener('DOMContentLoaded', function () {
 				else
 				{
 					var newSetting = {};
-					newSetting[name]=false;
-				    storage.set(newSetting);	    		    	
+					newSetting[name]=origVal;
+					storage.set(newSetting);	    		    	
 				}
 				if(name=="useAllTilesLimit")
 				{
@@ -448,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				}
 			});
 		});
-		
+
 		$("div#settings input[type=number]").each(function(){
 			var $input = $(this);
 			var name = $input.attr('name');
@@ -457,46 +518,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
 				if (items[name]) {
 					(function(n){
-					$input.val(n);
+						$input.val(n);
 					})(items[name]);
 				}
 				else
 				{
 					var newSetting = {};
 					newSetting[name]=origVal;
-				    storage.set(newSetting);	    		    	
+					storage.set(newSetting);	    		    	
 				}
 			});
 		});
-		
-		
+
+
 		$("div#settings input:checkbox").change(function(){		
 			var name = $(this).attr('name');
 			var newSetting = {};
 			newSetting[name] = $(this).prop('checked');
-		    storage.set(newSetting);
-		    
-		    if(name=='useAllTilesLimit')
-		    {	    	
-		    	$("div#settings input[name=allTilesLimit]").prop('disabled', !$(this).prop('checked'));
-		    }    
-		    /*
-		     if(name!=='notesFirst')
-		    {
-		    	window.location.reload();
-		    }
-		    */
+			storage.set(newSetting);
 			
+			if(name=='useAllTilesLimit')
+			{	    	
+				$("div#settings input[name=allTilesLimit]").prop('disabled', !$(this).prop('checked'));
+			}			
+
 		});
-		
+
 		$("div#settings input[type=number]").change(function(){		
 			var name = $(this).attr('name');
 			var newSetting = {};
 			newSetting[name] = $(this).val();
-		    storage.set(newSetting); 
-			
+			storage.set(newSetting); 
+
 		});		
-		
+
 	}
 
 	bindNoteChangeEvents();

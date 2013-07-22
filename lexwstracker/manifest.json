@@ -12,7 +12,7 @@
    "content_scripts": [
     {
       "matches": ["https://scrabblefb-live2.sn.eamobile.com/*","http://scrabblefb-live2.sn.eamobile.com/*"],
-      "js": ["jquery-1.7.min.js","html2canvas.js", "eaparser.js"],
+      "js": ["jquery-1.7.min.js","eaparser.js"],
       "all_frames":true
     }
   ],
@@ -24,10 +24,10 @@
   },
   "permissions": [
     "https://scrabtourneyasst.herokuapp.com/",
-    "https://apps.facebook.com/",
     "tabs",
     "storage",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "http://moltengold.com/"
   ],
   "icons" : {
     "48" : "icon-48.png",
