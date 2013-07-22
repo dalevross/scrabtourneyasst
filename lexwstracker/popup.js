@@ -188,6 +188,10 @@ var trackingGenerator = {
 
 				});
 			}
+			else
+			{
+				$dialog.html(html);				
+			}
 
 
 
@@ -469,7 +473,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			teval = $.trim($("#tinyeditor").val());
 			if(teval != $(innerbody).html())
 			{			
-				$('#saveButton').show();				
+				$('#saveButton').show();
+				//$('#saveWarning').effect('shake');
 
 			}	
 		}, 500 );

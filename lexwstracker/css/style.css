@@ -96,6 +96,11 @@ div#lexwstracker {
 	width: 100px;
 }
 
+#saveWarning
+{
+	color: red;
+}
+
 div#toolbar img#closeButton {
 	float: right;
 }
