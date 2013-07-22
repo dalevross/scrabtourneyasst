@@ -93,7 +93,7 @@ var trackingGenerator = {
 				{
 					html = html + '<div style="float:left;padding:10px">';
 				}
-				html = html + '<div class="wrapper' + ((showAllTiles && !(left[letter]))?' depleted':'') +'"><div   class="letter' + ((vowels.indexOf(letter)>-1 && distinguishVowels)?' vowel':'') +'" title="Total: ' + dist[letter] +  '">' + letter + '</div><div class="count">' + (left[letter] || '0') + ((showTotals)?('/' + dist[letter].toString()):'') + '</div></div>';
+				html = html + '<div class="wrapper' + ((showAllTiles && !(left[letter]))?' depleted':'') +'"><div   class="letter' + ((vowels.indexOf(letter)>-1)?' vowel':'') +'" title="Total: ' + dist[letter] +  '">' + letter + '</div><div class="count' + ((vowels.indexOf(letter)>-1)?' vowel':'') + '">' + (left[letter] || '0') + ((showTotals)?('/' + dist[letter].toString()):'') + '</div></div>';
 				index++;
 				if(((index)%8===0 && index!==0)|| index === numTiles)
 				{
@@ -142,7 +142,7 @@ var trackingGenerator = {
 				}
 
 				var params;
-				
+
 				var uGame = game.substring(0,1).toUpperCase() + game.substring(1);
 				//Override click for send event.				
 				$("div[class^=send] input[type=submit]").on('click',function(evt){				
@@ -150,13 +150,13 @@ var trackingGenerator = {
 					if(finished)
 					{
 						params = {playerScore:playerScore,oppoScore:oppoScore,playerId:playerId,oppoId:oppoID,dictionary:dictionary[0],word:word,app:uGame,gameid:gameid};
-						
+
 					}
 					else
 					{
 						params = {word:word,playerId:playerId,oppoId:oppoID,dictionary:dictionary[0],app:uGame,gameid:gameid};
 					}
-					
+
 					var loadinghtml = '<div><span>Loading...</span><br/><img src="trackerloading.gif" /></div>';
 
 					if ($ajaxresult.dialog('isOpen')) {
@@ -169,7 +169,7 @@ var trackingGenerator = {
 
 					}
 					var url = 'http://moltengold.com/cgi-bin/scrabble/extn.pl';
-					
+
 					$.ajax({url : url,//+ '?callback=?',
 						context : this,
 						data : (params),
@@ -190,10 +190,18 @@ var trackingGenerator = {
 			}
 			else
 			{
-				$dialog.html(html);				
+				$dialog.html(html);
+
+			}			
+
+			if($('input[name=distinguishVowels]').prop('checked'))
+			{
+				$("div.vowel").css({'color':'blue','font-weight': 'bold'});
 			}
-
-
+			else
+			{
+				$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
+			}
 
 		},
 		getTilesLeft: function(applink,callback) {
@@ -326,6 +334,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	var bkg = chrome.extension.getBackgroundPage();
 
+	var version = chrome.runtime.getManifest().version; 
+
+	$("div#version").html("Version: " + version);
+
 	$("#tabs").tabs();
 	$("ul.ui-widget-header").removeClass(' ui-corner-all').css({ 'border' : 'none', 'border-bottom' : '1px solid #d4ccb0'});
 	$("#saveButton").button();
@@ -342,9 +354,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	var storage = chrome.storage.sync;
 
-	$chkNotesFirst = $("div#settings input[name=notesFirst]");
-
 	loadSettings();
+
+	$chkNotesFirst = $("div#settings input[name=notesFirst]");
 
 
 	var editor = new TINY.editor.edit('editor', {
@@ -496,7 +508,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		$("div#settings input:checkbox").each(function(){
 			var $checkbox = $(this);
 			var name = $checkbox.attr('name');
-			var origVal = $checkbox.prop('checked');
+			var origVal = (name=="notesFirst")?true:false;
+
 			storage.get(name, function(items) {
 
 				if (items[name]) {
@@ -504,6 +517,10 @@ document.addEventListener('DOMContentLoaded', function () {
 				}
 				else
 				{
+					if(name=="notesFirst")
+					{
+						$(this).prop('checked',true);
+					}
 					var newSetting = {};
 					newSetting[name]=origVal;
 					storage.set(newSetting);	    		    	
@@ -511,9 +528,11 @@ document.addEventListener('DOMContentLoaded', function () {
 				if(name=="useAllTilesLimit")
 				{
 					$("div#settings input[name=allTilesLimit]").prop('disabled', !$("div#settings input[name=useAllTilesLimit]").prop('checked'));
-				}
+				}				
 			});
 		});
+
+
 
 		$("div#settings input[type=number]").each(function(){
 			var $input = $(this);
@@ -541,11 +560,23 @@ document.addEventListener('DOMContentLoaded', function () {
 			var newSetting = {};
 			newSetting[name] = $(this).prop('checked');
 			storage.set(newSetting);
-			
+
 			if(name=='useAllTilesLimit')
 			{	    	
 				$("div#settings input[name=allTilesLimit]").prop('disabled', !$(this).prop('checked'));
-			}			
+			}
+
+			if(name=='distinguishVowels')
+			{
+				if($(this).prop('checked'))
+				{
+					$("div.vowel").css({'color':'blue','font-weight': 'bold'});
+				}
+				else
+				{
+					$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
+				}
+			}
 
 		});
 
