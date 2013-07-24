@@ -17,7 +17,8 @@
     }
   ],
   "web_accessible_resources": [
-    "owl-lookup.png"
+    "owl-lookup.png",
+    "notes-owl.png"
   ],  
   "permissions": [
     "tabs",

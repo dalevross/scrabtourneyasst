@@ -13,6 +13,7 @@ var trackingGenerator = {
 
 			var lexdist = {
 					"US":"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
+					"EN":"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
 					"UK" :"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
 					"FR" :"a,9|b,2|c,2|d,3|e,15|f,2|g,2|h,2|i,8|j,1|k,1|l,5|m,3|n,6|o,6|p,2|q,1|r,6|s,6|t,6|u,6|v,2|w,1|x,1|y,1|z,1|blank,2",
 					"IT": "a,14|b,3|c,6|d,3|e,11|f,3|g,2|h,2|i,12|l,5|m,5|n,5|o,15|p,3|q,1|r,6|s,6|t,6|u,5|v,3|z,2|blank,2"
@@ -21,22 +22,26 @@ var trackingGenerator = {
 			var wsdist = {
 					"US": "a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
 					"UK" :"a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"FR" :"a,9|b,2|c,2|d,3|e,15|f,2|g,2|h,2|i,8|j,1|k,1|l,5|m,3|n,6|o,6|p,2|q,1|r,6|s,6|t,6|u,6|v,2|w,1|x,1|y,1|z,1|blank,2",
-					"IT": "a,14|b,3|c,6|d,3|e,11|f,3|g,2|h,2|i,12|l,5|m,5|n,5|o,15|p,3|q,1|r,6|s,6|t,6|u,5|v,3|z,2|blank,2"
+					"EN" :"a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
+					"FR": "a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
+					"IT" :"a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2"
+					
 			};
 
 
-			if(game="lexulous")
+			if(game=="lexulous")
 			{
 				distribution = lexdist[lang.toUpperCase()];				
 			}
 			else
 			{
-				distribution = $(data).find('tile_count').text();
+				distribution = wsdist[lang.toUpperCase()];
+				//distribution = $(data).find('tile_count').text();
 
 			}
 
 			var dist = {};
+			var used = {};
 			var letters = distribution.split("|");
 			$.each(letters, function(i,pair){
 				let_count = pair.split(",");
@@ -83,17 +88,21 @@ var trackingGenerator = {
 			response.status = (status==="F")?'Game completed':((myturn==="Y")?'<span style="font-weight:bold">It\'s now your turn!</span>':'Opponent\'s turn.');
 			response.finished = (status==="F");
 			
-			count = +($(data).find('cnt').text());
+			count = +($(data).find('movesnode').find('cnt').text());
 			for (var i=1;i<=count;i++)
 			{
-				var move = $(data).find('m'+count).text();
-				var blocks = move.split();
-				if(blocks[4]!=='r')
-				{	response.first = blocks[2];
+				var move = $(data).find('m'+i).text();
+				var blocks = move.split(',');
+				if((blocks[4]==='r'))
+				{	
+					response.first = blocks[2];
 					break;
 				}			
 				
 			}
+			
+			trackingGenerator.loadToDialog($dialog,response,game);
+			callback();
 		},
 
 		loadToDialog: function($dialog,response,game){
@@ -243,12 +252,12 @@ var trackingGenerator = {
 					evt.preventDefault();
 					if(finished)
 					{
-						params = {playerScore:playerScore,oppoScore:oppoScore,playerId:playerId,oppoId:oppoID,dictionary:dictionary[0],word:word,app:uGame,gameid:gameid};
+						params = {playerScore:playerScore,oppoScore:oppoScore,playerId:playerId,oppoId:oppoID,dictionary:dictionary,word:word,app:uGame,gameid:gameid};
 
 					}
 					else
 					{
-						params = {word:word,playerId:playerId,oppoId:oppoID,dictionary:dictionary[0],app:uGame,gameid:gameid};
+						params = {word:word,playerId:playerId,oppoId:oppoID,dictionary:dictionary,app:uGame,gameid:gameid};
 					}
 
 					var loadinghtml = '<div><span>Loading...</span><br/><img src="trackerloading.gif" /></div>';
@@ -408,7 +417,7 @@ var trackingGenerator = {
 										}
 										else
 										{
-											trackingGenerator.processLexWSResponse($dialog,data,game[0],gid[1],pid[1],lang[0],callback);												
+											trackingGenerator.processLexWSResponse($dialog,data,game[0],gid[1],pid[1],lang[1],callback);												
 										}
 
 									},
@@ -427,7 +436,7 @@ var trackingGenerator = {
 						}
 						else
 						{
-							trackingGenerator.processLexWSResponse($dialog,data,game[0],gid[1],pid[1],lang[0],callback);
+							trackingGenerator.processLexWSResponse($dialog,data,game[0],gid[1],pid[1],lang[1],callback);
 
 						}				
 
