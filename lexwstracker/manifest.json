@@ -20,10 +20,9 @@
     "owl-lookup.png"
   ],  
   "permissions": [
-    "https://scrabtourneyasst.herokuapp.com/",
     "tabs",
     "storage",
-    "https://aws.rjs.in",
+    "https://aws.rjs.in/",
     "http://moltengold.com/"
   ],
   "icons" : {

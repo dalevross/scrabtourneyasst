@@ -8,6 +8,94 @@ var trackingGenerator = {
 		g_opponentId:'',
 		g_screenshot:'',
 
+		processLexWSResponse: function($dialog,data,game,gid,playerNum,lang,callback){
+			oppNum = (playerNum%2)+ 1;
+
+			var lexdist = {
+					"US":"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
+					"UK" :"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
+					"FR" :"a,9|b,2|c,2|d,3|e,15|f,2|g,2|h,2|i,8|j,1|k,1|l,5|m,3|n,6|o,6|p,2|q,1|r,6|s,6|t,6|u,6|v,2|w,1|x,1|y,1|z,1|blank,2",
+					"IT": "a,14|b,3|c,6|d,3|e,11|f,3|g,2|h,2|i,12|l,5|m,5|n,5|o,15|p,3|q,1|r,6|s,6|t,6|u,5|v,3|z,2|blank,2"
+			};
+			
+			var wsdist = {
+					"US": "a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
+					"UK" :"a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
+					"FR" :"a,9|b,2|c,2|d,3|e,15|f,2|g,2|h,2|i,8|j,1|k,1|l,5|m,3|n,6|o,6|p,2|q,1|r,6|s,6|t,6|u,6|v,2|w,1|x,1|y,1|z,1|blank,2",
+					"IT": "a,14|b,3|c,6|d,3|e,11|f,3|g,2|h,2|i,12|l,5|m,5|n,5|o,15|p,3|q,1|r,6|s,6|t,6|u,5|v,3|z,2|blank,2"
+			};
+
+
+			if(game="lexulous")
+			{
+				distribution = lexdist[lang.toUpperCase()];				
+			}
+			else
+			{
+				distribution = $(data).find('tile_count').text();
+
+			}
+
+			var dist = {};
+			var letters = distribution.split("|");
+			$.each(letters, function(i,pair){
+				let_count = pair.split(",");
+				dist[let_count[0].toUpperCase()]=let_count[1];
+				used[let_count[0].toUpperCase()] = 0;
+			});
+			
+			nodeval = $(data).find('nodeval').text();
+			var usedletters = nodeval.split("|");
+			$.each(usedletters, function(i,pair){
+				cell_info = pair.split(",");
+				letter = (cell_info[0]===cell_info[0].toUpperCase())?cell_info[0]:"blank";
+				used[letter]++;
+			});
+			
+			var rack=new Array();
+			myrack = $(data).find('myrack').text();
+			usedletters = myrack.split('');
+			$.each(usedletters, function(i,let){
+				letter = (let==='*')?"blank":let;
+				used[letter]++;
+				rack.push((letter==="blank")?"?":letter);
+				
+			});
+			
+			rack.sort();
+			var rackstring = rack.join('');
+			
+			var response = {};
+			response.dist = dist;
+			response.used = used;
+			response.name = $(data).find('p'+oppNum).text();
+			response.ID = $(data).find('p'+oppNum + 'email').text();
+			response.player = $(data).find('p'+playerNum + 'email').text();
+			response.scoreP = $(data).find('p' +playerNum + 'score').text();
+			response.scoreO = $(data).find('p'+oppNum + 'email').text();
+			response.rack = rackstring;
+			response.dictionary = $(data).find('dictionary').text();
+			response.gid = gid;
+			
+			status =  $(data).find('status').text().toUpperCase();
+			myturn = $(data).find('myturn').text().toUpperCase();
+			
+			response.status = (status==="F")?'Game completed':((myturn==="Y")?'<span style="font-weight:bold">It\'s now your turn!</span>':'Opponent\'s turn.');
+			response.finished = (status==="F");
+			
+			count = +($(data).find('cnt').text());
+			for (var i=1;i<=count;i++)
+			{
+				var move = $(data).find('m'+count).text();
+				var blocks = move.split();
+				if(blocks[4]!=='r')
+				{	response.first = blocks[2];
+					break;
+				}			
+				
+			}
+		},
+
 		loadToDialog: function($dialog,response,game){
 
 			var used = response.used;
@@ -105,6 +193,12 @@ var trackingGenerator = {
 
 			html = html + '<div style="clear:both"/><div class="vccnt">Vowels: '+vcnt+', Consonants: '+ccnt+', Blanks: '+bcnt+'.<BR>Your sorted rack: <b>'+rack+'</b></div>';
 
+			if(response.status)
+			{
+				html = html + '<br/><span id="trackerstat">' + response.status + '</span><br/>';
+				
+			}
+			
 			var d = new Date();
 
 			var suffix = '<span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
@@ -246,6 +340,7 @@ var trackingGenerator = {
 
 
 				var gid = /gid=(\d+)/g.exec(applink);
+				var lang = /lang=(\w+)/g.exec(applink);
 
 				trackingGenerator.g_game = game[0];
 				trackingGenerator.g_gameid = gid[1];
@@ -253,13 +348,17 @@ var trackingGenerator = {
 
 
 
-				if (gid === null) {
+				if ((gid === null)||(lang===null)) {
 
 					$dialog.html('Invalid game link!');		
 
 					return false;
-
 				}
+
+
+
+				var showGameOver = /showGameOver=(\d)/g.exec(applink);
+
 
 
 
@@ -268,42 +367,69 @@ var trackingGenerator = {
 
 				if ((pid === null) || (password === null)) {
 
-					params = {gid : gid[1],game : game[0],version : 2,extension:1};
+					params = {gid : gid[1],pid : 1,action:'gameinfo'};
 
 				} else {
 
-					params = {gid : gid[1],game : game[0],pid : pid[1],password : password[1],version : 2,extension:1};
+					params = {gid : gid[1],game : game[0],pid : pid[1],password : password[1],action:'gameinfo'};
 
 				}
 
-
-
+				if (showGameOver !== null) {
+					params["showGameOver"]=showGameOver[1];
+				}		
 
 
 
 				$dialog.html(loadinghtml);
 
+				var url = "https://aws.rjs.in/" + ((game=="lexulous")?"fblexulous":"wordscraper") + "/engine/xmlv3.php";
 
-
-				$.ajax({url : 'https://scrabtourneyasst.herokuapp.com/scrabtourneyasst/scrabtiletracker.php?callback=?',
-
-					context : this,
-
-					data : (params),
-
-					dataType : "jsonp",
-
+				$.ajax({url : url,	
+					context : this,	
+					data : (params),	
+					dataType : "xml",	
 					success : function(data) {					
+						//Response was successful but empty, try again with gameOver
+						if(($.trim($(data).find('p1score').text())===""))
+						{
+							if(params.showGameOver == null)
+							{
+								params.showGameOver = '1';
+								$.ajax({url : url,	
+									context : this,	
+									data : (params),	
+									dataType : "xml",	
+									success : function(data) {
 
-						var d = new Date();
+										if(($.trim($(data).find('p1score').text())===""))
+										{
+											$dialog.html('An error was encountered retrieving the game information.<br/>Please try again');												
+										}
+										else
+										{
+											trackingGenerator.processLexWSResponse($dialog,data,game[0],gid[1],pid[1],lang[0],callback);												
+										}
 
-						var suffix = '<br/><span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
+									},
+									failure: function(jqXHR, textStatus, errorThrown) {
+										$dialog.html(textStatus);											
+										return false;
+									}
+								});
 
-						html = data['html'] + suffix;
-						trackingGenerator.g_playerid = data['id'];
-						trackingGenerator.g_opponentId = data['oppid'];
-						$dialog.html(html);
-						callback();
+							}
+							else
+							{
+								$dialog.html('An error was encountered retrieving the game information.<br/>Please try again');									
+							}							
+
+						}
+						else
+						{
+							trackingGenerator.processLexWSResponse($dialog,data,game[0],gid[1],pid[1],lang[0],callback);
+
+						}				
 
 					},
 

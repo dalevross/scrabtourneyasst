@@ -3,7 +3,11 @@
 
   "name": "OWLS Word Games Enhancer",
   "description": "This extension provides auxiliary features to popular word games",
-  "version": "2.0",
+<<<<<<< master
+  "version": "2.0.2",
+=======
+  "version": "2.1.0",
+>>>>>>> local
   "background": { "scripts": ["background.js"] },
   "page_action": {
     "default_icon": "icon-19.png",
@@ -12,30 +16,34 @@
    "content_scripts": [
     {
       "matches": ["https://scrabblefb-live2.sn.eamobile.com/*","http://scrabblefb-live2.sn.eamobile.com/*"],
-      "js": ["jquery-1.7.min.js", "eaparser.js"],
+      "js": ["jquery-1.7.min.js","eaparser.js"],
       "all_frames":true
     }
   ],
   "web_accessible_resources": [
     "owl-lookup.png"
+<<<<<<< master
   ],
   "sandbox": {
   "pages": ["editor.html","editor.js","tinyeditor/tiny.editor.packed.js"]
   },
-  "permissions": [
-<<<<<<< HEAD
-    "https://aws.rjs.in/",
-    "tabs"
 =======
+  ],  
+>>>>>>> local
+  "permissions": [
     "https://scrabtourneyasst.herokuapp.com/",
-    "https://apps.facebook.com/",
     "tabs",
-    "unlimitedStorage"
->>>>>>> dictionary_181
+    "storage",
+<<<<<<< master
+    "unlimitedStorage",
+=======
+    "https://aws.rjs.in",
+>>>>>>> local
+    "http://moltengold.com/"
   ],
   "icons" : {
     "48" : "icon-48.png",
     "128" : "icon-128.png"
   },
-   "content_security_policy": "script-src 'self'; object-src 'self'"
+   "content_security_policy": "script-src 'self' https://scrabtourneyasst.herokuapp.com; object-src 'self'"
 }

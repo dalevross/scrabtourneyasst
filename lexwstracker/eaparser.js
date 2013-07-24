@@ -8,6 +8,9 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 	}
 
 	$(document).ready(function () {
+		
+		var iconURL = chrome.extension.getURL("notes-owl.png"); 
+		$('div#headerButtonsContainerMiddle').append('<div style="color:darkgreen;position:relative;font-weight:bold;font-size:16px;top:3px;left:220px"><img src="'+iconURL+'"><div style="position:relative;top:-42px;left:60px">YOU HAVE NOTES</div></div>');
 
 		var myTurns=0;
 		if($("div#myTurnGamesList")) {
