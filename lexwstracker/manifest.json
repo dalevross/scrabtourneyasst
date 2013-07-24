@@ -3,7 +3,7 @@
 
   "name": "OWLS Word Games Enhancer",
   "description": "This extension provides auxiliary features to popular word games",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "background": { "scripts": ["background.js"] },
   "page_action": {
     "default_icon": "icon-19.png",
@@ -18,20 +18,17 @@
   ],
   "web_accessible_resources": [
     "owl-lookup.png"
-  ],
-  "sandbox": {
-  "pages": ["editor.html","editor.js","tinyeditor/tiny.editor.packed.js"]
-  },
+  ],  
   "permissions": [
     "https://scrabtourneyasst.herokuapp.com/",
     "tabs",
     "storage",
-    "unlimitedStorage",
+    "https://aws.rjs.in",
     "http://moltengold.com/"
   ],
   "icons" : {
     "48" : "icon-48.png",
     "128" : "icon-128.png"
   },
-   "content_security_policy": "script-src 'self' https://scrabtourneyasst.herokuapp.com; object-src 'self'"
+   "content_security_policy": "script-src 'self'; object-src 'self'"
 }
