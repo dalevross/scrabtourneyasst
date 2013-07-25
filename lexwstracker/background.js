@@ -23,6 +23,7 @@ chrome.pageAction.onClicked.addListener(function(tab) {
 });
 
 
+
 //Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(checkForValidUrl);
 
@@ -61,7 +62,7 @@ var oWLStorage =  {
 				notes_store.createIndex('gameid', 'gameid', { unique: false });
 				notes_store.createIndex('opponent', 'opponent', { unique: false });
 				notes_store.createIndex('savedDate', 'savedDate', { unique: false });
-				
+
 				var gcg_store = evt.currentTarget.result.createObjectStore(
 						oWLStorage.DB_GCG_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
@@ -71,16 +72,18 @@ var oWLStorage =  {
 				gcg_store.createIndex('gameid', 'gameid', { unique: false });
 				gcg_store.createIndex('opponent', 'opponent', { unique: false });
 				gcg_store.createIndex('savedDate', 'savedDate', { unique: false });
-				
-				
+
+
 				callback(true);
-				
+
 			};
 		},
 
 		/**
-		 * @param {string} store_name
-		 * @param {string} mode either "readonly" or "readwrite"
+		 * @param {string}
+		 *            store_name
+		 * @param {string}
+		 *            mode either "readonly" or "readwrite"
 		 */
 		getObjectStore : function (store_name, mode) {
 			var tx = oWLStorage.db.transaction(store_name, mode);
@@ -119,18 +122,25 @@ var oWLStorage =  {
 		},
 
 		/**
-		 * @param {string} recordid
-		 * @param {string} profileid
-		 * @param {string} game
-		 * @param {string} gameid
-		 * @param {string} note
-		 * @param {string} opponent
-		 * @param {function} callback
+		 * @param {string}
+		 *            recordid
+		 * @param {string}
+		 *            profileid
+		 * @param {string}
+		 *            game
+		 * @param {string}
+		 *            gameid
+		 * @param {string}
+		 *            note
+		 * @param {string}
+		 *            opponent
+		 * @param {function}
+		 *            callback
 		 */
 		addNote: function (recordid, profile, game, gameid,note,opponent, callback) {
 
 			var now = new Date();
-			
+
 			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,note:note,opponent:opponent,savedDate:now};
 
 			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
@@ -156,13 +166,13 @@ var oWLStorage =  {
 							putReq = store.delete(record.id);							
 						}
 					}
-					
+
 				} catch (e) {
 					callback(false);					
 				}
 				putReq.onsuccess = function (evt) {
 					callback(true);
-					
+
 				};
 				putReq.onerror = function() {
 					console.error("addNote error", this.error);
@@ -173,17 +183,23 @@ var oWLStorage =  {
 				console.error("addNote error", this.error);
 				callback(false);
 			};
-			
+
 		},
 
 
 		/**
-		 * @param {string} recordid
-		 * @param {string} profileid
-		 * @param {string} game
-		 * @param {string} gameid
-		 * @param {object} gcginfo
-		 * @param {Blob=} screenshot
+		 * @param {string}
+		 *            recordid
+		 * @param {string}
+		 *            profileid
+		 * @param {string}
+		 *            game
+		 * @param {string}
+		 *            gameid
+		 * @param {object}
+		 *            gcginfo
+		 * @param {Blob=}
+		 *            screenshot
 		 */
 		addGCG: function (recordid, profile, game, gameid,objGCG,opponent,screenshot,callback) {
 
@@ -196,12 +212,12 @@ var oWLStorage =  {
 				req = store.put(obj);
 			} catch (e) {
 				oWLStorage.displayActionFailure(e);
-				//throw e;
+				// throw e;
 			}
 			req.onsuccess = function (evt) {
-				//console.log("Insertion in DB successful");
+				// console.log("Insertion in DB successful");
 				oWLStorage.displayActionSuccess();
-				//displayPubList(store);
+				// displayPubList(store);
 			};
 			req.onerror = function() {
 				console.error("addPublication error", this.error);
@@ -210,8 +226,10 @@ var oWLStorage =  {
 		},
 
 		/**
-		 * @param {string} recordid
-		 * @param {string} store_name
+		 * @param {string}
+		 *            recordid
+		 * @param {string}
+		 *            store_name
 		 */
 		deleteRecordFromStore: function (recordid,store_name) {
 			var store = oWLStorage.getObjectStore(store_name, 'readwrite');
@@ -231,9 +249,12 @@ var oWLStorage =  {
 
 
 		/**
-		 * @param {number} key
-		 * @param {IDBObjectStore=} store
-		 * @param {string} store_name
+		 * @param {number}
+		 *            key
+		 * @param {IDBObjectStore=}
+		 *            store
+		 * @param {string}
+		 *            store_name
 		 */
 		deleteRecord : function (key, store,store_name) {
 			console.log("deletePublication:", arguments);
@@ -241,9 +262,11 @@ var oWLStorage =  {
 			if (typeof store == 'undefined')
 				store = oWLStoragegetObjectStore(store_name, 'readwrite');
 
-			// As per spec http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
+			// As per spec
+			// http://www.w3.org/TR/IndexedDB/#object-store-deletion-operation
 			// the result of the Object Store Deletion Operation algorithm is
-			// undefined, so it's not possible to know if some records were actually
+			// undefined, so it's not possible to know if some records were
+			// actually
 			// deleted by looking at the request result.
 			var req = store.get(key);
 			req.onsuccess = function(evt) {
@@ -253,8 +276,10 @@ var oWLStorage =  {
 					oWLStorage.displayActionFailure("No matching record found");
 					return;
 				}
-				// Warning: The exact same key used for creation needs to be passed for
-				// the deletion. If the key was a Number for creation, then it needs to
+				// Warning: The exact same key used for creation needs to be
+				// passed for
+				// the deletion. If the key was a Number for creation, then it
+				// needs to
 				// be a Number for deletion.
 				req = store.delete(key);
 				req.onsuccess = function(evt) {
@@ -270,7 +295,8 @@ var oWLStorage =  {
 		},
 
 		/**
-		 * @param {string} recordid
+		 * @param {string}
+		 *            recordid
 		 */
 		getNoteByRecordId : function (recordid,callback) {
 			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
@@ -297,17 +323,75 @@ var oWLStorage =  {
 
 		displayActionSuccess: function (msg) {
 			msg = typeof msg != 'undefined' ? "Success: " + msg : "Success";
-			//$('#msg').html('<span class="action-success">' + msg + '</span>');
+			// $('#msg').html('<span class="action-success">' + msg +
+			// '</span>');
 			console.log(msg);
 		},
 
 		displayActionFailure: function (msg) {
 			msg = typeof msg != 'undefined' ? "Failure: " + msg : "Failure";
-			//$('#msg').html('<span class="action-failure">' + msg + '</span>');
+			// $('#msg').html('<span class="action-failure">' + msg +
+			// '</span>');
 			console.log(msg);
-		}
-
+		}		
 }
+
+
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if(request.command == 'checknotes')
+	{
+		var recid = request.pid + '_' + request.game + '_'+ request.gameid;
+
+		oWLStorage.openDB(function(result){
+			if(result)
+			{
+				setTimeout(function(){
+					oWLStorage.getNoteByRecordId(recid,function(note){
+						var hasnotes;
+						var icon;
+						if($.trim(note)!="")
+						{
+							hasnotes = true;
+							icon = "icon-19-scroll.png";
+
+						}
+						else
+						{
+							hasnotes = false;
+							icon = "icon-19.png";									
+						}
+
+						chrome.tabs.query({currentWindow:true,active:true},function(tabs){
+							chrome.pageAction.setIcon({tabId: tabs[0].id, path:icon});
+							sendResponse({hasnotes:hasnotes});
+							return true;
+						});
+
+					});
+				},100);
+
+				return true;
+
+			}
+			else
+			{
+				chrome.tabs.query({currentWindow:true,active:true},function(tabs){
+					chrome.pageAction.setIcon({tabId: tabs[0].id, path:"icon-19.png"});
+					sendResponse({hasnotes:false});
+					return true;
+				});
+
+				return true;
+			}
+
+
+
+		});
+		return true;
+	}
+});
+
 
 
 

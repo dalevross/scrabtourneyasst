@@ -12,20 +12,20 @@ var trackingGenerator = {
 			oppNum = (playerNum%2)+ 1;
 
 			var lexdist = {
-					"US":"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"EN":"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"UK" :"a,8|b,2|c,2|d,3|e,11|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,7|p,2|q,1|r,5|s,3|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"FR" :"a,9|b,2|c,2|d,3|e,15|f,2|g,2|h,2|i,8|j,1|k,1|l,5|m,3|n,6|o,6|p,2|q,1|r,6|s,6|t,6|u,6|v,2|w,1|x,1|y,1|z,1|blank,2",
-					"IT": "a,14|b,3|c,6|d,3|e,11|f,3|g,2|h,2|i,12|l,5|m,5|n,5|o,15|p,3|q,1|r,6|s,6|t,6|u,5|v,3|z,2|blank,2"
+					"US":"A,8|B,2|C,2|D,3|E,11|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,7|P,2|Q,1|R,5|S,3|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2",
+					"EN":"A,8|B,2|C,2|D,3|E,11|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,7|P,2|Q,1|R,5|S,3|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2",
+					"UK" :"A,8|B,2|C,2|D,3|E,11|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,7|P,2|Q,1|R,5|S,3|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2",
+					"FR" :"A,9|B,2|C,2|D,3|E,15|F,2|G,2|H,2|I,8|J,1|K,1|L,5|M,3|N,6|O,6|P,2|Q,1|R,6|S,6|T,6|U,6|V,2|W,1|X,1|Y,1|Z,1|blank,2",
+					"IT": "A,14|B,3|C,6|D,3|E,11|F,3|G,2|H,2|I,12|L,5|M,5|N,5|O,15|P,3|Q,1|R,6|S,6|T,6|U,5|V,3|Z,2|blank,2"
 			};
-			
+
 			var wsdist = {
-					"US": "a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"UK" :"a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"EN" :"a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"FR": "a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2",
-					"IT" :"a,11|b,2|c,2|d,3|e,9|f,2|g,2|h,2|i,8|j,1|k,1|l,3|m,2|n,5|o,9|p,2|q,1|r,5|s,5|t,5|u,3|v,2|w,2|x,1|y,3|z,1|blank,2"
-					
+					"US": "A,11|B,2|C,2|D,3|E,9|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,9|P,2|Q,1|R,5|S,5|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2",
+					"UK" :"A,11|B,2|C,2|D,3|E,9|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,9|P,2|Q,1|R,5|S,5|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2",
+					"EN" :"A,11|B,2|C,2|D,3|E,9|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,9|P,2|Q,1|R,5|S,5|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2",
+					"FR": "A,11|B,2|C,2|D,3|E,9|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,9|P,2|Q,1|R,5|S,5|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2",
+					"IT" :"A,11|B,2|C,2|D,3|E,9|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,9|P,2|Q,1|R,5|S,5|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2"
+
 			};
 
 
@@ -45,10 +45,10 @@ var trackingGenerator = {
 			var letters = distribution.split("|");
 			$.each(letters, function(i,pair){
 				let_count = pair.split(",");
-				dist[let_count[0].toUpperCase()]=let_count[1];
-				used[let_count[0].toUpperCase()] = 0;
+				dist[let_count[0]]=let_count[1];
+				used[let_count[0]]= 0;
 			});
-			
+
 			nodeval = $(data).find('nodeval').text();
 			var usedletters = nodeval.split("|");
 			$.each(usedletters, function(i,pair){
@@ -56,7 +56,7 @@ var trackingGenerator = {
 				letter = (cell_info[0]===cell_info[0].toUpperCase())?cell_info[0]:"blank";
 				used[letter]++;
 			});
-			
+
 			var rack=new Array();
 			myrack = $(data).find('myrack').text();
 			usedletters = myrack.split('');
@@ -64,12 +64,12 @@ var trackingGenerator = {
 				letter = (let==='*')?"blank":let;
 				used[letter]++;
 				rack.push((letter==="blank")?"?":letter);
-				
+
 			});
-			
+
 			rack.sort();
 			var rackstring = rack.join('');
-			
+
 			var response = {};
 			response.dist = dist;
 			response.used = used;
@@ -77,30 +77,30 @@ var trackingGenerator = {
 			response.ID = $(data).find('p'+oppNum + 'email').text();
 			response.player = $(data).find('p'+playerNum + 'email').text();
 			response.scoreP = $(data).find('p' +playerNum + 'score').text();
-			response.scoreO = $(data).find('p'+oppNum + 'email').text();
+			response.scoreO = $(data).find('p'+oppNum + 'score').text();
 			response.rack = rackstring;
 			response.dictionary = $(data).find('dictionary').text();
 			response.gid = gid;
-			
+
 			status =  $(data).find('status').text().toUpperCase();
 			myturn = $(data).find('myturn').text().toUpperCase();
-			
+
 			response.status = (status==="F")?'Game completed':((myturn==="Y")?'<span style="font-weight:bold">It\'s now your turn!</span>':'Opponent\'s turn.');
 			response.finished = (status==="F");
-			
+
 			count = +($(data).find('movesnode').find('cnt').text());
 			for (var i=1;i<=count;i++)
 			{
-				var move = $(data).find('m'+i).text();
+				var move = $(data).find('movesnode').find('m'+i).text();
 				var blocks = move.split(',');
 				if((blocks[4]==='r'))
 				{	
-					response.first = blocks[2];
+					response.first = blocks[2].toUpperCase();
 					break;
 				}			
-				
+
 			}
-			
+
 			trackingGenerator.loadToDialog($dialog,response,game);
 			callback();
 		},
@@ -205,9 +205,9 @@ var trackingGenerator = {
 			if(response.status)
 			{
 				html = html + '<br/><span id="trackerstat">' + response.status + '</span><br/>';
-				
+
 			}
-			
+
 			var d = new Date();
 
 			var suffix = '<span style="font-size:10px"> Retrieved at ' + d.toLocaleString() + '</span>';
@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
 							$("div#notestatus").html('');
 							bindNoteChangeEvents();
 						});
-					},1000);
+					},100);
 
 
 				}
@@ -592,6 +592,12 @@ document.addEventListener('DOMContentLoaded', function () {
 					else{
 						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-comment'/>Notes");
 					}
+					
+					chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
+						chrome.tabs.sendMessage(tabs[0].id, {command: "updateNotesFlags"}, function(response) {
+						
+						});
+					});
 				}
 
 				$(innerbody).attr('contenteditable',true);
