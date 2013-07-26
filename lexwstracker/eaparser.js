@@ -1,12 +1,17 @@
 if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(window.location.href)){
 
 	var processingNotesList = {};
+	var processingUpdateCounts = false;
 
-	function updateCounts(){		
+	function updateCounts(){
+		if(processingUpdateCounts)
+			return;
+		processingUpdateCounts = true;
 		myTurns=$("div#myTurnGamesList > div.match").size();
 		$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
 		theirTurns=$("div#theirTurnGamesList > div.match").size();
-		$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');			
+		$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
+		processingUpdateCounts = false;
 	}
 
 	function checkForOWLNotes(callback)
@@ -60,29 +65,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		var iconURL = chrome.extension.getURL("notes-owl.png"); 
 		$('div#headerButtonsContainerMiddle').append('<div style="color:darkgreen;position:relative;font-weight:bold;font-size:16px;top:3px;left:220px"><img src="'+iconURL+'"><div id="notesIndicator" style="position:relative;top:-42px;left:60px"></div></div>');
 
-		var myTurns=0;
-		if($("div#myTurnGamesList")) {
-			myTurns=$("div#myTurnGamesList > div.match").size();
-			$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
-		}
-		var theirTurns=0;
-		if($("div#theirTurnGamesList")) {
-			theirTurns=$("div#theirTurnGamesList > div.match").size();
-			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
-		}
-
-		$("div#myTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
-			myTurns=$("div#myTurnGamesList > div.match").size();
-			$("div#myTurnGames").find("div").eq(0).find("span").eq(0).text('My Turn ('+myTurns+')');
-
-		});
-
-		$("div#theirTurnGamesList").on('DOMNodeInserted DOMNodeRemoved DOMSubtreeModified', function(event) {
-			theirTurns=$("div#theirTurnGamesList > div.match").size();
-			$("div#theirTurnGames").find("div").eq(0).find("span").eq(0).text('Their Turn ('+theirTurns+')');
-		});
-
-
+		updateCounts();
 
 		$("p#lookupResult").on('DOMNodeInserted', function(event) {
 			if($("p#lookupResult span").attr("class")=="typo_lightRed")
@@ -143,11 +126,11 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 
 		var gameNodes        = $("div[id$=TurnGamesList] div.match,div#completedGamesList div.archivedMatch");
-		var gamesListNodes   = $("div.jspPane div.mainMenuModule");
+		var gamesListNodes   = $("div[id$=GamesList]");
 		var MutationObserver    = window.MutationObserver || window.WebKitMutationObserver;
 		var myObserver          = new MutationObserver (mutationHandler);
 		var listConfig = {subtree:true,childList:true};
-		var gameConfig  = {attributes: true,attributeFilter: ["class"]};
+		var gameConfig  = {attributes: true,attributeOldValue:true,attributeFilter: ["class"]};
 
 		function startObservation(){
 			gameNodes.each ( function () {
@@ -165,16 +148,34 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 			mutationRecords.forEach ( function (mutation) {
 				switch(mutation.type)
 				{
-					case "attributes":
-						if($(mutation.target).attr('class').toLowerCase().indexOf('current') >-1)
+				case "attributes":
+					if($(mutation.target).attr('class').toLowerCase().indexOf('current') >-1)
+					{
+						checkForOWLNotes();							
+						//console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue,attributeName:mutation.attributeName,attributeNamespace:mutation.attributeNamespace}));
+
+					}
+					break;
+				case "childList":
+					if($(mutation.target).attr('id').indexOf('GamesList') >-1)
+					{
+						updateCounts();							
+						//Element may have been added to another section so watch
+						//again if it was added
+						if (typeof mutation.addedNodes == "object") 
 						{
-							checkForOWLNotes();
-							//console.log ($(mutation.target).find("span.matchPlayerName").text() + ' '+ mutation.type + ' ' + mutation.oldValue);
+							if(mutation.addedNodes.length > 0)
+							{
+								console.log('Node was added here');
+								myObserver.disconnect();
+								setTimeout(startObservation,200);	
+							}
 						}
-						break;
-					default:
-						console.log(mutation.target + ' ' +  $(mutation.target).attr('class') + ' '+ mutation.type + ' ' + mutation.oldValue);
-						break;		    	
+					}
+					break;
+				default:
+					console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue}));
+				break;		    	
 				}
 
 			} );
