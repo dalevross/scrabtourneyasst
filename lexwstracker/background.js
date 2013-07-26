@@ -9,7 +9,54 @@ function checkForValidUrl(tabId, changeInfo, tab) {
 	// If the letter 'g' is found in the tab's URL...
 	if (((tab.url.indexOf('lexulous') > -1 && tab.url.indexOf('gid') > -1 )||(tab.url.indexOf('wordscraper') > -1  && tab.url.indexOf('gid') > -1)|| (tab.url.indexOf('ea_scrabble_closed') > -1)|| (tab.url.indexOf('livescrabble') > -1))&&(tab.url.indexOf('apps.facebook.com') > -1)) {
 		// ... show the page action.
-		chrome.pageAction.show(tabId);		
+		if(tab.url.indexOf('scrabble') == -1)
+		{
+			var game = tab.url.match(/(lexulous|wordscraper)/g);
+			var gid = /gid=(\d+)/g.exec(tab.url);
+			
+			oWLStorage.openDB(function(result){
+				if(result)
+				{
+					setTimeout(function(){
+						oWLStorage.getNoteByGameAndId(game[0],gid[1],function(note){
+							var icon;
+							if($.trim(note)!="")
+							{
+								icon = "icon-19-notes.png";
+
+							}
+							else
+							{
+								icon = "icon-19.png";									
+							}
+
+							chrome.tabs.query({currentWindow:true,active:true},function(tabs){
+								chrome.pageAction.setIcon({tabId: tabs[0].id, path:icon});
+								chrome.pageAction.show(tabId);
+								
+							});
+
+						});
+					},100);				
+
+				}
+				else
+				{
+					chrome.tabs.query({currentWindow:true,active:true},function(tabs){
+						chrome.pageAction.setIcon({tabId: tabs[0].id, path:"icon-19.png"});	
+						chrome.pageAction.show(tabId);
+					});
+					
+
+					
+				}
+			});		
+
+		}
+		else
+		{
+			chrome.pageAction.show(tabId);		
+		}
 
 	}
 	else
@@ -30,7 +77,7 @@ chrome.tabs.onUpdated.addListener(checkForValidUrl);
 var oWLStorage =  {
 
 		DB_NAME : 'owlswgedb',
-		DB_VERSION : 1,
+		DB_VERSION : 2,
 		DB_NOTES_STORE_NAME : 'notes',
 		DB_GCG_STORE_NAME : 'gcg',
 		db : {},
@@ -53,27 +100,35 @@ var oWLStorage =  {
 			req.onupgradeneeded = function (evt) {
 				console.log("openDb.onupgradeneeded");
 				oWLStorage.db = evt.currentTarget.result;
-				var notes_store = evt.currentTarget.result.createObjectStore(
-						oWLStorage.DB_NOTES_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
-				notes_store.createIndex('recordid', 'recordid', { unique: true });
-				notes_store.createIndex('profileid', 'profileid', { unique: false});
-				notes_store.createIndex('game', 'game', { unique: false});
-				notes_store.createIndex('gameid', 'gameid', { unique: false });
-				notes_store.createIndex('opponent', 'opponent', { unique: false });
-				notes_store.createIndex('savedDate', 'savedDate', { unique: false });
+				if (event.oldVersion < 1) {
+					var notes_store = evt.currentTarget.result.createObjectStore(
 
-				var gcg_store = evt.currentTarget.result.createObjectStore(
-						oWLStorage.DB_GCG_STORE_NAME, { keyPath: 'id', autoIncrement: true });
+							oWLStorage.DB_NOTES_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
-				gcg_store.createIndex('recordid', 'recordid', { unique: true });
-				gcg_store.createIndex('profileid', 'profileid', { unique: false});
-				gcg_store.createIndex('game', 'game', { unique: false});
-				gcg_store.createIndex('gameid', 'gameid', { unique: false });
-				gcg_store.createIndex('opponent', 'opponent', { unique: false });
-				gcg_store.createIndex('savedDate', 'savedDate', { unique: false });
+					notes_store.createIndex('recordid', 'recordid', { unique: true });
+					notes_store.createIndex('profileid', 'profileid', { unique: false});
+					notes_store.createIndex('game', 'game', { unique: false});
+					notes_store.createIndex('gameid', 'gameid', { unique: false });
+					notes_store.createIndex('opponent', 'opponent', { unique: false });
+					notes_store.createIndex('savedDate', 'savedDate', { unique: false });
 
+					var gcg_store = evt.currentTarget.result.createObjectStore(
+							oWLStorage.DB_GCG_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
+					gcg_store.createIndex('recordid', 'recordid', { unique: true });
+					gcg_store.createIndex('profileid', 'profileid', { unique: false});
+					gcg_store.createIndex('game', 'game', { unique: false});
+					gcg_store.createIndex('gameid', 'gameid', { unique: false });
+					gcg_store.createIndex('opponent', 'opponent', { unique: false });
+					gcg_store.createIndex('savedDate', 'savedDate', { unique: false });
+				}
+				if (event.oldVersion < 2) {
+					    // Version 2 introduces a new index of notes by year.
+					var notes_store = req.transaction.objectStore(oWLStorage.DB_NOTES_STORE_NAME);
+					notes_store.createIndex("game_gid", ["game","gameid"],{ unique: false });
+				}
+		
 				callback(true);
 
 			};
@@ -320,6 +375,30 @@ var oWLStorage =  {
 				callback("");
 			};
 		},
+		
+		getNoteByGameAndId : function (game,gameid,callback) {
+			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
+			var req = store.index('game_gid');
+			var getReq = req.get([game,gameid]);
+			getReq.onsuccess = function(evt) {
+				if (typeof evt.target.result == 'undefined') {
+					oWLStorage.displayActionFailure("No matching record found");
+					callback("");
+					return;
+				}
+				else
+				{
+					var note = evt.target.result.note;
+					callback(note);
+				}
+
+			};
+			getReq.onerror = function (evt) {
+				console.error("getNoteByGameAndId:", evt.target.errorCode);
+				callback("");
+			};
+		},
+
 
 		displayActionSuccess: function (msg) {
 			msg = typeof msg != 'undefined' ? "Success: " + msg : "Success";
@@ -353,7 +432,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 						if($.trim(note)!="")
 						{
 							hasnotes = true;
-							icon = "icon-19-scroll.png";
+							icon = "icon-19-notes.png";
 
 						}
 						else
