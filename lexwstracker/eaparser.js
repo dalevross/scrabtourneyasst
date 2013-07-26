@@ -149,26 +149,24 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				switch(mutation.type)
 				{
 				case "attributes":
-					if($(mutation.target).attr('class').toLowerCase().indexOf('current') >-1)
+					if((mutation.attributeName ==="class") &&($(mutation.target).attr('class').toLowerCase().indexOf('current') >-1))
 					{
 						checkForOWLNotes();							
 						//console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue,attributeName:mutation.attributeName,attributeNamespace:mutation.attributeNamespace}));
 
-					}
+					}					
 					break;
 				case "childList":
 					if($(mutation.target).attr('id').indexOf('GamesList') >-1)
 					{
 						updateCounts();							
-						//Element may have been added to another section so watch
-						//again if it was added
+						
 						if (typeof mutation.addedNodes == "object") 
 						{
-							if(mutation.addedNodes.length > 0)
-							{
-								console.log('Node was added here');
-								myObserver.disconnect();
-								setTimeout(startObservation,200);	
+							if(mutation.addedNodes.length > 0 && $(mutation.addedNodes).eq(0).is("div[id$=TurnGamesList] div.match,div#completedGamesList div.archivedMatch"))
+							{								
+								//Start watching new node
+								myObserver.observe($(mutation.addedNodes).eq(0).get(0),gameConfig);
 							}
 						}
 					}
