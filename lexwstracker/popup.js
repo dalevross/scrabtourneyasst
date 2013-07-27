@@ -597,9 +597,19 @@ document.addEventListener('DOMContentLoaded', function () {
 					{
 						chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
 							chrome.tabs.sendMessage(tabs[0].id, {command: "updateNotesFlags"}, function(response) {
-
 							});
 						});
+					}
+					else
+					{
+						
+						chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
+							
+							bkg.oWLStorage.updateNoteIndicatorByGameAndId(trackingGenerator.g_game,trackingGenerator.g_gameid,tabs[0].id);
+							//chrome.tabs.sendMessage(tabs[0].id, {command: "updateNotesFlags"}, function(response) {
+							
+						});
+						
 					}
 				}
 

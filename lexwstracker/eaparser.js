@@ -38,11 +38,11 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 			chrome.runtime.sendMessage({command: "checknotes",pid:playerID,game:'scrabble',gameid:gid}, function(response) {
 				if(response.hasnotes)
 				{
-					$("div#notesIndicator").text("YOU HAVE NOTES"); 						  
+					$("div#notesIndicator").text("YOU HAVE NOTES");					
 				}
 				else
 				{
-					$("div#notesIndicator").text("");
+					$("div#notesIndicator").text("");					
 				}
 				processingNotesList[gid]=false;
 				if (typeof(callback) == "function") {
@@ -63,7 +63,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 	$(document).ready(function () {
 
 		var iconURL = chrome.extension.getURL("notes-owl.png"); 
-		$('div#headerButtonsContainerMiddle').append('<div style="color:darkgreen;position:relative;font-weight:bold;font-size:16px;top:3px;left:220px"><img src="'+iconURL+'"><div id="notesIndicator" style="position:relative;top:-42px;left:60px"></div></div>');
+		$('div#headerButtonsContainerMiddle').append('<div style="color:darkgreen;position:relative;font-weight:bold;font-size:16px;top:3px;left:220px"><img id="notesOwl" src="'+iconURL+'"><div id="notesIndicator" style="position:relative;top:-42px;left:60px"></div></div>');
 
 		updateCounts();
 
@@ -126,12 +126,16 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 
 		var gameNodes        = $("div[id$=TurnGamesList] div.match,div#completedGamesList div.archivedMatch");
-		var gamesListNodes   = $("div[id$=GamesList]");
+		var gamesListNodes   = $("div.jspPane");//$("div[id$=GamesList]");
+		//var gameHeadingNodes = $("div.jspPane");
+		
 		var MutationObserver    = window.MutationObserver || window.WebKitMutationObserver;
 		var myObserver          = new MutationObserver (mutationHandler);
+		
 		var listConfig = {subtree:true,childList:true};
 		var gameConfig  = {attributes: true,attributeOldValue:true,attributeFilter: ["class"]};
-
+		var headingConfig = {subtree:true,childList:true,attributes: true,attributeOldValue:true,characterData: true,characterDataOldValue:true};
+		
 		function startObservation(){
 			gameNodes.each ( function () {
 				myObserver.observe (this, gameConfig);
@@ -140,6 +144,10 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 			gamesListNodes.each ( function () {
 				myObserver.observe (this, listConfig);
 			} );
+			
+//			gameHeadingNodes.each ( function () {
+//				myObserver.observe (this, headingConfig);
+//			} );
 		}
 
 		startObservation();
@@ -157,7 +165,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					}					
 					break;
 				case "childList":
-					if($(mutation.target).attr('id').indexOf('GamesList') >-1)
+					if(($(mutation.target).attr('id')) && ($(mutation.target).attr('id').indexOf('GamesList') >-1))
 					{
 						updateCounts();							
 						
@@ -169,10 +177,10 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 								myObserver.observe($(mutation.addedNodes).eq(0).get(0),gameConfig);
 							}
 						}
-					}
+					}					
 					break;
-				default:
-					console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue}));
+				/*default:
+					console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue}));*/
 				break;		    	
 				}
 
