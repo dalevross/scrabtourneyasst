@@ -27,18 +27,38 @@ var trackingGenerator = {
 					"IT" :"A,11|B,2|C,2|D,3|E,9|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,9|P,2|Q,1|R,5|S,5|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2"
 
 			};
+			
+			var alllexvals = {
+					"US":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
+					"UK":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
+					"EN":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
+					"FR":{"O":1,"A":1,"I":1,"E":1,"C":4,"R":1,"S":1,"T":1,"L":1,"M":2,"N":1,"U":1,"B":4,"D":2,"F":5,"P":3,"V":5,"G":2,"H":5,"Q":8,"J":10,"K":12,"W":12,"X":12,"Y":12,"Z":12,"blank":0},
+					"IT":{"O":1,"A":1,"I":1,"E":1,"C":4,"R":1,"S":1,"T":1,"L":1,"M":2,"N":1,"U":1,"B":4,"D":2,"F":5,"P":3,"V":5,"G":2,"H":5,"Q":8,"J":10,"K":12,"W":12,"X":12,"Y":12,"Z":12,"blank":0}
+					};
+			
+			var allwsvals = {
+					"US":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
+					"UK":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
+					"EN":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
+					"FR":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
+					"IT":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0}					
+					};
 
 
 			if(game=="lexulous")
 			{
-				distribution = lexdist[lang.toUpperCase()];				
+				distribution = lexdist[lang.toUpperCase()];
+				letvals =  alllexvals[lang.toUpperCase()];
 			}
 			else
 			{
 				distribution = wsdist[lang.toUpperCase()];
+				letvals =  allwsvals[lang.toUpperCase()];
 				//distribution = $(data).find('tile_count').text();
 
 			}
+			
+			//var letvals =  allvals[lang.toUpperCase()];
 
 			var dist = {};
 			var used = {};
@@ -56,6 +76,8 @@ var trackingGenerator = {
 				letter = (cell_info[0]===cell_info[0].toUpperCase())?cell_info[0]:"blank";
 				used[letter]++;
 			});
+			
+			numPlayers = $(data).find('playersNo').text();
 
 			var rack=new Array();
 			myrack = $(data).find('myrack').text();
@@ -81,7 +103,8 @@ var trackingGenerator = {
 			response.rack = rackstring;
 			response.dictionary = $(data).find('dictionary').text();
 			response.gid = gid;
-
+			response.letvals = letvals;
+			response.numPlayers = numPlayers;
 			status =  $(data).find('status').text().toUpperCase();
 			myturn = $(data).find('myturn').text().toUpperCase();
 
@@ -119,6 +142,8 @@ var trackingGenerator = {
 			var finished = response.finished;
 			var rack = response.rack;
 			var gameid = response.gid;
+			var letvals = response.letvals;
+			var numOpponents = response.numPlayers-1;
 
 			trackingGenerator.g_playerid = response.player;			
 			trackingGenerator.g_gameid = response.gid;
@@ -147,7 +172,9 @@ var trackingGenerator = {
 			var heading='Your game with '+oppoName+' <div class="profile"><a href="http://facebook.com/'+oppoID+'" target="_blank">Facebook Profile</a></div>';
 			$('div#heading').html(heading);
 
-			var inbag = (tilecount>7)?tilecount-7:0;
+			var rackLength = (game=="scrabble")?7:8;
+			
+			var inbag = (tilecount>(rackLength*numOpponents))?tilecount-(rackLength*numOpponents):0;
 			html = html + '<span style="font-weight:bold;">Tile Count: ' + tilecount + '</span><span> ('+ inbag + ' in bag)</span><br/>';
 
 			var showAllTiles = $("div#settings input[name=allTiles]").prop('checked');
@@ -155,7 +182,7 @@ var trackingGenerator = {
 			var distinguishVowels = $("div#settings input[name=distinguishVowels]").prop('checked');
 			var useAllTilesLimit = $("div#settings input[name=useAllTilesLimit]").prop('checked');
 			var allTilesLimit = $("div#settings input[name=allTilesLimit]").val();
-
+			var showValues = $("div#settings input[name=showValues]").prop('checked');
 
 			if(showAllTiles && useAllTilesLimit)
 			{
@@ -188,9 +215,9 @@ var trackingGenerator = {
 
 				if((index % 8)===0)
 				{
-					html = html + '<div style="float:left;padding:10px">';
+					html = html + '<div style="float:left;padding:10px;padding-left:5px">';
 				}
-				html = html + '<div class="wrapper' + ((showAllTiles && !(left[letter]))?' depleted':'') +'"><div   class="letter' + ((vowels.indexOf(letter)>-1)?' vowel':'') +'" title="Total: ' + dist[letter] +  '">' + letter + '</div><div class="count' + ((vowels.indexOf(letter)>-1)?' vowel':'') + '">' + (left[letter] || '0') + ((showTotals)?('/' + dist[letter].toString()):'') + '</div></div>';
+				html = html + '<div class="wrapper' + ((showAllTiles && !(left[letter]))?' depleted':'') +'"><div   class="letter' + ((vowels.indexOf(letter)>-1)?' vowel':'') +'" title="Total: ' + dist[letter] +  '">' + letter + '<span class="value"><sub>'+ letvals[letter] +'</sub></span></div><div class="count' + ((vowels.indexOf(letter)>-1)?' vowel':'') + '">' + (left[letter] || '0') + ((showTotals)?('/' + dist[letter].toString()):'') + '</div></div>';
 				index++;
 				if(((index)%8===0 && index!==0)|| index === numTiles)
 				{
@@ -304,6 +331,15 @@ var trackingGenerator = {
 			else
 			{
 				$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
+			}
+			
+			if($('input[name=showValues]').prop('checked'))
+			{
+				$("span.value").css({'display':'inline'});
+			}
+			else
+			{
+				$("span.value").css({'display':'none'});
 			}
 
 		},
@@ -489,8 +525,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	var storage = chrome.storage.sync;
 
-	loadSettings();
-
 	$chkNotesFirst = $("div#settings input[name=notesFirst]");
 
 
@@ -514,58 +548,59 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	var innerbody = editor.i.contentWindow.document.body;
 
+	loadSettings(function(){
 
-	chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
-		var applink = tabs[0].url;
-		trackingGenerator.getTilesLeft(applink,function(){
-			var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
 
-			$(innerbody).attr('contenteditable',false);
-			$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
-			unbindNoteChangeEvents();
+		chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
+			var applink = tabs[0].url;
+			trackingGenerator.getTilesLeft(applink,function(){
+				var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
 
-			bkg.oWLStorage.openDB(function(result){
-				if(result)
-				{
+				$(innerbody).attr('contenteditable',false);
+				$("div#notestatus").html('<span>Loading...</span><br/><img src="note-loading.gif" />');
+				unbindNoteChangeEvents();
 
-					setTimeout(function(){
-						bkg.oWLStorage.getNoteByRecordId(recid,function(note){		
-							if($.trim(note)!="")
-							{
-								$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-comment'/>Notes");
-								$(innerbody).html(note);//.append('<img src="' +  trackingGenerator.g_screenshot + '" />');
-								editor.post();
-								if($chkNotesFirst.prop('checked'))
+				bkg.oWLStorage.openDB(function(result){
+					if(result)
+					{
+
+						setTimeout(function(){
+							bkg.oWLStorage.getNoteByRecordId(recid,function(note){		
+								if($.trim(note)!="")
 								{
-									$("#tabs" ).tabs( "option", "active", 1 );
+									$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-comment'/>Notes");
+									$(innerbody).html(note);//.append('<img src="' +  trackingGenerator.g_screenshot + '" />');
+									editor.post();
+									if($chkNotesFirst.prop('checked'))
+									{
+										$("#tabs" ).tabs( "option", "active", 1 );
+									}
 								}
-							}
-							else
-							{
-								$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes");
+								else
+								{
+									$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes");
 
-							}
+								}
 
-							$(innerbody).attr('contenteditable',true);
-							$("div#notestatus").html('');
-							bindNoteChangeEvents();
-						});
-					},100);
+								$(innerbody).attr('contenteditable',true);
+								$("div#notestatus").html('');
+								bindNoteChangeEvents();
+							});
+						},100);
 
 
-				}
-				else
-				{
+					}
+					else
+					{
 
-					$(innerbody).attr('contenteditable',true);
-					$("div#notestatus").html('');
-					bindNoteChangeEvents();
-				}
+						$(innerbody).attr('contenteditable',true);
+						$("div#notestatus").html('');
+						bindNoteChangeEvents();
+					}
+
+				});
 
 			});
-
-
-
 		});
 	});
 
@@ -602,14 +637,14 @@ document.addEventListener('DOMContentLoaded', function () {
 					}
 					else
 					{
-						
+
 						chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
-							
+
 							bkg.oWLStorage.updateNoteIndicatorByGameAndId(trackingGenerator.g_game,trackingGenerator.g_gameid,tabs[0].id);
 							//chrome.tabs.sendMessage(tabs[0].id, {command: "updateNotesFlags"}, function(response) {
-							
+
 						});
-						
+
 					}
 				}
 
@@ -656,38 +691,68 @@ document.addEventListener('DOMContentLoaded', function () {
 		$(innerbody).off("paste keyup mouseup",registerNoteChange );
 	}
 
-	function loadSettings()
+	function loadSettings(callback)
 	{
+		var done=false;
+		var chkCount = $("div#settings input:checkbox").length;
+		var chksLoaded = 0;
+		
+		var numCount = $("div#settings input[type=number]").length;
+		var numsLoaded = 0;
 
 		$("div#settings input:checkbox").each(function(){
 			var $checkbox = $(this);
 			var name = $checkbox.attr('name');
-			var origVal = (name=="notesFirst")?true:false;
+			//var origVal = (name=="notesFirst")?true:false;
+			var origVal = false;
 
 			storage.get(name, function(items) {
 
 				if (items[name]) {
-					$checkbox.prop('checked', items[name]);	    	
+					$checkbox.prop('checked', items[name]);
+					if(name=="useAllTilesLimit")
+					{
+						$("div#settings input[name=allTilesLimit]").prop('disabled', !$("div#settings input[name=useAllTilesLimit]").prop('checked'));
+					}
+
+					chksLoaded++;
+					if(chksLoaded === chkCount && numsLoaded === numCount && done === false)
+					{
+						done = true;
+						bindSettingsChangeEvents();
+						callback();
+					}		
 				}
 				else
 				{
-					if(name=="notesFirst")
+					/*if(name=="notesFirst")
 					{
 						$(this).prop('checked',true);
+						origVal=true;
 					}
+					*/
 					var newSetting = {};
 					newSetting[name]=origVal;
-					storage.set(newSetting);	    		    	
+					storage.set(newSetting, function(){
+						if(name=="useAllTilesLimit")
+						{
+							$("div#settings input[name=allTilesLimit]").prop('disabled', !$("div#settings input[name=useAllTilesLimit]").prop('checked'));
+						}
+
+						chksLoaded++;
+						if(chksLoaded === chkCount && numsLoaded === numCount && done === false)
+						{
+							done = true;
+							bindSettingsChangeEvents();
+							callback();
+						}				
+						
+					});	    		    	
 				}
-				if(name=="useAllTilesLimit")
-				{
-					$("div#settings input[name=allTilesLimit]").prop('disabled', !$("div#settings input[name=useAllTilesLimit]").prop('checked'));
-				}				
+				
 			});
 		});
-
-
-
+		
 		$("div#settings input[type=number]").each(function(){
 			var $input = $(this);
 			var name = $input.attr('name');
@@ -697,50 +762,83 @@ document.addEventListener('DOMContentLoaded', function () {
 				if (items[name]) {
 					(function(n){
 						$input.val(n);
+						numsLoaded++;
+						if(chksLoaded === chkCount && numsLoaded === numCount && done === false)
+						{
+							done = true;
+							bindSettingsChangeEvents();
+							callback();
+						}			
+
 					})(items[name]);
 				}
 				else
 				{
 					var newSetting = {};
 					newSetting[name]=origVal;
-					storage.set(newSetting);	    		    	
+					storage.set(newSetting,function(){
+						numsLoaded++;
+						if(chksLoaded === chkCount && numsLoaded === numCount && done === false)
+						{
+							done = true;
+							bindSettingsChangeEvents();
+							callback();
+						}					
+						
+					});	    		    	
 				}
+				
 			});
 		});
 
+		function bindSettingsChangeEvents(){
+			$("div#settings input:checkbox").change(function(){		
+				var name = $(this).attr('name');
+				var newSetting = {};
+				newSetting[name] = $(this).prop('checked');
+				storage.set(newSetting);
 
-		$("div#settings input:checkbox").change(function(){		
-			var name = $(this).attr('name');
-			var newSetting = {};
-			newSetting[name] = $(this).prop('checked');
-			storage.set(newSetting);
-
-			if(name=='useAllTilesLimit')
-			{	    	
-				$("div#settings input[name=allTilesLimit]").prop('disabled', !$(this).prop('checked'));
-			}
-
-			if(name=='distinguishVowels')
-			{
-				if($(this).prop('checked'))
-				{
-					$("div.vowel").css({'color':'blue','font-weight': 'bold'});
+				if(name=='useAllTilesLimit')
+				{	    	
+					$("div#settings input[name=allTilesLimit]").prop('disabled', !$(this).prop('checked'));
 				}
-				else
+
+				if(name=='distinguishVowels')
 				{
-					$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
+					if($(this).prop('checked'))
+					{
+						$("div.vowel").css({'color':'blue','font-weight': 'bold'});
+					}
+					else
+					{
+						$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
+					}
 				}
-			}
+				
+				if(name=='showValues')
+				{
+					if($(this).prop('checked'))
+					{
+						$("span.value").css({'display':'inline'});
+					}
+					else
+					{
+						$("span.value").css({'display':'none'});
+					}
+				}
 
-		});
+			});
 
-		$("div#settings input[type=number]").change(function(){		
-			var name = $(this).attr('name');
-			var newSetting = {};
-			newSetting[name] = $(this).val();
-			storage.set(newSetting); 
+			$("div#settings input[type=number]").change(function(){		
+				var name = $(this).attr('name');
+				var newSetting = {};
+				newSetting[name] = $(this).val();
+				storage.set(newSetting); 
 
-		});		
+			});	
+		}
+
+				
 
 	}
 

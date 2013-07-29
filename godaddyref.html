@@ -1,0 +1,202 @@
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link type="text/css"
+	href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/themes/south-street/jquery-ui.min.css"
+	rel="stylesheet" />
+<style>
+#tabs {
+	font-size: 12px;
+}
+
+div#owlmain {
+	height: 300px;
+}
+
+#resultDialog {
+	font-size: 10px;
+	overflow: auto;
+}
+;
+</style>
+<script>
+	$(document)
+			.ready(
+					function() {
+
+						$('head')
+								.append(
+										'<link rel="chrome-webstore-item"	href="https://chrome.google.com/webstore/detail/pdpejcfahhppmalemodibekpbiopmogo"/>');
+						$("#tabs").tabs();
+						$("#accordion").accordion({
+							collapsible : true,
+							active : false
+						});
+
+						$("#installButton").button();
+
+						function successCallback() {
+							document.getElementById('installButton').style.display = 'none';
+
+							$("#resultDialog").attr('title', 'Success').html(
+									"<span>OWL successfully installed!</span>")
+									.dialog({
+										height : 140,
+										modal : true
+									});
+						}
+
+						function failureCallback(errmsg) {
+
+							$("#resultDialog").attr('title', 'Error').html(
+									"<span>OWL was not installed. The following message was returned: <br/>"
+											+ errmsg + "</span>").dialog({
+								height : 140,
+								modal : true
+							});
+						}
+
+						$("div#owlmain #installButton")
+								.click(
+										function() {
+											chrome.webstore
+													.install(
+															"https://chrome.google.com/webstore/detail/pdpejcfahhppmalemodibekpbiopmogo",
+															successCallback,
+															failureCallback);
+										});
+					});
+</script>
+<div id="fb-root"></div>
+<script>
+	(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id))
+			return;
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=390735480949561";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+</script>
+<div id="tabs">
+	<ul>
+		<li><a href="#owlmain"><span>Install/Share</span> </a>
+		</li>
+		<li><a href="#owlfaq"><span>FAQ</span> </a>
+		</li>
+		<li><a href="#owlwishlist"><span>Wishlist</span> </a>
+		</li>
+	</ul>
+	<div id="owlmain">
+		<div class="fb-like"
+			data-href="https://chrome.google.com/webstore/detail/owls-word-games-enhancer/pdpejcfahhppmalemodibekpbiopmogo"
+			data-send="true" data-width="450" data-show-faces="true"></div>
+		<button id="installButton">Install the OWL!</button>
+		<script>
+			if (chrome.app.isInstalled) {
+				document.getElementById('installButton').style.display = 'none';
+			}
+		</script>
+		<div id="resultDialog"></div>
+
+	</div>
+	<div id="owlfaq">
+		<div id="accordion">
+			<h3>My OWL vanished! What should I do?</h3>
+			<div>
+				<p>There are a few reasons why the owl might fly away.</p>
+				<ol>
+					<li>You are not currently viewing a game. <br /> <i>&nbsp;&nbsp;The
+							OWL is only activated when viewing Scrabble, Lexulous or
+							Wordscraper</i>
+					</li>
+					<li>The OWL was updated and no permissions were changed. <br />
+						<i>&nbsp;&nbsp;To resolve, reload the game</i>
+					</li>
+					<li>The OWL was updated and permission were changed. <br /> <i>&nbsp;&nbsp;To
+							resolve, Either:</i>
+						<ol>
+							<li>Review the state of the OWL in the <a
+								href="chrome://extensions" target="_blank">Extensions List</a>
+								and approve the necessary permissions. Enter chrome://extensions
+								in your address bar to view the extensions list</li>
+							<li>If your options bar turned orange follow the steps
+								outlined in the image sequence below, then refresh your active
+								games.<br /> <span>Click the options button </span><img
+								src="uploads/options-orange.png" style="display: inline"></img><br />
+								<span>Click <i>OWLS Word Games Enhancer requires new
+										permissions</i> </span><img src="uploads/new-menu-item.png"
+								style="display: inline"></img><br /> <span>Click <i>Review
+										permissions</i> </span><img src="uploads/review-permissions.png"
+								style="display: inline"></img><br /> <span>Click <i>Re-enable</i>
+							</span><img src="uploads/re-enable.png" style="display: inline"></img><br />
+							</li>
+						</ol></li>
+				</ol>
+
+			</div>
+			<h3>How can I update my extension before it is automatically
+				installed?</h3>
+			<div>
+				<p>To update your extension after it has been published, use the
+					following steps.</p>
+				<ol>
+					<li>Click the three horizantal bars <img
+						src="uploads/options-black.png" style="display: inline"></img></li>
+					<li>Click Tools</li>
+					<li>Click Extensions</li>
+					<li>Select Developer Mode if it is not yet selected.</li>
+					<li>Click "Update extensions now". 
+					<br/>
+					<img
+						src="uploads/update-all-extensions.png" style="max-width: 100%"></img>
+					</li>
+
+				</ol>
+			</div>
+			<h3>Why does the dictionary show a list of sites for some words
+				with no definiton?</h3>
+			<div>
+				<p>The dictionary look-up done by Google is sometimes unable to
+					find a definition for obscure words. When this happens, references
+					to the word on other websites will be the only results displayed.</p>
+			</div>
+			<h3>Why does the OWL require the permissions listed below?</h3>
+			<div>
+				<ol>
+					<li>Access to your data on aws.rjs.in<br />
+						<p>
+							<i>This is to allow retrieval of game data for Lexulous and
+								Wordscraper</i>
+						</p></li>
+					<li>Access to your data on scrabblefb-live2.sn.eamobile.com<br />
+						<p>
+							<i>This is to allow retrieval of game data for Scrabble</i>
+						</p></li>
+					<li>Access to your data on moltengold.com<br />
+						<p>
+							<i>This facilitates integration with <a
+								href="https://www.facebook.com/groups/scrabble.league/"
+								target="_blank">The Facebook Scrabble League</a> </i>
+						</p>
+					<li>Access to your tabs and browsing data<br />
+						<p>
+							<i>This allows the OWL to know when to appear based on the
+								URL in the current tab. </i>
+						</p>
+				</ol>
+			</div>
+		</div>
+	</div>
+	<div id="owlwishlist">
+		<ol>
+			<li>Extraction of game data at the end of the game in gcg format
+				for Quackle or www.cross-tables.com</li>
+			<li>Moveable Tracker that can be dragged by the user</li>
+			<li>World Peace</li>
+		</ol>
+	</div>
+
+</div>

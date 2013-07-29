@@ -40,12 +40,16 @@ body {
 }
 
 .count {
-	width: 20px;
+	width: 25px;
 	color: darkgreen;
 	float: right;
 	text-align: right;
 	display: inline-block;
 	padding-right: 10px;
+}
+
+span.value{
+display:none;
 }
 
 .wrapper {

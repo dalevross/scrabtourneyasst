@@ -199,6 +199,29 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 					//Update counts that might have vanished due to refresh
 					updateCounts();
+					
+					var numPlayers = $("p.gameCardName").length;
+					
+					/*					  
+					oppoScores = new Array();
+					oppoIds = new Array();
+					oppoNames = new Array();
+					
+					$("p.gameCardName").each(function(){
+						
+						if($(this).text() == "You ")
+						{
+							var playerScore = $("p.gameCardScore").eq($("p.gameCardName").index(this)).text();
+							
+						}
+						else
+						{
+							
+							oppoScores.push($("p.gameCardScore").eq($("p.gameCardName").index(this)).text());
+							oppoIds.push($('img[class="cardAvatar"]').eq($("p.gameCardName").index(this)).attr('src').split('_')[1])
+						}
+					});
+					*/
 
 					if($("p.gameCardName").eq(0).text()=="You ") {
 						var playerScore = $("p.gameCardScore").eq(0).text();
@@ -278,10 +301,21 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 							"Portuguese":{"A":14,"B":3,"C":4,"D":5,"E":11,"F":2,"G":2,"H":2,"I":10,"J":2,"L":5,"M":6,"N":4,"O":10,"P":4,"Q":1,"R":6,"S":8,"T":5,"U":7,"V":2,"X":1,"Z":1,"Ç":2,"blank":3},
 							"Spanish": {"A":12,"B":2,"C":4,"D":5,"E":12,"F":1,"G":2,"H":2,"I":6,"J":1,"L":4,"M":2,"N":5,"O":9,"P":2,"Q":1,"R":5,"S":6,"T":4,"U":5,"V":1,"X":1,"Y":1,"Z":1,"CH":1,"LL":1,"Ñ":1,"RR":1,"blank":2}
 					};
+					
+					var allvals = {
+							"Collins":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":1,"L":1,"S":1,"U":1,"D":2,"G":2,"B":3,"C":3,"M":3,"P":3,"F":4,"H":4,"V":4,"W":4,"Y":4,"K":5,"J":8,"X":8,"Q":10,"Z":10,"blank":0},
+							"TWL":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":1,"L":1,"S":1,"U":1,"D":2,"G":2,"B":3,"C":3,"M":3,"P":3,"F":4,"H":4,"V":4,"W":4,"Y":4,"K":5,"J":8,"X":8,"Q":10,"Z":10,"blank":0},
+							"OSPD4":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":1,"L":1,"S":1,"U":1,"D":2,"G":2,"B":3,"C":3,"M":3,"P":3,"F":4,"H":4,"V":4,"W":4,"Y":4,"K":5,"J":8,"X":8,"Q":10,"Z":10,"blank":0},
+							"German":{"E":1,"N":1,"S":1,"I":1,"R":1,"T":1,"U":1,"A":1,"D":1,"H":2,"G":2,"L":2,"O":2,"M":3,"B":3,"W":3,"Z":3,"C":4,"F":4,"K":4,"P":4,"Ä":6,"J":6,"Ü":6,"V":6,"Ö":8,"X":8,"Q":10,"Y":10,"blank":0},
+							"Spanish":{"A":1,"E":1,"O":1,"I":1,"S":1,"N":1,"L":1,"R":1,"U":1,"T":1,"D":2,"G":2,"C":3,"B":3,"M":3,"P":3,"H":4,"F":4,"V":4,"Y":4,"CH":5,"Q":5,"J":8,"LL":8,"Ñ":8,"RR":8,"X":8,"Z":10,"blank":0},
+							"Italian":{"O":1,"A":1,"I":1,"E":1,"C":2,"R":2,"S":2,"T":2,"L":3,"M":3,"N":3,"U":3,"B":5,"D":5,"F":5,"P":5,"V":5,"G":8,"H":8,"Z":8,"Q":10,"blank":0},
+							"French":{"E":1,"A":1,"I":1,"N":1,"O":1,"R":1,"S":1,"T":1,"U":1,"L":1,"D":2,"M":2,"G":2,"B":3,"C":3,"P":3,"F":4,"H":4,"V":4,"J":8,"Q":8,"K":10,"W":10,"X":10,"Y":10,"Z":10,"blank":0},
+							"Portuguese":{"A":1,"E":1,"I":1,"O":1,"S":1,"U":1,"M":1,"R":1,"T":1,"D":2,"L":2,"C":2,"P":2,"N":3,"B":3,"Ç":3,"F":4,"G":4,"H":4,"V":4,"J":5,"Q":6,"X":8,"Z":8,"blank":0}
+							};
 
 					var dist = alldist[shortdict];
 
-
+					var letvals = allvals[shortdict];
 					$.each( dist, function( key, value ) {
 						used[key]=0;
 					});
@@ -335,12 +369,12 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 							  }
 						});
 						 */
-						sendResponse({used: used,dist: dist,dictionary:shortdict[0],name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg});
+						sendResponse({used: used,dist: dist,letvals:letvals,dictionary:shortdict[0],name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg,numPlayers:numPlayers});
 						return true;
 					}
 					else
 					{
-						sendResponse({used: used,dist: dist,dictionary:shortdict[0],name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg});
+						sendResponse({used: used,dist: dist,letvals:letvals,dictionary:shortdict[0],name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg,numPlayers:numPlayers});
 						return true;
 					}
 					//sendResponse({used: used,dist: dist,dictionary:shortdict,name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg});
@@ -348,7 +382,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				if (request.command == "updateNotesFlags")
 				{
 					checkForOWLNotes(function(){
-						sendResponse({used: used,dist: dist,dictionary:shortdict[0],name: oppoName, ID:oppoID, first:word, second:word2, player:playerID, scoreP:playerScore, scoreO:oppoScore, finished: finished, rack:rackstring,gid:gid,board:boardimg});
+						sendResponse({done:true});
 						return true;						
 					});				
 				}
