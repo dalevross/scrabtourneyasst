@@ -18,7 +18,11 @@ div#owlmain {
 	font-size: 10px;
 	overflow: auto;
 }
-;
+
+.helpImage {
+	display: inline;
+	vertical-align: middle;
+}
 </style>
 <script>
 	$(document)
@@ -31,7 +35,8 @@ div#owlmain {
 						$("#tabs").tabs();
 						$("#accordion").accordion({
 							collapsible : true,
-							active : false
+							active : false,
+							heightStyle:"content"
 						});
 
 						$("#installButton").button();
@@ -82,12 +87,9 @@ div#owlmain {
 </script>
 <div id="tabs">
 	<ul>
-		<li><a href="#owlmain"><span>Install/Share</span> </a>
-		</li>
-		<li><a href="#owlfaq"><span>FAQ</span> </a>
-		</li>
-		<li><a href="#owlwishlist"><span>Wishlist</span> </a>
-		</li>
+		<li><a href="#owlmain"><span>Install/Share</span> </a></li>
+		<li><a href="#owlfaq"><span>FAQ</span> </a></li>
+		<li><a href="#owlwishlist"><span>Wishlist</span> </a></li>
 	</ul>
 	<div id="owlmain">
 		<div class="fb-like"
@@ -110,30 +112,39 @@ div#owlmain {
 				<ol>
 					<li>You are not currently viewing a game. <br /> <i>&nbsp;&nbsp;The
 							OWL is only activated when viewing Scrabble, Lexulous or
-							Wordscraper</i>
-					</li>
+							Wordscraper</i></li>
 					<li>The OWL was updated and no permissions were changed. <br />
-						<i>&nbsp;&nbsp;To resolve, reload the game</i>
-					</li>
+						<i>&nbsp;&nbsp;To resolve, reload the game</i></li>
 					<li>The OWL was updated and permission were changed. <br /> <i>&nbsp;&nbsp;To
 							resolve, Either:</i>
 						<ol>
 							<li>Review the state of the OWL in the <a
 								href="chrome://extensions" target="_blank">Extensions List</a>
 								and approve the necessary permissions. Enter chrome://extensions
-								in your address bar to view the extensions list</li>
+								in your address bar to view the extensions list								
+								<br/><b>OR</b><br/>
+							</li>
+								
 							<li>If your options bar turned orange follow the steps
 								outlined in the image sequence below, then refresh your active
-								games.<br /> <span>Click the options button </span><img
-								src="uploads/options-orange.png" style="display: inline"></img><br />
-								<span>Click <i>OWLS Word Games Enhancer requires new
-										permissions</i> </span><img src="uploads/new-menu-item.png"
-								style="display: inline"></img><br /> <span>Click <i>Review
-										permissions</i> </span><img src="uploads/review-permissions.png"
-								style="display: inline"></img><br /> <span>Click <i>Re-enable</i>
-							</span><img src="uploads/re-enable.png" style="display: inline"></img><br />
+								games.<br /> 
+								<table style="border-collapse:separate;border-spacing:10px;">
+								<tr>
+								<td><span>Click the options button </span></td><td><img
+								src="uploads/options-orange.png"></img></td></tr>
+								<tr><td><span>Click
+									<i>OWLS Word Games Enhancer requires new permissions</i></span></td><td><img
+								src="uploads/new-menu-item.png" class="helpImage"></img></td></tr>
+								<tr><td><span>Click
+									<i>Review permissions</i> </span></td><td><img
+								src="uploads/review-permissions.png" class="helpImage"></img></td></tr>
+								<tr><td><span>Click
+									<i>Re-enable</i></span></td><td><img class="helpImage"
+								src="uploads/re-enable.png"></img></td></tr></table>
 							</li>
-						</ol></li>
+								
+						</ol>
+					</li>
 				</ol>
 
 			</div>
@@ -143,15 +154,14 @@ div#owlmain {
 				<p>To update your extension after it has been published, use the
 					following steps.</p>
 				<ol>
-					<li>Click the three horizantal bars <img
-						src="uploads/options-black.png" style="display: inline"></img></li>
+					<li>Click the three horizantal bars <img class="helpImage" 
+						src="uploads/options-black.png"></img>
+					</li>
 					<li>Click Tools</li>
 					<li>Click Extensions</li>
 					<li>Select Developer Mode if it is not yet selected.</li>
-					<li>Click "Update extensions now". 
-					<br/>
-					<img
-						src="uploads/update-all-extensions.png" style="max-width: 100%"></img>
+					<li>Click "Update extensions now". <br /><a href="uploads/update-all-extensions.png"><img
+						src="uploads/update-all-extensions.png" style="max-width: 100%"></img></a>
 					</li>
 
 				</ol>
@@ -170,11 +180,13 @@ div#owlmain {
 						<p>
 							<i>This is to allow retrieval of game data for Lexulous and
 								Wordscraper</i>
-						</p></li>
+						</p>
+					</li>
 					<li>Access to your data on scrabblefb-live2.sn.eamobile.com<br />
 						<p>
 							<i>This is to allow retrieval of game data for Scrabble</i>
-						</p></li>
+						</p>
+					</li>
 					<li>Access to your data on moltengold.com<br />
 						<p>
 							<i>This facilitates integration with <a

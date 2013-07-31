@@ -12,13 +12,15 @@
    "content_scripts": [
     {
       "matches": ["https://scrabblefb-live2.sn.eamobile.com/*","http://scrabblefb-live2.sn.eamobile.com/*"],
-      "js": ["jquery-1.7.min.js","eaparser.js"],
+      "js": ["jquery-1.7.min.js","md5.js","eaparser.js"],
       "all_frames":true
     }
   ],
   "web_accessible_resources": [
     "owl-lookup.png",
-    "notes-owl.png"
+    "notes-owl.png",
+    "icon-19-notes.png",
+    "icon-48.png"
   ],  
   "permissions": [
     "tabs",
