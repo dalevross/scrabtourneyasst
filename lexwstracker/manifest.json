@@ -3,11 +3,17 @@
 
   "name": "OWLS Word Games Enhancer",
   "description": "This extension provides auxiliary features to popular word games",
-  "version": "2.1.0",
+  "version": "2.1.5",
   "background": { "scripts": ["jquery-1.7.min.js","background.js"] },
   "page_action": {
     "default_icon": "icon-19.png",
     "default_popup": "popup.html"
+  },
+  "commands": {
+    "clear-settings": {
+      "suggested_key": { "default": "Alt+Shift+1"},
+      "description": "Clear OWL Settings"
+    }
   },
    "content_scripts": [
     {
@@ -20,7 +26,9 @@
     "owl-lookup.png",
     "notes-owl.png",
     "icon-19-notes.png",
-    "icon-48.png"
+    "icon-48.png",
+    "look.png",
+    "owl-on-coke.png"
   ],  
   "permissions": [
     "tabs",

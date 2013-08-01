@@ -82,7 +82,7 @@ var oWLStorage =  {
 			req.onsuccess = function (evt) {
 
 				oWLStorage.db = this.result;
-				console.log("Open Succeeded");
+				//console.log("Open Succeeded");
 				callback(true);
 
 			};
@@ -92,7 +92,7 @@ var oWLStorage =  {
 			};
 
 			req.onupgradeneeded = function (evt) {
-				console.log("openDb.onupgradeneeded");
+				//console.log("openDb.onupgradeneeded");
 				oWLStorage.db = evt.currentTarget.result;
 
 				if (event.oldVersion < 1) {
@@ -306,7 +306,7 @@ var oWLStorage =  {
 		 *            store_name
 		 */
 		deleteRecord : function (key, store,store_name) {
-			console.log("deletePublication:", arguments);
+			//console.log("deletePublication:", arguments);
 
 			if (typeof store == 'undefined')
 				store = oWLStoragegetObjectStore(store_name, 'readwrite');
@@ -320,7 +320,7 @@ var oWLStorage =  {
 			var req = store.get(key);
 			req.onsuccess = function(evt) {
 				var record = evt.target.result;
-				console.log("record:", record);
+				//console.log("record:", record);
 				if (typeof record == 'undefined') {
 					oWLStorage.displayActionFailure("No matching record found");
 					return;
@@ -430,18 +430,25 @@ var oWLStorage =  {
 			msg = typeof msg != 'undefined' ? "Success: " + msg : "Success";
 			// $('#msg').html('<span class="action-success">' + msg +
 			// '</span>');
-			console.log(msg);
+			//console.log(msg);
 		},
 
 		displayActionFailure: function (msg) {
 			msg = typeof msg != 'undefined' ? "Failure: " + msg : "Failure";
 			// $('#msg').html('<span class="action-failure">' + msg +
 			// '</span>');
-			console.log(msg);
+			//console.log(msg);
 		}		
 }
 
-
+chrome.commands.onCommand.addListener(function(command) {
+	    if (command == 'clear-settings')
+	    {
+	      var settings = ["allTiles", "allTilesLimit", "distinguishVowels", "notesFirst", "owlhoot-1", "showTotals", "showValues", "useAllTilesLimit"];
+	      chrome.storage.sync.remove(settings);
+	    }
+	   
+	});
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if(request.command == 'checknotes')

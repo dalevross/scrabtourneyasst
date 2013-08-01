@@ -511,8 +511,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	$("#tabs").tabs();
 	$("ul.ui-widget-header").removeClass(' ui-corner-all').css({ 'border' : 'none', 'border-bottom' : '1px solid #d4ccb0'});
-	$("#saveButton").button();
+	$("#saveButton").button({icons : { primary: "ui-icon-disk" }});
 	$("#saveButton").hide();
+	$("#deleteButton").button({icons : { primary: "ui-icon-trash" }});
+	$("#deleteButton").hide();
 
 	$("div#toolbar img#closeButton").on('click',function(){
 		window.close();		
@@ -575,6 +577,7 @@ document.addEventListener('DOMContentLoaded', function () {
 									{
 										$("#tabs" ).tabs( "option", "active", 1 );
 									}
+									$("#deleteButton").show();
 								}
 								else
 								{
@@ -604,6 +607,13 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 
+	$('button#deleteButton').click(function(){
+		$(innerbody).fadeOut(500, function() {
+			$(innerbody).html("");
+			$('button#saveButton').click();
+	    }).fadeIn(500);
+		
+	});
 
 	$('button#saveButton').click(function(){
 
@@ -623,9 +633,11 @@ document.addEventListener('DOMContentLoaded', function () {
 					if(($.trim($("#tinyeditor").val())=="")||($.trim($("#tinyeditor").val())=="<br>"))
 					{
 						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("Notes");
+						$("#deleteButton").hide();
 					}
 					else{
 						$('#tabs .ui-tabs-nav li:nth-child(2) span').html("<img class='ui-icon ui-icon-comment'/>Notes");
+						$("#deleteButton").show();
 					}
 
 					if(trackingGenerator.g_game==="scrabble")
@@ -674,9 +686,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			teval = $.trim($("#tinyeditor").val());
 			if(teval != $(innerbody).html())
 			{			
-				$('#saveButton').show();
-				//$('#saveWarning').effect('shake');
-
+				$('#saveButton').show();				
 			}	
 		}, 500 );
 	}	
@@ -836,11 +846,27 @@ document.addEventListener('DOMContentLoaded', function () {
 				storage.set(newSetting); 
 
 			});	
-		}
-
-				
+		}				
 
 	}
+	
+	chrome.storage.onChanged.addListener(function(changes, namespace) {
+	  
+		var changeLen = Object.keys(changes).length;
+		var changeCount = 0 ;
+		for (key in changes) {
+		    var storageChange = changes[key];
+		    if(typeof storageChange.newValue != "undefined")
+		    	return;
+		    		    
+		    changeCount++;
+		    if(changeCount==changeLen)
+		    {
+		    	window.location.reload();
+		    }
+		    
+		  }
+		});	
 
 	bindNoteChangeEvents();
 

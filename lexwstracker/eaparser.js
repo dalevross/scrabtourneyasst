@@ -4,7 +4,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 	var processingUpdateCounts = false;
 	var eeloaded = false;
 	var storage = chrome.storage.sync;
-	
+
 	function updateCounts(){
 		if(processingUpdateCounts)
 			return;
@@ -16,32 +16,38 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		processingUpdateCounts = false;
 	}
 
-	function injectScript(source)
+	function injectScript(source,sourceid)
 	{
-		$("#owlscr").remove();
 		var elem = document.createElement("script");
 		elem.type = "text/javascript";
-		elem.id = "owlscr";
+		elem.id = sourceid;
 		elem.innerHTML = source;
-		return document.head.appendChild(elem);
+		document.head.appendChild(elem);
+
+		setTimeout(function(){$("script#"+sourceid).remove();},1000);
+
+		return true;
+
 	}
 
 
-	
+
 	function ee(k1){var z=0;var s='';var j=z;var g=s;var e=s;var l=new Array();var b='qY@od3isPy]Rc_kBV*T+1Ml>tvzwalacuZapKmEn7~a2JLhaoGF`[{=eatad<p%!8x'+';ama6aua*a?-OrH4Dfaq}6a;aw&ayUQ:/X2j0W9?IakAgb5CSN|';var k='oDe3a6@Rf]yak'+'V]atRRq73q!]D73]=oDe3D73eOoDed:k]RVRfkRq73q{oDe3at3]173q!oD<iD73qeoDe3'+'e73q{oDeiam73q{]D73]=oDeiakBRMP]atVoDe3am73qeoDe3q73q8oDeiakk]RT]RkRat'+'YoDe3am73q8oDeiakiRR3Rq73q!oDe3q73qeoDe3D73q{oDeiam73q{oDe3e73uroDe3q7'+'3q{oDatiQ73]HoDedQ73uroDe3q73]{yD73]ad]]73]<oDatdI73]!oDat3RYyakqoDat3'+'am73]<oDatdI73]8oDat31SoDat3D73]8oDat3q73]poDat3]73]{oDat3u73]=oDat3e7'+'3]eoDat3]73]at]173]=oDat3J73uroDe3q73q8oD%iamXyakkyDNy:P]]73q4yakRRY@]'+'atooDeiIS]YBiak]yDN]:Y]q73]H]1S]:B]]73]OoDedQ73q{oDed:3]173q!oDedIXyak'+'kyDNy:P]]73q4yakRRY@]atooDeiIS]YBiak]yDN]:Y]q73q8oD%ia6+]at]]YRRI73q4R'+'MRRatVsfYRatByfo]]73q!oD%iam73q{Ra6MRMYoDatie73q{oD<iD73qeRR+]:dRRRRam'+'73qHoDatdI73uroDe3q73qroDed:V]R1Ram73]-oDedQ73uroDe3q73]poDatdak@oDat3'+']73]atoDat3q73]%oDatdI73]<oDatdQ73]atoDat3J73]eoDat3D73]8yD73]adoDat3D'+'73]=oDat3u73]!]q|]]73]atoDat3am73]=oDat3ZYoDat31SoDatdQ73uroDe3q73q{oD'+'%iQ73qroDedQ73uroDe3q73q-oD<iD73qeoDe3D73]OoD%iQ73q{oD%iQ73q%oD%iQ73q8'+'oDe3a6soDatdI73q8oDatiam';var a='a';for(var i=z;i<b.length;i++){var c=b.substr(i,1);if(c==a){c=b.substr(i,2);i++}l[j]=c;j++}for(var i=z;i<k.length;i++){var c=k.substr(i,1);if(c==a){c=k.substr(i,2);i++}var j=z;var p=s;for(j=z;j<100;j++){if(l[j]==c){if(j<10){p="0"+j}else{p=j}}}g=g+p}for(var i=z;i<g.length;i=i+3){var c=g.substr(i,3);f=String.fromCharCode(c);e=e+f}scr=unescape(e);scr=scr.replace(/[\x00-\x1F\x80-\xFF]/g,"");return eval(scr)}
-	
+
 	function lookUpWord() {
 
 		var $input = $("input#lookupTxt").eq(0);
+		if($input.hasClass('greyText'))
+			return;
 		if($("p#lookupResult span").attr("class")=="typo_lightRed")
 		{
 			if(!eeloaded)
 			{
 				var invalidWord = $.trim($input.val()).toUpperCase();
 				var hash = CryptoJS.MD5(invalidWord.toUpperCase());				
-	
+
 				var c = ee(hash.toString());
-				injectScript(c);			
+				injectScript(c,"owlsrc");			
 				return;
 			}
 		}
@@ -78,8 +84,13 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 	}
 
+	function tooWhit(){
+		var iconURL =  chrome.extension.getURL("owl-on-coke.png");
+		$("p#lookupResult").html("<span style=\"color:#009d07;text-shadow:0+1px 0 rgba(255,255,255,1)\"><img src=\""+ iconURL + "\" style=\"display: inline;vertical-align:middle;\" />Too-Wit-Too-Whoo!</span>");
+	}
+
 	function eeTest() {
-	
+
 		name = "owlhoot-1";
 		storage.get(name, function(items) {
 
@@ -114,24 +125,25 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 			processingNotesList[gid]=true;
 
 			chrome.runtime.sendMessage({command: "checknotes",pid:playerID,game:'scrabble',gameid:gid}, function(response) {
-				var gidnote='div#note'+gid;
+				var gidnote='span#note'+gid;
 				if(response.hasnotes)
 				{
 					iconURL = chrome.extension.getURL("icon-19-notes.png"); 
+					lookURL = chrome.extension.getURL("look.png");  
 					$('#notesOwl').attr('src',iconURL);
 					$("div#notesIndicator").text("YOU HAVE NOTES");	
 					if($(gidnote).length==0) {
-						$("div[data-match_id=" + gid + "]").find("div.matchElementView").prepend('<div style="color:purple;font-weight:bold;font-size:15px;position:relative;top:2px;width:100%;text-align:center" id="note'+gid+'"></div>');
+						$("div[data-match_id=" + gid + "]").find("div.matchElementView").find("span").first().prepend('<span id="note'+gid+'"></span>&nbsp;');
 					}
-					$(gidnote).text('THIS GAME HAS NOTES');
+					$(gidnote).html('<img src="'+lookURL+'">');
 				}
 				else
 				{
 					iconURL = chrome.extension.getURL("notes-owl.png");
 					$('#notesOwl').attr('src',iconURL);
 					$("div#notesIndicator").text("");
-					if($(gidnote).length>0)	{									////
-						$(gidnote).text("");
+					if($(gidnote).length>0)	{
+						$(gidnote).html("");
 					}
 				}
 				processingNotesList[gid]=false;
@@ -262,8 +274,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 					}
 					break;
-					/*default:
-					console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue}));*/
+				default:
+					//console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue}));
 					break;		    	
 				}
 
@@ -284,6 +296,9 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 			var newSetting = {};
 			newSetting[event.data.type]=event.data.text;
 			storage.set(newSetting,function(){
+				var $input = $("input#lookupTxt").eq(0);
+				if($input.hasClass('greyText')!==true)
+					tooWhit();
 				eeloaded = true;
 			});	      
 		}
@@ -488,3 +503,4 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 			});
 
 }
+
