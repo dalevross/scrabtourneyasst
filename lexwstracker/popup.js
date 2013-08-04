@@ -169,7 +169,7 @@ var trackingGenerator = {
 			var index = 0;
 			var html = '';
 
-			var heading='Your game with '+oppoName+' <div class="profile"><a href="http://facebook.com/'+oppoID+'" target="_blank">Facebook Profile</a></div>';
+			var heading='Your game with '+oppoName+' <div class="profile"><a href="http://facebook.com/'+oppoID+'" target="_blank"><img src="FB-f-Logo__blue_29.png" style="width:11px"/>&nbsp;View Facebook Profile</a></div>';
 			$('div#heading').html(heading);
 
 			var rackLength = (game=="scrabble")?7:8;
@@ -867,6 +867,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		    
 		  }
 		});	
+	
+	
+	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+		if(request.command == 'triggerpopup')
+		{
+			$("#tabs" ).tabs( "option", "active", 1 );
+		}
+	});
 
 	bindNoteChangeEvents();
 

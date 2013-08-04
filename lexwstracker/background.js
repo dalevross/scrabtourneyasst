@@ -444,7 +444,7 @@ var oWLStorage =  {
 chrome.commands.onCommand.addListener(function(command) {
 	    if (command == 'clear-settings')
 	    {
-	      var settings = ["allTiles", "allTilesLimit", "distinguishVowels", "notesFirst", "owlhoot-1", "showTotals", "showValues", "useAllTilesLimit"];
+	      var settings = ["allTiles", "allTilesLimit", "distinguishVowels", "notesFirst", "owlhoot-1", "showTotals", "showValues", "useAllTilesLimit","clickToSubmit"];
 	      chrome.storage.sync.remove(settings);
 	    }
 	   
@@ -475,7 +475,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 						}
 
 						chrome.pageAction.setIcon({tabId: sender.tab.id, path:icon});
-						sendResponse({hasnotes:hasnotes});
+						sendResponse({hasnotes:hasnotes,notes:note});
 						return true;				
 
 					});
@@ -495,6 +495,45 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		
 		return true;
 	}
+	
+});
+
+
+
+
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if(request.command == 'getnotes')
+	{
+		var recid = request.pid + '_' + request.game + '_'+ request.gameid;
+
+		oWLStorage.openDB(function(result){
+			if(result)
+			{
+				setTimeout(function(){
+					oWLStorage.getNoteByRecordId(recid,function(note){
+						var hasnotes;
+						chrome.runtime.sendMessage({command: "triggerpopup"});
+						sendResponse({notes:note});
+						return true;				
+
+					});
+				},100);				
+
+			}
+			else
+			{
+				sendResponse({notes:""});
+				return true;
+			}
+
+
+
+		});
+		
+		return true;
+	}
+	
 });
 
 

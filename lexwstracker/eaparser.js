@@ -4,6 +4,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 	var processingUpdateCounts = false;
 	var eeloaded = false;
 	var storage = chrome.storage.sync;
+	var clickToSubmit = false;
 
 	function updateCounts(){
 		if(processingUpdateCounts)
@@ -23,12 +24,51 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		elem.id = sourceid;
 		elem.innerHTML = source;
 		document.head.appendChild(elem);
-
 		setTimeout(function(){$("script#"+sourceid).remove();},1000);
 
 		return true;
 
 	}
+
+	function addTile(tileId)
+	{		
+		var func = "var k = $('div.tile[data-id="+ tileId +"]');c = k.data('letter').toUpperCase(); Scrabble.TipManager.removeTips(); Scrabble.Board.addTileToCell(k, c);";
+		injectScript(func,"owlAddTile");
+	}
+
+	function getLastPlay()
+	{		
+		return $("table#movesList tr:last-child > td:eq(1)").text().match(/\"?\w+\"?/g).slice(-1)[0];
+	}
+
+	function getNumberOfPlays()
+	{		
+		return $("table#movesList tr.even td:first-child p").length;
+	}
+
+
+
+	function getMoves()
+	{
+		var moves = {};
+		$("table#movesList tr.even > td:nth-child(2)").each(
+				function(index, td) {
+					$scores = $(td).next();
+					$totals = $(td).next().next();
+					$(td).find("p").each(function(turnindex,wordp){
+						moves[index*2+turnindex+1]={};
+						var retrievedId = $('img[class="cardAvatar"]').eq(turnindex).attr('src').split('_')[1];
+						moves[index*2+turnindex+1]["player"]= (/^\d+$/).test(retrievedId)?retrievedId:localStorage.cacheUser;
+						moves[index*2+turnindex+1]["score"]= $scores.find("p").eq(turnindex).text();
+						moves[index*2+turnindex+1]["total"]= $totals.find("p").eq(turnindex).text();
+						moves[index*2+turnindex+1]["word"]= $(wordp).text();
+					});
+				});
+
+		return moves;
+	}
+
+
 
 
 
@@ -102,6 +142,72 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		});
 	}
 
+	function captureTileCoords(event)
+	{
+		$tile = event.data.tile;
+		e = event.originalEvent;
+		$tile.data('p0', { x: e.pageX, y: e.pageY });		
+	}
+
+	function checkIfTileClick(event)
+	{
+		
+		$tile = event.data.tile;
+		$rackSpace = event.data.rackSpace;
+		if(!$rackSpace.hasClass('tileRackSpace'))
+		{
+			unloadClickToSubmit($tile);
+			return;
+		}
+			
+		
+		e = event.originalEvent;
+		var p0 = $tile.data('p0');
+		if(typeof p0 === "undefined")
+			return;
+		p1 = { x: e.pageX, y: e.pageY };
+		d = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
+		$tile.removeData('p0');
+
+		if(clickToSubmit)
+		{
+			//unloadClickToSubmit($tile);
+			if (d < 4) {
+				if($("div.boardCell div#wordTypeFocus").is(':visible'))
+				{
+					unloadClickToSubmit($tile); 
+					if($tile.data("letter")=="BLANK")
+					{	
+						$tile.simulate("drag-n-drop", {dragTarget:  $('div#wordTypeFocus').parent().get(0)});
+					}
+					else
+					{
+						$tile.removeClass("grabbed ui-draggable-dragging").css(
+								{
+									"z-index" : "auto",
+									"left" : "-2px",
+									"top" : "-2px"
+								});
+						$rackSpace.append($tile);
+						addTile($tile.data('id'));
+						//unloadClickToSubmit($tile);
+					}
+
+				}				
+			}
+		}
+	}
+
+	function loadClickToSubmit($tile) {
+		unloadClickToSubmit($tile);
+		$rackSpace = $tile.parent();
+		$tile.on('mousedown.owlwge',{tile:$tile},captureTileCoords).on('mouseup.owlwge',{tile:$tile,rackSpace:$rackSpace},checkIfTileClick);
+	}
+	
+	function unloadClickToSubmit($tile) {		
+		$tile.off('mousedown.owlwge').off('mouseup.owlwge');
+	}
+
 
 	function checkForOWLNotes(callback)
 	{
@@ -126,6 +232,14 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 			chrome.runtime.sendMessage({command: "checknotes",pid:playerID,game:'scrabble',gameid:gid}, function(response) {
 				var gidnote='span#note'+gid;
+				var $owleyes = $(gidnote).find("div.match img.owleyes");
+
+				if($owleyes.HasBubblePopup())
+				{
+					$owleyes.removeData('notes');
+					$owleyes.RemoveBubblePopup();
+				}
+
 				if(response.hasnotes)
 				{
 					iconURL = chrome.extension.getURL("icon-19-notes.png"); 
@@ -135,7 +249,17 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					if($(gidnote).length==0) {
 						$("div[data-match_id=" + gid + "]").find("div.matchElementView").find("span").first().prepend('<span id="note'+gid+'"></span>&nbsp;');
 					}
-					$(gidnote).html('<img src="'+lookURL+'">');
+					$(gidnote).html('<img class="noteeyes" src="'+lookURL+'" style="width:29px; height:14px">');
+					$(gidnote).find('img').CreateBubblePopup({
+
+						position : 'right',
+						align	 : 'center',			
+						innerHtml: response.notes,
+						themeName: 'green',
+						themePath: 'jquerybubblepopup-themes'
+
+					});
+
 				}
 				else
 				{
@@ -160,7 +284,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		}
 		return;
 
-	}
+	}	
+
 
 	$(document).ready(function () {
 
@@ -174,21 +299,22 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		eeTest();
 
 
-		$('#container').on('mousedown', function(e) {
-			$(this).data('p0', { x: e.pageX, y: e.pageY });
-		}).on('mouseup', function(e) {
-			var p0 = $(this).data('p0'),
-			p1 = { x: e.pageX, y: e.pageY },
-			d = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
+		storage.get("clickToSubmit", function(items) {
 
-			if (d < 4) {
-				alert('clicked');
+			if (items["clickToSubmit"]) {
+
+				clickToSubmit = true;				
 			}
+			
+			$('div#tileRackContainer div.tile.active.ui-draggable').each(function(){
+				loadClickToSubmit($(this));
+			});
 		});
 
 
 
-		$("input#lookupTxt").keyup( function(e) {
+
+		/*$("input#lookupTxt").keyup( function(e) {
 			if(e.keyCode == 13) {
 
 				var $input = $(this);
@@ -197,11 +323,13 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					$("p#lookupResult").html('');					
 				}				
 			}
-		});
+		});*/
 
 		checkForOWLNotes();
 
 		var dictionaryNode   = $("p#lookupResult");
+		var rackNode         = $("div#tileRackContainer");
+		var boardNode        = $("div#board");
 		var gameNodes        = $("div[id$=TurnGamesList] div.match,div#completedGamesList div.archivedMatch");
 		var gamesListNodes   = $("div.jspPane");//$("div[id$=GamesList]");
 		//var gameHeadingNodes = $("div.jspPane");
@@ -210,6 +338,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		var myObserver          = new MutationObserver (mutationHandler);
 
 		var dictionaryConfig = {subtree:true,childList:true};
+		var rackConfig = {subtree:true,childList:true};
+		var boardConfig = {subtree:true,childList:true};
 		var listConfig = {subtree:true,childList:true};
 		var gameConfig  = {attributes: true,attributeOldValue:true,attributeFilter: ["class"]};
 		var headingConfig = {subtree:true,childList:true,attributes: true,attributeOldValue:true,characterData: true,characterDataOldValue:true};
@@ -223,9 +353,11 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				myObserver.observe (this, listConfig);
 			} );
 
-			dictionaryNode.each ( function () {
-				myObserver.observe (this, dictionaryConfig);
-			} );			
+
+			myObserver.observe (dictionaryNode[0], dictionaryConfig);
+
+
+			myObserver.observe (rackNode[0], rackConfig);
 
 		}
 
@@ -238,20 +370,28 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				case "attributes":
 					if((mutation.attributeName ==="class") &&($(mutation.target).attr('class').toLowerCase().indexOf('current') >-1))
 					{
-						checkForOWLNotes();							
-						//console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue,attributeName:mutation.attributeName,attributeNamespace:mutation.attributeNamespace}));
+						if($("div.match img.owleyes").HasBubblePopup())
+						{
+							$("div.match img.noteeyes").HideAllBubblePopups();
+						}
+						checkForOWLNotes();
 
 					}					
 					break;
 				case "childList":
 					if(($(mutation.target).attr('id')) && ($(mutation.target).attr('id').indexOf('GamesList') >-1))
 					{
-						updateCounts();							
+						updateCounts();
+						if($("div.match img.owleyes").HasBubblePopup())
+						{
+							$("div.match img.noteeyes").HideAllBubblePopups();
+						}
 
 						if (typeof mutation.addedNodes == "object") 
 						{
 							if(mutation.addedNodes.length > 0 && $(mutation.addedNodes).eq(0).is("div[id$=TurnGamesList] div.match,div#completedGamesList div.archivedMatch"))
 							{
+
 								checkForOWLNotes();
 								if($("div.jspPane div#notesIndicator").length == 0)
 								{
@@ -273,6 +413,18 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 						}	
 
 					}
+					else if($(mutation.target).attr('id') && ($(mutation.target).attr('id').indexOf('tileRackSpace') > -1))
+					{
+						if(mutation.addedNodes.length > 0)
+						{
+							loadClickToSubmit($(mutation.addedNodes).eq(0));							
+						}
+						/*if(mutation.removedNodes.length > 0)
+						{
+							unloadClickToSubmit($(mutation.removedNodes).eq(0));							
+						}*/
+
+					}					
 					break;
 				default:
 					//console.log(JSON.stringify({target:mutation.target.nodeName, _class: $(mutation.target).attr('class'),id:$(mutation.target).attr('id'), type: mutation.type , oldValue: mutation.oldValue}));
@@ -285,6 +437,14 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 
 	});
+
+	chrome.storage.onChanged.addListener(function(changes, namespace) {
+
+		if(typeof changes["clickToSubmit"]!="undefined")
+		{
+			clickToSubmit = changes["clickToSubmit"].newValue || false;			
+		}
+	});	
 
 	window.addEventListener("message", function(event) {
 		// We only accept messages from ourselves
@@ -494,6 +654,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				}
 				if (request.command == "updateNotesFlags")
 				{
+
 					checkForOWLNotes(function(){
 						sendResponse({done:true});
 						return true;						
