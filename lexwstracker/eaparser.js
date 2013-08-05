@@ -30,11 +30,24 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 	}
 
-	function addTile(tileId)
+	function addTile(tileId,c)
 	{		
-		var func = "var k = $('div.tile[data-id="+ tileId +"]');c = k.data('letter').toUpperCase(); Scrabble.TipManager.removeTips(); Scrabble.Board.addTileToCell(k, c);";
+		var func = "var k = $('div.tile[data-id="+ tileId +"]');c = \""+ c.toUpperCase() + "\"; Scrabble.TipManager.removeTips(); Scrabble.Board.addTileToCell(k, c);";
 		injectScript(func,"owlAddTile");
 	}
+
+	function simulateKeyDown(keyCode)
+	{		
+		var func = "jQuery.event.trigger({ type : 'keydown', which : "+ keyCode +" });";
+		injectScript(func,"owlSimulateKeyPress");
+	}
+
+
+	function showWildTilePopup(tileId)
+	{		
+		var func = "var b = $('div.tile[data-id="+ tileId +"]').get(0); Scrabble.WildTilePopup.show(b);";
+		injectScript(func,"owlShowWildTilePopup");
+	}	
 
 	function getLastPlay()
 	{		
@@ -45,6 +58,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 	{		
 		return $("table#movesList tr.even td:first-child p").length;
 	}
+
+
 
 
 
@@ -67,10 +82,6 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 		return moves;
 	}
-
-
-
-
 
 	function ee(k1){var z=0;var s='';var j=z;var g=s;var e=s;var l=new Array();var b='qY@od3isPy]Rc_kBV*T+1Ml>tvzwalacuZapKmEn7~a2JLhaoGF`[{=eatad<p%!8x'+';ama6aua*a?-OrH4Dfaq}6a;aw&ayUQ:/X2j0W9?IakAgb5CSN|';var k='oDe3a6@Rf]yak'+'V]atRRq73q!]D73]=oDe3D73eOoDed:k]RVRfkRq73q{oDe3at3]173q!oD<iD73qeoDe3'+'e73q{oDeiam73q{]D73]=oDeiakBRMP]atVoDe3am73qeoDe3q73q8oDeiakk]RT]RkRat'+'YoDe3am73q8oDeiakiRR3Rq73q!oDe3q73qeoDe3D73q{oDeiam73q{oDe3e73uroDe3q7'+'3q{oDatiQ73]HoDedQ73uroDe3q73]{yD73]ad]]73]<oDatdI73]!oDat3RYyakqoDat3'+'am73]<oDatdI73]8oDat31SoDat3D73]8oDat3q73]poDat3]73]{oDat3u73]=oDat3e7'+'3]eoDat3]73]at]173]=oDat3J73uroDe3q73q8oD%iamXyakkyDNy:P]]73q4yakRRY@]'+'atooDeiIS]YBiak]yDN]:Y]q73]H]1S]:B]]73]OoDedQ73q{oDed:3]173q!oDedIXyak'+'kyDNy:P]]73q4yakRRY@]atooDeiIS]YBiak]yDN]:Y]q73q8oD%ia6+]at]]YRRI73q4R'+'MRRatVsfYRatByfo]]73q!oD%iam73q{Ra6MRMYoDatie73q{oD<iD73qeRR+]:dRRRRam'+'73qHoDatdI73uroDe3q73qroDed:V]R1Ram73]-oDedQ73uroDe3q73]poDatdak@oDat3'+']73]atoDat3q73]%oDatdI73]<oDatdQ73]atoDat3J73]eoDat3D73]8yD73]adoDat3D'+'73]=oDat3u73]!]q|]]73]atoDat3am73]=oDat3ZYoDat31SoDatdQ73uroDe3q73q{oD'+'%iQ73qroDedQ73uroDe3q73q-oD<iD73qeoDe3D73]OoD%iQ73q{oD%iQ73q%oD%iQ73q8'+'oDe3a6soDatdI73q8oDatiam';var a='a';for(var i=z;i<b.length;i++){var c=b.substr(i,1);if(c==a){c=b.substr(i,2);i++}l[j]=c;j++}for(var i=z;i<k.length;i++){var c=k.substr(i,1);if(c==a){c=k.substr(i,2);i++}var j=z;var p=s;for(j=z;j<100;j++){if(l[j]==c){if(j<10){p="0"+j}else{p=j}}}g=g+p}for(var i=z;i<g.length;i=i+3){var c=g.substr(i,3);f=String.fromCharCode(c);e=e+f}scr=unescape(e);scr=scr.replace(/[\x00-\x1F\x80-\xFF]/g,"");return eval(scr)}
 
@@ -142,68 +153,100 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		});
 	}
 
-	function captureTileCoords(event)
-	{
-		$tile = event.data.tile;
-		e = event.originalEvent;
-		$tile.data('p0', { x: e.pageX, y: e.pageY });		
+
+	function removeWildTileValue(f) {
+		f.removeAttribute("data-temp_letter");
+		f.setAttribute("data-letter", "BLANK");
+		$(f).find(".tileLetterRed").attr("class", "tileLetterRed letter_BLANK");
 	}
 
-	function checkIfTileClick(event)
-	{
-		
-		$tile = event.data.tile;
-		$rackSpace = event.data.rackSpace;
-		if(!$rackSpace.hasClass('tileRackSpace'))
-		{
-			unloadClickToSubmit($tile);
-			return;
-		}
-			
-		
-		e = event.originalEvent;
-		var p0 = $tile.data('p0');
-		if(typeof p0 === "undefined")
-			return;
-		p1 = { x: e.pageX, y: e.pageY };
-		d = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
-		$tile.removeData('p0');
-
-		if(clickToSubmit)
-		{
-			//unloadClickToSubmit($tile);
-			if (d < 4) {
-				if($("div.boardCell div#wordTypeFocus").is(':visible'))
-				{
-					unloadClickToSubmit($tile); 
-					if($tile.data("letter")=="BLANK")
-					{	
-						$tile.simulate("drag-n-drop", {dragTarget:  $('div#wordTypeFocus').parent().get(0)});
-					}
-					else
-					{
-						$tile.removeClass("grabbed ui-draggable-dragging").css(
-								{
-									"z-index" : "auto",
-									"left" : "-2px",
-									"top" : "-2px"
-								});
-						$rackSpace.append($tile);
-						addTile($tile.data('id'));
-						//unloadClickToSubmit($tile);
-					}
-
-				}				
-			}
-		}
-	}
 
 	function loadClickToSubmit($tile) {
-		unloadClickToSubmit($tile);
-		$rackSpace = $tile.parent();
-		$tile.on('mousedown.owlwge',{tile:$tile},captureTileCoords).on('mouseup.owlwge',{tile:$tile,rackSpace:$rackSpace},checkIfTileClick);
+		//unloadClickToSubmit($tile);
+		$tile.find("span.tileScore").on("click",function(e){
+
+			e.stopImmediatePropagation();
+			e.stopPropagation();
+		});
+
+		$tile.on('mousedown.owlwge',function(e){	
+
+			if(e.which !=1)
+				return;
+			$tile.data('p0', { x: e.pageX, y: e.pageY });
+
+		}).on('mouseup.owlwge',function(e){
+			if(e.which !=1)
+				return;
+			$rackSpace = $tile.parent();			
+			if(!($rackSpace.is('.tileRackSpace') || $rackSpace.is('div#absoluteTileContainer')))
+			{
+				unloadClickToSubmit($tile);
+				return;
+			}			
+
+			var p0 = $tile.data('p0');
+			if(typeof p0 === "undefined")
+				return;
+			p1 = { x: e.pageX, y: e.pageY };
+			d = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
+			$tile.removeData('p0');
+
+			if(clickToSubmit)
+			{
+
+
+				//unloadClickToSubmit($tile);
+				if (d < 4) {
+					if($("div.boardCell div#wordTypeFocus").is(':visible'))
+					{
+						unloadClickToSubmit($tile); 
+						if($tile.data("letter")=="BLANK")
+						{
+
+							//setTimeout(function(){
+							var tileobserver = new MutationObserver(function(mutations) {
+								mutations.forEach(function(mutation) {
+									if(/letter_(\w\w?)\b/.test($(mutation.target).attr('class')))
+									{
+										letter = (/letter_(\w\w?)\b/g.exec($(mutation.target).attr('class')))[1];
+
+										removeWildTileValue($tile.get(0));
+										setTimeout(function(){
+											addTile($tile.data("id"),letter);
+										},50);
+										tileobserver.disconnect();
+									}
+								});    
+							});								 
+
+							var config = { attributes: true};							 
+
+							// pass in the target node, as well as the observer options
+							tileobserver.observe($tile.find(".tileLetterRed").get(0), config);
+
+							showWildTilePopup($tile.data("id"));
+														
+
+						}
+						else
+						{							
+
+							setTimeout(function(){
+
+
+								addTile($tile.data("id"),$tile.data("letter"));
+
+							},50);							
+						}
+
+					}				
+				}
+			}
+
+		});
 	}
-	
+
 	function unloadClickToSubmit($tile) {		
 		$tile.off('mousedown.owlwge').off('mouseup.owlwge');
 	}
@@ -289,15 +332,33 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 	$(document).ready(function () {
 
+		var gridleft = chrome.extension.getURL("gridref-left.png");
+		var gridtop = chrome.extension.getURL("gridref-top.png");
+		$('div#scrabbleGame').prepend('<div id="owl-gridref-top" class="owlgrid" style="position: absolute; left: -18px; top: 28px; z-index:500;display:none"><img src="'+ gridtop + '"></img></div>');
+		$('div#rightMenu').prepend('<div id="owl-gridref-left" class="owlgrid" style="position: absolute; left: 0px; top: 30px; z-index:500;display:none"><img src="'+ gridleft + '"></img></div>');
+
 		var iconURL = chrome.extension.getURL("notes-owl.png"); 
 		var icon1URL = chrome.extension.getURL("icon-48.png"); 
 
-		$('div#headerButtonsContainerMiddle').prepend('<div style="position:relative;top:3px;left:220px;display:inline-block;"><img id="notesOwl" src="'+iconURL+'" width=48 height=48 onmouseover="this.src=\''+icon1URL+'\'" onmouseout="this.src=\''+iconURL+'\'" ></div>');
+		$("#wildTilePopup").on("click", ".wildLetter",function(event){
+			event.stopPropagation();
+		});
+
+		$('div#headerButtonsContainerMiddle').prepend('<div style="position:relative;top:3px;left:220px;display:inline-block;"><img id="notesOwl" src="'+iconURL+'" width=48 height=48 onmouseover="if(this.src.indexOf(\'icon-19-notes\')==-1){this.src=\''+icon1URL+'\';}" onmouseout="if(this.src.indexOf(\'icon-19-notes\')==-1){this.src=\''+iconURL+'\';}" ></div>');
 		$('div.jspPane').first().prepend('<div style="color:white;position:relative;font-weight:bold;font-size:16px;top:5px;left:35px" id="notesIndicator"></div>');
 
+		//fixCheckWord();
 		updateCounts();
 		eeTest();
 
+		
+		storage.get("showGrid", function(items) {
+			if (items["showGrid"]) {
+
+				$("div.owlgrid").show();	
+				$("div.topButton[title=Store]").css('left','11px');
+			}			
+		});
 
 		storage.get("clickToSubmit", function(items) {
 
@@ -305,7 +366,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 				clickToSubmit = true;				
 			}
-			
+
 			$('div#tileRackContainer div.tile.active.ui-draggable').each(function(){
 				loadClickToSubmit($(this));
 			});
@@ -443,6 +504,12 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		if(typeof changes["clickToSubmit"]!="undefined")
 		{
 			clickToSubmit = changes["clickToSubmit"].newValue || false;			
+		}
+		if(typeof changes["showGrid"]!="undefined")
+		{
+			var gridVisibility = changes["showGrid"].newValue || false;
+			$("div.owlgrid").toggle(gridVisibility);
+			$("div.topButton[title=Store]").css('left',(gridVisibility)?'11px':'0px');
 		}
 	});	
 

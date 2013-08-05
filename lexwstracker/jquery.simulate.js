@@ -19,11 +19,11 @@ function isDocument(ele) {
 }
 
 function windowOfDocument(doc) {
-	for (var i=0; i < window.frames.length; i+=1) {
+	/*for (var i=0; i < window.frames.length; i+=1) {
 		if (window.frames[i].document === doc) {
 			return window.frames[i];
 		}
-	}
+	}*/
 	return window;
 }
 
@@ -163,7 +163,8 @@ $.extend( $.simulate.prototype, {
 					shiftKey: options.shiftKey,
 					metaKey: options.metaKey,
 					keyCode: options.keyCode,
-					charCode: options.charCode
+					charCode: options.charCode,
+					which:options.which
 				});
 			}
 		} else if ( doc.createEventObject ) {

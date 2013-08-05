@@ -45,7 +45,10 @@
     "jquerybubblepopup-themes/green/tail-top.png",
     "jquerybubblepopup-themes/green/top-left.png",
     "jquerybubblepopup-themes/green/top-middle.png",
-    "jquerybubblepopup-themes/green/top-right.png"
+    "jquerybubblepopup-themes/green/top-right.png",
+    "gridref-left.png",
+    "gridref-top.png"
+    
   ],  
   "permissions": [
     "tabs",

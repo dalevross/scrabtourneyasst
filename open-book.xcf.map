@@ -1,0 +1,35 @@
+<img src="open-book.xcf" width="348" height="227" border="0" usemap="#map" />
+
+<map name="map">
+<!-- #$-:Image map file created by GIMP Image Map plug-in -->
+<!-- #$-:GIMP Image Map plug-in by Maurits Rijk -->
+<!-- #$-:Please do not edit lines starting with "#$" -->
+<!-- #$VERSION:2.3 -->
+<!-- #$AUTHOR:dross -->
+<area shape="rect" coords="13,15,47,53" alt="A"  nohref="nohref" />
+<area shape="rect" coords="51,15,85,53" alt="B"  nohref="nohref" />
+<area shape="rect" coords="93,15,127,53" alt="A"  nohref="nohref" />
+<area shape="rect" coords="131,15,165,53" alt="A"  nohref="nohref" />
+<area shape="rect" coords="169,15,203,53" alt="A"  nohref="nohref" />
+<area shape="rect" coords="209,15,243,53" alt="A"  nohref="nohref" />
+<area shape="rect" coords="247,15,281,53" alt="A"  nohref="nohref" />
+<area shape="rect" coords="16,58,50,96" alt="A"  nohref="nohref" />
+<area shape="rect" coords="51,56,85,94" alt="A"  nohref="nohref" />
+<area shape="rect" coords="90,56,124,94" alt="A"  nohref="nohref" />
+<area shape="rect" coords="130,56,164,94" alt="A"  nohref="nohref" />
+<area shape="rect" coords="168,56,202,94" alt="A"  nohref="nohref" />
+<area shape="rect" coords="208,56,242,94" alt="A"  nohref="nohref" />
+<area shape="rect" coords="244,55,278,93" alt="A"  nohref="nohref" />
+<area shape="rect" coords="16,99,50,137" alt="A"  nohref="nohref" />
+<area shape="rect" coords="52,98,86,136" alt="A"  nohref="nohref" />
+<area shape="rect" coords="92,98,126,136" alt="A"  nohref="nohref" />
+<area shape="rect" coords="131,95,165,133" alt="A"  nohref="nohref" />
+<area shape="rect" coords="170,96,204,134" alt="A"  nohref="nohref" />
+<area shape="rect" coords="209,96,243,134" alt="A"  nohref="nohref" />
+<area shape="rect" coords="245,95,279,133" alt="A"  nohref="nohref" />
+<area shape="rect" coords="16,140,50,178" alt="A"  nohref="nohref" />
+<area shape="rect" coords="55,138,89,176" alt="A"  nohref="nohref" />
+<area shape="rect" coords="92,137,128,177" alt="A"  nohref="nohref" />
+<area shape="rect" coords="132,137,166,175" alt="A"  nohref="nohref" />
+<area shape="rect" coords="171,135,204,174" alt="A"  nohref="nohref" />
+</map>
