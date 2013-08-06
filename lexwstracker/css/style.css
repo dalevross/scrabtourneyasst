@@ -1,4 +1,8 @@
 body {
+	font-size: 10px;
+}
+
+#popup-body {
 	width: 357px;
 	overflow-x: hidden;
 	font-family: arial;
@@ -6,6 +10,29 @@ body {
 	background-image: url('../icon-48.png');
 	background-repeat: no-repeat;
 	background-position: right bottom;
+}
+
+#options-body {
+	width: 750px;
+	font-size: 12px;
+	overflow-x: hidden;
+	font-family: arial;	
+	margin:auto;
+	background-image: url('../icon-48.png');
+	background-repeat: no-repeat;
+	background-position: right bottom;
+	margin-top:30px;
+	padding:10px;
+}
+
+div#settings {
+	width: 357px;		
+	margin:auto;		
+}
+
+div#footer {
+	width: 357px;		
+	margin:auto;		
 }
 
 .heading {
@@ -121,6 +148,25 @@ div#toolbar img#refreshButton {
 	margin-right: auto;
 	background: green;
 	color: white;
+}
+
+#options-version {
+	width:100px;
+	text-align: center;
+	background: green;
+	color: white;
+	float:right;
+}
+
+div#notesListControls
+{
+	width:320px;
+	float:right;
+}
+
+button#deleteSelected,button#deleteAll
+{
+	float:right;
 }
 
 .ui-tabs .ui-tabs-nav li a img {

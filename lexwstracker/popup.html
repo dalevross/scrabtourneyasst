@@ -3,22 +3,24 @@
 <head>
 <meta charset="utf-8" />
 <title>OWLS Word Games Enhancer</title>
-<script src="jquery-1.7.min.js"></script>
-<script src="jquery-ui.min.js"></script>
+<script src="jquery-2.0.3.min.js"></script>
+<script src="jquery-ui-1.10.3.custom.min.js"></script>
 <script src="popup.js"></script>
 <script src="tinyeditor/tiny.editor.packed.js"></script>
 <link rel="stylesheet" href="tinyeditor/tinyeditor.css">
 
-<link type="text/css" href="css/south-street/jquery-ui.min.css"
+<link type="text/css" href="css/south-street/jquery-ui-1.10.3.custom.min.css"
 	rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
+    <div id="popup-body">
 	<!--  <iframe
 		src="http://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fowls-tile-tracker%2Fpdpejcfahhppmalemodibekpbiopmogo%3Fhl%3Den-US&amp;send=false&amp;layout=standard&amp;width=357&amp;show_faces=false&amp;font=tahoma&amp;colorscheme=light&amp;action=like&amp;height=35&amp;appId=390735480949561"
 		scrolling="no" frameborder="0"
 		style="border: none; overflow: hidden; width: 357px; height: 20px;"
 		allowTransparency="true"></iframe>-->
+	<div id="updateAvailable"></div>
 	<div id="toolbar"><img id="refreshButton" class="ui-icon ui-icon-refresh ui-state-highlight" title="Refresh"/><img id="closeButton" class="ui-icon ui-icon-close ui-state-highlight" title="Close"/><div id="version"></div><div style="clear:both"></div></div>
 	<div class="heading" id="heading"></div>
 	<div id="tabs">
@@ -64,6 +66,7 @@
 		<a href="https://www.facebook.com/DaJenGroup" target="_blank">DaJen
 			Group</a> for support or suggestions <br />Share this extension:
 		http://tinyurl.com/free-tracker</span>
+	</div>
 </body>
 </html>
 

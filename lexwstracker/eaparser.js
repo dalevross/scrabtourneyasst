@@ -258,7 +258,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 		var playerID=localStorage.cacheUser;
 
-		var gid = $("div[id$='TurnGamesList'] > div.match.lastCurrentGame,div[id$='TurnGamesList']  > div.match.currentGame").attr("data-match_id");
+		var gid = $("div[id$='GamesList']  > div[class*=urrentGame]").attr("data-match_id");
+		//var gid = $("div[id$='TurnGamesList'] > div.match.lastCurrentGame,div[id$='TurnGamesList']  > div.match.currentGame").attr("data-match_id");
 		if(processingNotesList[gid]===true)
 		{
 			if (typeof(callback) == "function") {
@@ -288,7 +289,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					iconURL = chrome.extension.getURL("icon-19-notes.png"); 
 					lookURL = chrome.extension.getURL("look.png");  
 					$('#notesOwl').attr('src',iconURL);
-					$("div#notesIndicator").text("YOU HAVE NOTES");	
+					//$("div#notesIndicator").text("YOU HAVE NOTES");	
 					if($(gidnote).length==0) {
 						$("div[data-match_id=" + gid + "]").find("div.matchElementView").find("span").first().prepend('<span id="note'+gid+'"></span>&nbsp;');
 					}
@@ -299,7 +300,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 						align	 : 'center',			
 						innerHtml: response.notes,
 						themeName: 'green',
-						themePath: 'jquerybubblepopup-themes'
+						themePath: 'jquerybubblepopup-themes',
+						alwaysVisible:true
 
 					});
 
@@ -685,7 +687,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 						}
 					});
 
-					var gid = $("div[id$='TurnGamesList'] > div.match.lastCurrentGame,div[id$='TurnGamesList']  > div.match.currentGame").attr("data-match_id");
+					var gid = $("div[id$='GamesList']  > div[class*=urrentGame]").attr("data-match_id");
+					//var gid = $("div[id$='TurnGamesList'] > div.match.lastCurrentGame,div[id$='TurnGamesList']  > div.match.currentGame").attr("data-match_id");
 
 					rack.sort();
 					var rackstring="";

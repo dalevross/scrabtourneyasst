@@ -3,7 +3,8 @@
 //found in the LICENSE file.
 
 var currentUrl = "about:blank";
-
+var updateAvailable = false;
+var updateVersion = ""; 
 //Called when the url of a tab changes.
 function checkForValidUrl(tabId, changeInfo, tab) {
 	// If the letter 'g' is found in the tab's URL...
@@ -139,16 +140,22 @@ var oWLStorage =  {
 			return tx.objectStore(store_name);
 		},
 
-		clearObjectStore: function (store_name) {
+		clearObjectStore: function (store_name,callback) {
 			var store = oWLStorage.getObjectStore(store_name, 'readwrite');
 			var req = store.clear();
 			req.onsuccess = function(evt) {
-				oWLStorage.displayActionSuccess("Store cleared");	      
+				callback(true);      
 			};
 			req.onerror = function (evt) {
 				console.error("clearObjectStore:", evt.target.errorCode);
-				oWLStorage.displayActionFailure(this.error);
+				callback(false);
 			};
+		},
+		
+		deletAllNotes:function(callback){
+			oWLStorage.clearObjectStore(oWLStorage.DB_NOTES_STORE_NAME,function(result){
+				callback(result);		
+			});			
 		},
 
 		getNote: function (key, store, success_callback) {
@@ -200,7 +207,10 @@ var oWLStorage =  {
 				var putReq;
 				try {
 					if (typeof evt.target.result == 'undefined') {
-						putReq = store.put(obj);
+						if((note!="")&&(note!="<br>"))
+						{
+							putReq = store.put(obj);	
+						}
 					}
 					else
 					{
@@ -369,6 +379,38 @@ var oWLStorage =  {
 				callback("");
 			};
 		},
+		
+		getAllNotes : function (callback) {
+			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
+			var allrecords = new Array();
+			var getReq = store.openCursor();
+			
+			getReq.onsuccess = function(evt) {
+				
+				var cursor = evt.target.result;
+				if(cursor)
+				{
+					
+					req = store.get(cursor.key);
+			        req.onsuccess = function (evt) {
+			          var record = evt.target.result;
+			          allrecords.push({recordid:record.recordid,profile:record.profile,opponent:record.opponent,
+			        	  game:record.game,gameid:record.gameid,savedDate:record.savedDate,note:record.note});
+			          
+			        };
+			        
+			        cursor.continue();
+				}
+				else 
+				{
+					callback(allrecords);
+					return;
+			    }
+			};
+			getReq.onerror = function (evt) {
+				callback(allrecords);
+			};
+		},
 
 		getNoteByGameAndId : function (game,gameid,callback) {
 			var store = oWLStorage.getObjectStore(oWLStorage.DB_NOTES_STORE_NAME, 'readwrite');
@@ -475,6 +517,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 						}
 
 						chrome.pageAction.setIcon({tabId: sender.tab.id, path:icon});
+						chrome.pageAction.show(sender.tab.id);	
 						sendResponse({hasnotes:hasnotes,notes:note});
 						return true;				
 
@@ -499,8 +542,22 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
+chrome.runtime.onUpdateAvailable.addListener(function(details) {
+	var updateAvailable = true;
+	var updateVersion = details.version;
+});
 
+chrome.runtime.onInstalled.addListener(function(details) {
+	
+	chrome.tabs.query({url:"*://apps.facebook.com/*",windowType:"normal"}, function (tabs) {
+		$.each(tabs,function(index,tab){
+			if (((tab.url.indexOf('lexulous') > -1 && tab.url.indexOf('gid') > -1 )||(tab.url.indexOf('wordscraper') > -1  && tab.url.indexOf('gid') > -1)|| (tab.url.indexOf('ea_scrabble_closed') > -1)|| (tab.url.indexOf('livescrabble') > -1))&&(tab.url.indexOf('apps.facebook.com') > -1)) {
+				chrome.tabs.update(tab.id, {url: tab.url});
+			}
+		});		
+	});
 
+});
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if(request.command == 'getnotes')

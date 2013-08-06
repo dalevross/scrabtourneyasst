@@ -3,12 +3,13 @@
 
   "name": "OWLS Word Games Enhancer",
   "description": "This extension provides auxiliary features to popular word games",
-  "version": "2.1.8",
-  "background": { "scripts": ["jquery-1.7.min.js","background.js"] },
+  "version": "2.2.0",
+  "background": { "scripts": ["jquery-2.0.3.min.js","background.js"] },
   "page_action": {
     "default_icon": "icon-19.png",
     "default_popup": "popup.html"
   },
+  "options_page": "options.html",
   "commands": {
   	"_execute_page_action": {
       "suggested_key": {"default": "Alt+Shift+O"},      
@@ -22,7 +23,7 @@
    "content_scripts": [
     {
       "matches": ["https://scrabblefb-live2.sn.eamobile.com/*","http://scrabblefb-live2.sn.eamobile.com/*"],
-      "js": ["jquery-1.7.min.js","jquery.simulate.js","jquery.simulate.ext.js","jquery.simulate.drag-n-drop.js","md5.js","jquery-bubble-popup-v3.min.js","eaparser.js"],
+      "js": ["jquery-2.0.3.min.js","jquery.browser.js","md5.js","jquery-bubble-popup-v3.min.js","eaparser.js"],
       "css": ["css/jquery-bubble-popup-v3.css"],
       "all_frames":true
     }

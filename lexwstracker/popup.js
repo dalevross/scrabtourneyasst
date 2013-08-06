@@ -27,22 +27,22 @@ var trackingGenerator = {
 					"IT" :"A,11|B,2|C,2|D,3|E,9|F,2|G,2|H,2|I,8|J,1|K,1|L,3|M,2|N,5|O,9|P,2|Q,1|R,5|S,5|T,5|U,3|V,2|W,2|X,1|Y,3|Z,1|blank,2"
 
 			};
-			
+
 			var alllexvals = {
 					"US":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
 					"UK":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
 					"EN":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
 					"FR":{"O":1,"A":1,"I":1,"E":1,"C":4,"R":1,"S":1,"T":1,"L":1,"M":2,"N":1,"U":1,"B":4,"D":2,"F":5,"P":3,"V":5,"G":2,"H":5,"Q":8,"J":10,"K":12,"W":12,"X":12,"Y":12,"Z":12,"blank":0},
 					"IT":{"O":1,"A":1,"I":1,"E":1,"C":4,"R":1,"S":1,"T":1,"L":1,"M":2,"N":1,"U":1,"B":4,"D":2,"F":5,"P":3,"V":5,"G":2,"H":5,"Q":8,"J":10,"K":12,"W":12,"X":12,"Y":12,"Z":12,"blank":0}
-					};
-			
+			};
+
 			var allwsvals = {
 					"US":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
 					"UK":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
 					"EN":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
 					"FR":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0},
 					"IT":{"E":1,"A":1,"I":1,"O":1,"N":1,"R":1,"T":2,"L":1,"S":1,"U":1,"D":2,"G":2,"B":4,"C":4,"M":4,"P":4,"F":5,"H":5,"V":5,"W":5,"Y":5,"K":6,"J":10,"X":10,"Q":12,"Z":12,"blank":0}					
-					};
+			};
 
 
 			if(game=="lexulous")
@@ -57,7 +57,7 @@ var trackingGenerator = {
 				//distribution = $(data).find('tile_count').text();
 
 			}
-			
+
 			//var letvals =  allvals[lang.toUpperCase()];
 
 			var dist = {};
@@ -76,7 +76,7 @@ var trackingGenerator = {
 				letter = (cell_info[0]===cell_info[0].toUpperCase())?cell_info[0]:"blank";
 				used[letter]++;
 			});
-			
+
 			numPlayers = $(data).find('playersNo').text();
 
 			var rack=new Array();
@@ -150,6 +150,7 @@ var trackingGenerator = {
 			trackingGenerator.g_game = game;
 			trackingGenerator.g_opponentId = response.ID;
 			trackingGenerator.g_screenshot = response.board;
+			var bkg = chrome.extension.getBackgroundPage();
 
 			var left = {};
 			var tilecount = 0;
@@ -172,8 +173,15 @@ var trackingGenerator = {
 			var heading='Your game with '+oppoName+' <div class="profile"><a href="http://facebook.com/'+oppoID+'" target="_blank"><img src="FB-f-Logo__blue_29.png" style="width:11px"/>&nbsp;View Facebook Profile</a></div>';
 			$('div#heading').html(heading);
 
+			if(bkg.updateAvailable)
+			{
+				$('div#updateAvailable').html('<a>Update to version "'+ bkg.updateVersion +'!"</a>').on('click','a',function(){
+					chrome.runtime.reload();
+				});
+			}
+
 			var rackLength = (game=="scrabble")?7:8;
-			
+
 			var inbag = (tilecount>(rackLength*numOpponents))?tilecount-(rackLength*numOpponents):0;
 			html = html + '<span style="font-weight:bold;">Tile Count: ' + tilecount + '</span><span> ('+ inbag + ' in bag)</span><br/>';
 
@@ -332,7 +340,7 @@ var trackingGenerator = {
 			{
 				$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
 			}
-			
+
 			if($('input[name=showValues]').prop('checked'))
 			{
 				$("span.value").css({'display':'inline'});
@@ -370,7 +378,7 @@ var trackingGenerator = {
 				game = 'scrabble';
 
 				$dialog.html(loadinghtml);
-				chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
+				chrome.tabs.query({'active': true, 'currentWindow':true,windowType:"normal"}, function (tabs) {
 					chrome.tabs.sendMessage(tabs[0].id, {command: "sendresults"}, function(response) {
 						var used = response.used;
 						var dist = response.dist;
@@ -553,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	loadSettings(function(){
 
 
-		chrome.tabs.query({'active': true,'currentWindow':true}, function (tabs) {
+		chrome.tabs.query({'active': true,'currentWindow':true,windowType:"normal"}, function (tabs) {
 			var applink = tabs[0].url;
 			trackingGenerator.getTilesLeft(applink,function(){
 				var recid = trackingGenerator.getStorageRecordId(trackingGenerator.g_playerid,trackingGenerator.g_game,trackingGenerator.g_gameid);
@@ -611,8 +619,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		$(innerbody).fadeOut(500, function() {
 			$(innerbody).html("");
 			$('button#saveButton').click();
-	    }).fadeIn(500);
-		
+		}).fadeIn(500);
+
 	});
 
 	$('button#saveButton').click(function(){
@@ -642,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 					if(trackingGenerator.g_game==="scrabble")
 					{
-						chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
+						chrome.tabs.query({'active': true, 'currentWindow':true,windowType:"normal"}, function (tabs) {
 							chrome.tabs.sendMessage(tabs[0].id, {command: "updateNotesFlags"}, function(response) {
 							});
 						});
@@ -650,7 +658,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					else
 					{
 
-						chrome.tabs.query({'active': true, 'currentWindow':true}, function (tabs) {
+						chrome.tabs.query({'active': true, 'currentWindow':true,windowType:"normal"}, function (tabs) {
 
 							bkg.oWLStorage.updateNoteIndicatorByGameAndId(trackingGenerator.g_game,trackingGenerator.g_gameid,tabs[0].id);
 							//chrome.tabs.sendMessage(tabs[0].id, {command: "updateNotesFlags"}, function(response) {
@@ -658,6 +666,10 @@ document.addEventListener('DOMContentLoaded', function () {
 						});
 
 					}
+					
+					reloadOptions();
+
+
 				}
 
 				$(innerbody).attr('contenteditable',true);
@@ -670,6 +682,13 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 
 	});
+
+	function reloadOptions(){
+		var optionstaburl = chrome.extension.getURL("options.html");
+		chrome.tabs.query({url:optionstaburl}, function (tabs) {
+			chrome.tabs.update(tabs[0].id, {url: tabs[0].url});						
+		});
+	}
 
 	var delay = (function(){
 		var timer = 0;
@@ -706,7 +725,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		var done=false;
 		var chkCount = $("div#settings input:checkbox").length;
 		var chksLoaded = 0;
-		
+
 		var numCount = $("div#settings input[type=number]").length;
 		var numsLoaded = 0;
 
@@ -740,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function () {
 						$(this).prop('checked',true);
 						origVal=true;
 					}
-					*/
+					 */
 					var newSetting = {};
 					newSetting[name]=origVal;
 					storage.set(newSetting, function(){
@@ -756,13 +775,13 @@ document.addEventListener('DOMContentLoaded', function () {
 							bindSettingsChangeEvents();
 							callback();
 						}				
-						
+
 					});	    		    	
 				}
-				
+
 			});
 		});
-		
+
 		$("div#settings input[type=number]").each(function(){
 			var $input = $(this);
 			var name = $input.attr('name');
@@ -794,10 +813,10 @@ document.addEventListener('DOMContentLoaded', function () {
 							bindSettingsChangeEvents();
 							callback();
 						}					
-						
+
 					});	    		    	
 				}
-				
+
 			});
 		});
 
@@ -807,35 +826,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				var newSetting = {};
 				newSetting[name] = $(this).prop('checked');
 				storage.set(newSetting);
-
-				if(name=='useAllTilesLimit')
-				{	    	
-					$("div#settings input[name=allTilesLimit]").prop('disabled', !$(this).prop('checked'));
-				}
-
-				if(name=='distinguishVowels')
-				{
-					if($(this).prop('checked'))
-					{
-						$("div.vowel").css({'color':'blue','font-weight': 'bold'});
-					}
-					else
-					{
-						$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
-					}
-				}
-				
-				if(name=='showValues')
-				{
-					if($(this).prop('checked'))
-					{
-						$("span.value").css({'display':'inline'});
-					}
-					else
-					{
-						$("span.value").css({'display':'none'});
-					}
-				}
+				reloadOptions();
 
 			});
 
@@ -844,31 +835,70 @@ document.addEventListener('DOMContentLoaded', function () {
 				var newSetting = {};
 				newSetting[name] = $(this).val();
 				storage.set(newSetting); 
+				reloadOptions();
 
 			});	
 		}				
 
 	}
-	
+
 	chrome.storage.onChanged.addListener(function(changes, namespace) {
-	  
+
 		var changeLen = Object.keys(changes).length;
 		var changeCount = 0 ;
 		for (key in changes) {
-		    var storageChange = changes[key];
-		    if(typeof storageChange.newValue != "undefined")
-		    	return;
-		    		    
-		    changeCount++;
-		    if(changeCount==changeLen)
-		    {
-		    	window.location.reload();
-		    }
-		    
-		  }
-		});	
-	
-	
+			var storageChange = changes[key];
+			if(typeof storageChange.newValue != "undefined")
+				return;
+
+			changeCount++;
+			if(changeCount==changeLen)
+			{
+				window.location.reload();
+			}
+
+		}
+	});
+
+	chrome.storage.onChanged.addListener(function(changes, namespace) {
+
+		var newVal = false;
+
+		if(typeof changes["useAllTilesLimit"]!="undefined")
+		{
+			var newVal = changes["useAllTilesLimit"].newValue || false;
+			$("div#settings input[name=allTilesLimit]").prop('disabled', !newVal);
+		}
+
+		if(typeof changes["distinguishVowels"]!="undefined")
+		{
+			var newVal = changes["distinguishVowels"].newValue || false;
+			if(newVal)
+			{
+				$("div.vowel").css({'color':'blue','font-weight': 'bold'});
+			}
+			else
+			{
+				$("div.vowel").css({'color':'darkgreen','font-weight': 'normal'});
+			}
+		}
+
+		if(typeof changes["showValues"]!="undefined")
+		{
+			var newVal = changes["showValues"].newValue || false;			
+			if(newVal)
+			{
+				$("span.value").css({'display':'inline'});
+			}
+			else
+			{
+				$("span.value").css({'display':'none'});
+			}
+		}
+
+	});	
+
+
 	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		if(request.command == 'triggerpopup')
 		{
