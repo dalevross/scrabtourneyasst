@@ -78,6 +78,19 @@ var trackingGenerator = {
 			});
 
 			numPlayers = $(data).find('playersNo').text();
+			
+			if($.trim(numPlayers)=="")
+			{
+				for (var i=1;i<=4;i++)
+				{
+					if($.trim($(data).find('p'+i+'email').text()) != "")
+					{
+						numPlayers = i;
+						
+					}				
+					
+				}				
+			}
 
 			var rack=new Array();
 			myrack = $(data).find('myrack').text();
@@ -896,15 +909,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		}
 
-	});	
-
-
-	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-		if(request.command == 'triggerpopup')
-		{
-			$("#tabs" ).tabs( "option", "active", 1 );
-		}
-	});
+	});		
 
 	bindNoteChangeEvents();
 

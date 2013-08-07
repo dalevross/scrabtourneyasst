@@ -263,7 +263,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		if(processingNotesList[gid]===true)
 		{
 			if (typeof(callback) == "function") {
-				callback();
+				callback(false);
+				return true;
 			}
 
 			return;
@@ -317,18 +318,17 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				}
 				processingNotesList[gid]=false;
 				if (typeof(callback) == "function") {
-					callback();
-				}
-				return;
+					callback(true);
+					return true;
+				}	
 
 			});				
 		}
 
-		if (typeof(callback) == "function") {
+		/*if (typeof(callback) == "function") {
 			callback();
-		}
-		return;
-
+			return true;
+		}*/
 	}	
 
 
@@ -725,13 +725,17 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				if (request.command == "updateNotesFlags")
 				{
 
-					checkForOWLNotes(function(){
-						sendResponse({done:true});
+					checkForOWLNotes(function(resp){
+						sendResponse({done:resp});
 						return true;						
-					});				
+					});	
+					return true;
 				}
+				return true;
 
 			});
+	
+			
 
 }
 

@@ -17,9 +17,61 @@ document.addEventListener('DOMContentLoaded', function () {
 	$("div#toolbar img#refreshButton").on('click',function(){
 		window.location.reload();		
 	});
-	
-	
+
+
 	$("button#deleteAll,button#deleteSelected").button({icons : { primary: "ui-icon-trash" }}).css('display','none');
+
+	$("button#deleteSelected").click(function(){		
+		var button = this;
+		var $dialog = $( "#dialog-confirm" );
+		$( "#dialog-confirm" ).eq(0).html("<img src='owl-on-coke.png' style='display: inline;vertical-align:middle;'/><span>Deleted notes cannot be recovered. Are you sure?</span>").dialog({
+			resizable: false,
+			draggable:false,
+			height:'auto',
+			modal: true,
+			position: { my: "bottom center", at: "top center", of: button },
+			buttons: {
+				"Yes": function() {
+					var lastindex = $("div#notesContainer .selectrecord:checked").length - 1; 
+					$(".selectrecord:checked",notesTable.fnGetNodes() ).each(function(index){
+						var noteid = $(this).data('id');
+						var nRow = $(this).parents('tr').get(0);
+						bkg.oWLStorage.addNote(noteid, null, null, null,"",null,function(result){
+							if(result)
+							{								
+								notesTable.fnDeleteRow( nRow );							
+							}
+
+							if(index===lastindex)
+							{
+								chrome.tabs.query({url:"*://apps.facebook.com/*",windowType:"normal"}, function (tabs) {
+									$.each(tabs,function(index,tab){																	
+										if (((tab.url.indexOf('lexulous') > -1 && tab.url.indexOf('gid') > -1 )||(tab.url.indexOf('wordscraper') > -1  && tab.url.indexOf('gid') > -1)|| (tab.url.indexOf('ea_scrabble_closed') > -1)|| (tab.url.indexOf('livescrabble') > -1))&&(tab.url.indexOf('apps.facebook.com') > -1)) {
+											chrome.tabs.update(tab.id, {url: tab.url});
+										}
+									});
+									$dialog.dialog("close");
+
+								});
+							}
+
+
+						});			
+					});
+
+
+				},
+				"No": function() {
+					$dialog.dialog( "close" );
+				}
+			}
+
+		}).dialog("open");
+
+
+
+	});
+
 
 	$("button#deleteAll").click(function(){		
 		var button = this;
@@ -32,21 +84,18 @@ document.addEventListener('DOMContentLoaded', function () {
 			position: { my: "bottom center", at: "top center", of: button },
 			buttons: {
 				"Yes": function() {
-					bkg.oWLStorage.addNote(noteid, null, null, null,"",null,function(result){
+					bkg.oWLStorage.deletAllNotes(function(result){
 						if(result)
 						{
-							
-							notesTable.fnDeleteRow( nRow );
+
 							chrome.tabs.query({url:"*://apps.facebook.com/*",windowType:"normal"}, function (tabs) {
 								$.each(tabs,function(index,tab){																	
 									if (((tab.url.indexOf('lexulous') > -1 && tab.url.indexOf('gid') > -1 )||(tab.url.indexOf('wordscraper') > -1  && tab.url.indexOf('gid') > -1)|| (tab.url.indexOf('ea_scrabble_closed') > -1)|| (tab.url.indexOf('livescrabble') > -1))&&(tab.url.indexOf('apps.facebook.com') > -1)) {
 										chrome.tabs.update(tab.id, {url: tab.url});
 									}
-								});
-								$dialog.dialog("close");
-								
-							});				
-							
+								});								
+								window.location.reload();
+							});		
 
 						}								       			
 
@@ -56,11 +105,8 @@ document.addEventListener('DOMContentLoaded', function () {
 					$dialog.dialog( "close" );
 				}
 			}
-			
-		}).dialog("open");
 
-		
-	
+		}).dialog("open");	
 	});
 
 	var storage = chrome.storage.sync;
@@ -69,8 +115,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	loadSettings();
 
-	function htmlEntities(str) {
-		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+	/* Formating function for row details */
+	function fnFormatDetails ( oTable, nTr )
+	{
+		//var aData = oTable.fnGetData( nTr );
+		var sOut = '<div style="padding:10px">' + $(nTr).find('span.showNote img').data('note') + '</div>';	     
+		return sOut;
 	}
 
 	function loadSettings()
@@ -140,13 +191,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 				setTimeout(function(){
 					bkg.oWLStorage.getAllNotes(function(notes){
-
-
-
 						if(notes.length)
 						{
-							
-							
+
+
 							var notesObj = {};
 							var aaData = new Array();
 							$.each(notes,function(){
@@ -167,8 +215,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 								notesObj[record.recordid]= record.note;
 
-								opponent = "<a href=\"https://www.facebook.com/"+ record.opponent+ "\"><img src=\"https://graph.facebook.com/"+ record.opponent+"/picture?type=small\"/></a>";
-								showNote = "<span class=\"showNote\"><img data-id=\""+  record.recordid +"\"  class=\"ui-icon ui-icon-comment\"/></span>";
+								opponent = "<a style=\"white-space: nowrap;\" class=\"profile\" data-id=\""+ record.opponent+ "\" href=\"https://www.facebook.com/"+ record.opponent+ "\" target=\"_blank\"><img src=\"https://graph.facebook.com/"+ record.opponent+"/picture?type=small\"/></a>";
+								showNote = "<span class=\"showNote\"><img data-id=\""+  record.recordid +"\"  class=\"ui-icon ui-icon-circle-triangle-e\"/></span>";
 								dateSaved = record.savedDate.toUTCString();
 								deleteNote = "<button class=\"deleteNote\" data-id=\""+ record.recordid +"\">Delete</button>";
 								aaData.push([select,game,gameid,opponent,showNote,dateSaved,deleteNote]);
@@ -177,16 +225,19 @@ document.addEventListener('DOMContentLoaded', function () {
 							$('#notesContainer').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="notesTable" width="100%"></table>' );
 							notesTable = $('#notesTable').dataTable( {
 								"aaData": aaData,
+								"aoColumnDefs": [{ "bSortable": false, "aTargets": [ 0,4,6 ] }],
 								"aaSorting": [[ 5, "desc" ]],
 								"fnRowCallback": function( nRow, aData, iDisplayIndex ) {									/* Append the grade to the default row class name */
 
 									$('input.selectrecord',nRow).on('change',function(){
-										someChecked = ($(".selectrecord:checked").length)>0;
+										someChecked = ($(".selectrecord:checked",notesTable.fnGetNodes()).length)>0;
 										$("button#deleteSelected").css('display',(someChecked)?'block':'none');										
 									});
 
+
+
 									$('button.deleteNote', nRow).button({icons : { primary: "ui-icon-trash" }}).on('click',function(event){
-										
+
 										var noteid = $(this).data('id');
 										var button = this;
 										var $dialog = $( "#dialog-confirm" );
@@ -201,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function () {
 													bkg.oWLStorage.addNote(noteid, null, null, null,"",null,function(result){
 														if(result)
 														{
-															
+
 															notesTable.fnDeleteRow( nRow );
 															chrome.tabs.query({url:"*://apps.facebook.com/*",windowType:"normal"}, function (tabs) {
 																$.each(tabs,function(index,tab){																	
@@ -210,9 +261,9 @@ document.addEventListener('DOMContentLoaded', function () {
 																	}
 																});
 																$dialog.dialog("close");
-																
+
 															});						
-															
+
 
 														}								       			
 
@@ -222,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
 													$dialog.dialog( "close" );
 												}
 											}
-											
+
 										}).dialog("open");
 
 
@@ -241,26 +292,43 @@ document.addEventListener('DOMContentLoaded', function () {
 								              ],
 								              "bJQueryUI": true,
 								              "sPaginationType": "full_numbers"
+
 							} );
 
-							
-							$('span.showNote img').each(function(){
-								//console.debug(notesObj[$(this).data('id')]);
-								$(this).CreateBubblePopup({
-
-									position : 'right',
-									align	 : 'center',													
-									innerHtml: notesObj[$(this).data('id')],													
-									themeName: 'green',
-									themePath: 'jquerybubblepopup-themes',
-									alwaysVisible:true
-								});
-
+							$('span.showNote img',notesTable.fnGetNodes()).each(function(){														
+								$(this).data('note',notesObj[$(this).data('id')]);
 							});
+
+							$('span.showNote img',notesTable.fnGetNodes()).on('click', function () {
+								var nTr = $(this).parents('tr')[0];
+								if (notesTable.fnIsOpen(nTr) )
+								{
+									/* This row is already open - close it */
+									$(this).removeClass("ui-icon-circle-triangle-s").addClass("ui-icon-circle-triangle-e");
+									notesTable.fnClose( nTr );
+								}
+								else
+								{
+									/* Open this row */
+									$(this).removeClass("ui-icon-circle-triangle-e").addClass("ui-icon-circle-triangle-s");
+									notesTable.fnOpen( nTr, fnFormatDetails(notesTable, nTr), 'details' );
+								}
+							} );
+
+							currentContent = {};
+							$('a.profile',notesTable.fnGetNodes()).each(function(){
+								var $link = $(this);
+								
+								td = $(this).closest('td').get(0);							
+								var pos = notesTable.fnGetPosition(td);
+								currentContent[pos[0]] = $('<div>').append($link.clone()).html();    
+								var graphUrl = "https://graph.facebook.com/" + $link.data('id');
+								$.getJSON(graphUrl,function(json){
+									notesTable.fnUpdate(currentContent[pos[0]].slice(0,currentContent[pos[0]].length-4) + '<br/><span class="fbname">' + json.name+'</span>' + currentContent[pos[0]].slice(currentContent[pos[0]].length-4),pos[0],3);
+								});									
+							});
+
 							$("button#deleteAll").show();
-							notesObj=null;
-
-
 
 						}
 						else
@@ -377,17 +445,9 @@ document.addEventListener('DOMContentLoaded', function () {
 			$("div#settings input[name=allTilesLimit]").prop('disabled', !newVal);
 		}	
 
-	});	
-
-
-
-	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-		if(request.command == 'triggerpopup')
-		{
-			$("#tabs" ).tabs( "option", "active", 1 );
-		}
 	});
-
+	
+	
 
 
 });

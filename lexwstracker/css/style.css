@@ -13,7 +13,7 @@ body {
 }
 
 #options-body {
-	width: 750px;
+	width: 800px;
 	font-size: 12px;
 	overflow-x: hidden;
 	font-family: arial;	
@@ -160,7 +160,7 @@ div#toolbar img#refreshButton {
 
 div#notesListControls
 {
-	width:320px;
+	width:400px;
 	float:right;
 }
 
@@ -172,4 +172,9 @@ button#deleteSelected,button#deleteAll
 .ui-tabs .ui-tabs-nav li a img {
 	float: left;
 	margin-right: 5px
+}
+
+td.details {
+	background-color: white !important;
+	border: 1px solid green;	
 }

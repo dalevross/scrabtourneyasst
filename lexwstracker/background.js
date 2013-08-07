@@ -517,7 +517,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 						}
 
 						chrome.pageAction.setIcon({tabId: sender.tab.id, path:icon});
-						chrome.pageAction.show(sender.tab.id);	
 						sendResponse({hasnotes:hasnotes,notes:note});
 						return true;				
 
@@ -534,10 +533,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 
-		});
+		});	
 		
 		return true;
+		
 	}
+	return true;
 	
 });
 
@@ -558,41 +559,6 @@ chrome.runtime.onInstalled.addListener(function(details) {
 	});
 
 });
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-	if(request.command == 'getnotes')
-	{
-		var recid = request.pid + '_' + request.game + '_'+ request.gameid;
-
-		oWLStorage.openDB(function(result){
-			if(result)
-			{
-				setTimeout(function(){
-					oWLStorage.getNoteByRecordId(recid,function(note){
-						var hasnotes;
-						chrome.runtime.sendMessage({command: "triggerpopup"});
-						sendResponse({notes:note});
-						return true;				
-
-					});
-				},100);				
-
-			}
-			else
-			{
-				sendResponse({notes:""});
-				return true;
-			}
-
-
-
-		});
-		
-		return true;
-	}
-	
-});
-
 
 
 
