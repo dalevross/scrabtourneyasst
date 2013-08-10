@@ -230,7 +230,10 @@ document.addEventListener('DOMContentLoaded', function () {
 								"fnRowCallback": function( nRow, aData, iDisplayIndex ) {									/* Append the grade to the default row class name */
 
 									$('input.selectrecord',nRow).on('change',function(){
-										someChecked = ($(".selectrecord:checked",notesTable.fnGetNodes()).length)>0;
+										
+										numChecked = $(".selectrecord:checked",notesTable.fnGetNodes()).length;
+										someChecked = numChecked > 0;
+										$("button#deleteSelected .ui-button-text").text("Delete Selected Notes (" +  numChecked + ")");
 										$("button#deleteSelected").css('display',(someChecked)?'block':'none');										
 									});
 
@@ -306,6 +309,8 @@ document.addEventListener('DOMContentLoaded', function () {
 									/* This row is already open - close it */
 									$(this).removeClass("ui-icon-circle-triangle-s").addClass("ui-icon-circle-triangle-e");
 									notesTable.fnClose( nTr );
+									
+									
 								}
 								else
 								{

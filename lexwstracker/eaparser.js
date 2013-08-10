@@ -299,10 +299,11 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 
 						position : 'right',
 						align	 : 'center',			
-						innerHtml: response.notes,
+						innerHtml: '<div style="max-width:287px;max-height:250px;overflow-y:auto">' + response.notes + "</div>",
 						themeName: 'green',
 						themePath: 'jquerybubblepopup-themes',
-						alwaysVisible:true
+						alwaysVisible:true,
+						selectable:true
 
 					});
 
