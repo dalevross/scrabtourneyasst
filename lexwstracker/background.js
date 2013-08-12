@@ -72,7 +72,7 @@ chrome.tabs.onUpdated.addListener(checkForValidUrl);
 var oWLStorage =  {
 
 		DB_NAME : 'owlswgedb',
-		DB_VERSION : 2,
+		DB_VERSION : 3,
 		DB_NOTES_STORE_NAME : 'notes',
 		DB_GCG_STORE_NAME : 'gcg',
 		db : {},
@@ -123,6 +123,10 @@ var oWLStorage =  {
 					var notes_store = req.transaction.objectStore(oWLStorage.DB_NOTES_STORE_NAME);
 					notes_store.createIndex("game_gid", ["game","gameid"],{ unique: false });
 				}
+				if (event.oldVersion < 3) {
+					// Version 3 removes the need for a separate datastore from game info.
+					evt.currentTarget.result.deleteObjectStore(oWLStorage.DB_GCG_STORE_NAME);					
+				}
 
 				callback(true);
 
@@ -167,15 +171,7 @@ var oWLStorage =  {
 			};
 		},
 
-
-		getGameInfo : function (key, store, success_callback) {
-			var req = store.get(key);
-			req.onsuccess = function(evt) {
-				var value = evt.target.result;
-				if (value)
-					success_callback({gcg:value.gcg,screenshot:value.screenshot});
-			};
-		},
+		
 
 		/**
 		 * @param {string}
@@ -246,44 +242,7 @@ var oWLStorage =  {
 		},
 
 
-		/**
-		 * @param {string}
-		 *            recordid
-		 * @param {string}
-		 *            profileid
-		 * @param {string}
-		 *            game
-		 * @param {string}
-		 *            gameid
-		 * @param {object}
-		 *            gcginfo
-		 * @param {Blob=}
-		 *            screenshot
-		 */
-		addGCG: function (recordid, profile, game, gameid,objGCG,opponent,screenshot,callback) {
-
-			var now = new Date();
-			var obj = {recordid:recordid, profile:profile, game:game, gameid:gameid,gcginfo:gcginfo,opponent:opponent,savedDate:now};
-
-			var store = oWLStorage.getObjectStore(this.DB_GCG_STORE_NAME, 'readwrite');
-			var req;
-			try {
-				req = store.put(obj);
-			} catch (e) {
-				oWLStorage.displayActionFailure(e);
-				// throw e;
-			}
-			req.onsuccess = function (evt) {
-				// console.log("Insertion in DB successful");
-				oWLStorage.displayActionSuccess();
-				// displayPubList(store);
-			};
-			req.onerror = function() {
-				console.error("addPublication error", this.error);
-				oWLStorage.displayActionFailure(this.error);
-			};
-		},
-
+	
 		/**
 		 * @param {string}
 		 *            recordid

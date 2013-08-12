@@ -11,7 +11,11 @@
 }
 
 div#owlmain {
-	height: 300px;
+	height: 450px;
+}
+
+div#videoHolder {
+	padding-top: 15px;
 }
 
 #resultDialog {
@@ -96,6 +100,9 @@ div#owlmain {
 			data-href="https://chrome.google.com/webstore/detail/owls-word-games-enhancer/pdpejcfahhppmalemodibekpbiopmogo"
 			data-send="true" data-width="450" data-show-faces="true"></div>
 		<button id="installButton">Install the OWL!</button>
+		<div id="videoHolder">
+		<iframe width="420" height="315" src="//www.youtube.com/embed/ec4JY06WTV8?rel=0" frameborder="0" allowfullscreen></iframe>
+		</div>
 		<script>
 			if (chrome.app.isInstalled) {
 				document.getElementById('installButton').style.display = 'none';

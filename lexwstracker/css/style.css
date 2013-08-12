@@ -25,7 +25,7 @@ body {
 	padding:10px;
 }
 
-div#settings {
+#options-body #settings {
 	width: 357px;		
 	margin:auto;		
 }
@@ -129,7 +129,7 @@ div#lexwstracker {
 	color: red;
 }
 
-div#toolbar img#closeButton {
+div#toolbar img#closeButton,img#helpButton {
 	float: right;
 }
 div#toolbar img#refreshButton {
