@@ -127,8 +127,84 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				$("p#lookupResult").html('');
 			}
 			else if($("p#lookupResult img#owl").length === 0) {
+
 				iconURL =  chrome.extension.getURL("owl-lookup.png");
 				$("p#lookupResult").find("span").html('<A href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define" class="typo_green" style="text-decoration:underline"><img src="'+iconURL+'" align="left">'+validWord+'</a>');
+
+				var longdict = $.trim($("span#wordsBtnImage").attr('title'));
+				if(/Collins|TWL|OSPD4/g.test(longdict))
+				{
+					shortdict = longdict.match(/Collins|TWL|OSPD4/g)[0];
+					var definitionLoaded = false;
+					
+					var owlServiceUrl = "https://owlsserver.appspot.com/?method=getdef&d="+ shortdict.toLowerCase() +"&word=" + validWord.toLowerCase();
+
+					$lookupSpan = $("p#lookupResult span");
+					$lookupSpan.CreateBubblePopup({
+						themeName: 'green',
+						themePath: 'jquerybubblepopup-themes'						
+					});
+					$lookupSpan.FreezeBubblePopup();
+					bubble_popup_id = $lookupSpan.GetBubblePopupID(); 
+
+					
+					$lookupSpan.click(function(e){
+
+						e.preventDefault();
+						///TODO
+						var html = '<div style="max-width:200px;max-height:250px;overflow-y:auto">';
+						html = html + '<div style="float:right"><p><a href="#null">close</a></p></div>';
+						html = html + '<div style="clear:both"/><br/>';
+						html = html + '<div>Definition: <span class="define">' + ((definitionLoaded)?$lookupSpan.data('definition'):'Loading...') + '</span></div>';
+						html =  html + '<br/><A href="http://google.com/search?hl='+lang+'&q=define:'+validWord+'" target="define" class="typo_green" style="text-decoration:underline"><img src="'+iconURL+'" align="left">Google Search: '+validWord+'</a>';
+						html =  html + '</div>';			
+						$lookupSpan.ShowBubblePopup({
+
+							position : 'right',
+							align	 : 'center',
+							innerHtml: html,
+							themeName: 'green',
+							themePath: 'jquerybubblepopup-themes',
+							alwaysVisible:true,
+							selectable:true
+
+						},true);
+						
+						$lookupSpan.FreezeBubblePopup();
+						
+						$('#'+bubble_popup_id+' a:first').click(function(){
+							$lookupSpan.HideBubblePopup();
+							$lookupSpan.FreezeBubblePopup();
+						});
+						
+						if(!definitionLoaded)
+						{
+							$.getJSON(owlServiceUrl,function(json){
+								var definition = (!json.found || json.definition=="")?'No definition found.':json.definition;
+								$("p#lookupResult span").data('definition',definition);
+								definitionLoaded = true;
+								$lookupSpan.SetBubblePopupInnerHtml(html.replace(/Loading\.\.\./,definition));
+								
+								
+							})
+							.fail(function( jqxhr, textStatus, error ) {
+								var definition = 'An error occured while retrieving definition';
+								$("p#lookupResult span").data('definition',definition);
+								$lookupSpan.SetBubblePopupInnerHtml(html.replace(/Loading\.\.\./,definition));
+								
+							}).always(function() { 
+								$('#'+bubble_popup_id+' a:first').click(function(){
+									$lookupSpan.HideBubblePopup();
+									$lookupSpan.FreezeBubblePopup();
+								}); 
+							});
+
+							
+						}
+
+
+					});
+				}
 			}
 
 		}
@@ -226,7 +302,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 							tileobserver.observe($tile.find(".tileLetterRed").get(0), config);
 
 							showWildTilePopup($tile.data("id"));
-														
+
 
 						}
 						else
@@ -298,7 +374,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 					$(gidnote).find('img').CreateBubblePopup({
 
 						position : 'right',
-						align	 : 'center',			
+						align	 : 'center',
 						innerHtml: '<div style="max-width:287px;max-height:250px;overflow-y:auto">' + response.notes + "</div>",
 						themeName: 'green',
 						themePath: 'jquerybubblepopup-themes',
@@ -354,7 +430,7 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 		updateCounts();
 		eeTest();
 
-		
+
 		storage.get("showGrid", function(items) {
 			if (items["showGrid"]) {
 
@@ -735,8 +811,8 @@ if(/http(s)?:\/\/scrabblefb-live2\.sn\.eamobile\.com\/live\/http(s)?\//.test(win
 				return true;
 
 			});
-	
-			
+
+
 
 }
 
