@@ -787,7 +787,7 @@ function generateMatchups($round,$ssheetid,$wsheetid,$updatesheet,$game)
 	if($round==1)
 	{
 		  
-		$updatesheet = 0;
+		//$updatesheet = 0;
 		for($i=0;$i<$nump;$i++)
 		{
 			$playerref[] = array('address'=>"=A" . ($i+5),'id'=>$player_ids[$i],'index'=>($i+1),'name'=>$player_names[$i],'opponents'=>array(),'rematch'=>false,'rematchlist'=>'');		
